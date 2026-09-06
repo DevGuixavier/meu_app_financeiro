@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import type { SupabaseClient, Session } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
-import type { Categoria, Pessoa, Transacao, TipoTransacao } from "@/lib/types";
+import type { Aba, Categoria, Pessoa, Transacao, TipoTransacao } from "@/lib/types";
 import { chaveMesAtual, deslocarMes, limitesDoMes } from "@/lib/mes";
 import { gerarLancamentos, type NovaTransacaoInput } from "@/lib/parcelamento";
 import { Header } from "@/components/Header";
 import { TabBar } from "@/components/TabBar";
 import { TransacaoItem } from "@/components/TransacaoItem";
 import { NovoLancamentoSheet } from "@/components/NovoLancamentoSheet";
+import { ResumoPainel } from "@/components/ResumoPainel";
 
 async function buscarTransacoes(
   supabase: SupabaseClient,
@@ -29,7 +30,7 @@ async function buscarTransacoes(
 
 export function CadernoApp({ session }: { session: Session }) {
   const [supabase] = useState(() => createClient());
-  const [tipoAtivo, setTipoAtivo] = useState<TipoTransacao>("despesa");
+  const [abaAtiva, setAbaAtiva] = useState<Aba>("despesa");
   const [chaveMes, setChaveMes] = useState(chaveMesAtual());
   const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [pessoas, setPessoas] = useState<Pessoa[]>([]);
@@ -38,10 +39,12 @@ export function CadernoApp({ session }: { session: Session }) {
   const [formAberto, setFormAberto] = useState(false);
 
   useEffect(() => {
+    if (abaAtiva === "resumo") return;
+    const tipo: TipoTransacao = abaAtiva;
     let cancelado = false;
     async function carregar() {
       setCarregando(true);
-      const dados = await buscarTransacoes(supabase, tipoAtivo, chaveMes);
+      const dados = await buscarTransacoes(supabase, tipo, chaveMes);
       if (!cancelado) {
         setTransacoes(dados);
         setCarregando(false);
@@ -51,7 +54,7 @@ export function CadernoApp({ session }: { session: Session }) {
     return () => {
       cancelado = true;
     };
-  }, [supabase, tipoAtivo, chaveMes]);
+  }, [supabase, abaAtiva, chaveMes]);
 
   useEffect(() => {
     supabase
@@ -93,7 +96,7 @@ export function CadernoApp({ session }: { session: Session }) {
     }));
     const { error } = await supabase.from("transacao").insert(lancamentos);
     if (error) throw new Error(error.message);
-    setTransacoes(await buscarTransacoes(supabase, tipoAtivo, chaveMes));
+    setTransacoes(await buscarTransacoes(supabase, input.tipo, chaveMes));
   }
 
   async function alternarStatus(transacao: Transacao) {
@@ -122,52 +125,60 @@ export function CadernoApp({ session }: { session: Session }) {
 
   const total = transacoes.reduce((soma, transacao) => soma + transacao.valor, 0);
 
-  const mensagemVazio = {
+  const mensagemVazio: Record<TipoTransacao, string> = {
     despesa: "Nenhum gasto neste mês.",
     a_pagar: "Você não deve nada neste mês.",
     a_receber: "Ninguém te deve nada neste mês.",
-  }[tipoAtivo];
+  };
 
   return (
     <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col pb-32">
-      <Header
-        chaveMes={chaveMes}
-        total={total}
-        tipoAtivo={tipoAtivo}
-        aoNavegar={(deslocamento) => setChaveMes((atual) => deslocarMes(atual, deslocamento))}
-      />
+      {abaAtiva === "resumo" ? (
+        <ResumoPainel supabase={supabase} pessoas={pessoas} />
+      ) : (
+        <>
+          <Header
+            chaveMes={chaveMes}
+            total={total}
+            tipoAtivo={abaAtiva}
+            aoNavegar={(deslocamento) => setChaveMes((atual) => deslocarMes(atual, deslocamento))}
+          />
 
-      <ul className={`flex flex-1 flex-col gap-2 px-4 py-4 transition-opacity ${carregando ? "opacity-50" : ""}`}>
-        {!carregando && transacoes.length === 0 && (
-          <li className="py-10 text-center text-sm text-muted">{mensagemVazio}</li>
-        )}
-        {transacoes.map((transacao) => (
-          <TransacaoItem key={transacao.id} transacao={transacao} aoAlternarStatus={alternarStatus} />
-        ))}
-      </ul>
+          <ul
+            className={`flex flex-1 flex-col gap-2 px-4 py-4 transition-opacity ${carregando ? "opacity-50" : ""}`}
+          >
+            {!carregando && transacoes.length === 0 && (
+              <li className="py-10 text-center text-sm text-muted">{mensagemVazio[abaAtiva]}</li>
+            )}
+            {transacoes.map((transacao) => (
+              <TransacaoItem key={transacao.id} transacao={transacao} aoAlternarStatus={alternarStatus} />
+            ))}
+          </ul>
 
-      <button
-        type="button"
-        onClick={() => setFormAberto(true)}
-        aria-label="Novo lançamento"
-        className="fixed bottom-20 right-5 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-bg shadow-[0_8px_24px_rgba(227,166,75,0.35)]"
-      >
-        +
-      </button>
+          <button
+            type="button"
+            onClick={() => setFormAberto(true)}
+            aria-label="Novo lançamento"
+            className="fixed bottom-20 right-5 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-bg shadow-[0_8px_24px_rgba(227,166,75,0.35)]"
+          >
+            +
+          </button>
 
-      <TabBar tipoAtivo={tipoAtivo} aoSelecionar={setTipoAtivo} />
-
-      {formAberto && (
-        <NovoLancamentoSheet
-          tipo={tipoAtivo}
-          pessoas={pessoas}
-          categorias={categorias}
-          aoFechar={() => setFormAberto(false)}
-          aoSalvar={salvarLancamento}
-          aoCriarPessoa={criarPessoa}
-          aoCriarCategoria={criarCategoria}
-        />
+          {formAberto && (
+            <NovoLancamentoSheet
+              tipo={abaAtiva}
+              pessoas={pessoas}
+              categorias={categorias}
+              aoFechar={() => setFormAberto(false)}
+              aoSalvar={salvarLancamento}
+              aoCriarPessoa={criarPessoa}
+              aoCriarCategoria={criarCategoria}
+            />
+          )}
+        </>
       )}
+
+      <TabBar abaAtiva={abaAtiva} aoSelecionar={setAbaAtiva} />
     </div>
   );
 }

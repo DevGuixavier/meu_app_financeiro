@@ -1,27 +1,28 @@
-import type { TipoTransacao } from "@/lib/types";
+import type { Aba } from "@/lib/types";
 
-const ABAS: { tipo: TipoTransacao; rotulo: string }[] = [
-  { tipo: "despesa", rotulo: "Gastos" },
-  { tipo: "a_pagar", rotulo: "Devo" },
-  { tipo: "a_receber", rotulo: "Me devem" },
+const ABAS: { valor: Aba; rotulo: string }[] = [
+  { valor: "despesa", rotulo: "Gastos" },
+  { valor: "a_pagar", rotulo: "Devo" },
+  { valor: "a_receber", rotulo: "Me devem" },
+  { valor: "resumo", rotulo: "Resumo" },
 ];
 
 export function TabBar({
-  tipoAtivo,
+  abaAtiva,
   aoSelecionar,
 }: {
-  tipoAtivo: TipoTransacao;
-  aoSelecionar: (tipo: TipoTransacao) => void;
+  abaAtiva: Aba;
+  aoSelecionar: (aba: Aba) => void;
 }) {
   return (
     <nav className="borda-sutil fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-[420px] gap-1 bg-surface p-2">
       {ABAS.map((aba) => (
         <button
-          key={aba.tipo}
+          key={aba.valor}
           type="button"
-          onClick={() => aoSelecionar(aba.tipo)}
+          onClick={() => aoSelecionar(aba.valor)}
           className={`flex-1 rounded-full py-2.5 text-sm transition-colors ${
-            tipoAtivo === aba.tipo ? "bg-ink/10 font-medium text-ink" : "text-muted"
+            abaAtiva === aba.valor ? "bg-ink/10 font-medium text-ink" : "text-muted"
           }`}
         >
           {aba.rotulo}

@@ -1,5 +1,6 @@
 export type TipoTransacao = "despesa" | "a_pagar" | "a_receber";
 export type StatusTransacao = "pendente" | "quitado";
+export type Aba = TipoTransacao | "resumo";
 
 export interface Pessoa {
   id: number;

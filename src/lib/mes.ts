@@ -3,6 +3,15 @@ const NOMES_MES = [
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ];
 
+const NOMES_MES_ABREVIADO = [
+  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez",
+];
+
+export function rotuloMesAbreviado(chave: string): string {
+  const [, mes] = chave.split("-").map(Number);
+  return NOMES_MES_ABREVIADO[mes - 1];
+}
+
 /** Chave de mês no formato "AAAA-MM", usada para filtrar `data_vencimento`. */
 export function chaveMesAtual(): string {
   const hoje = new Date();
