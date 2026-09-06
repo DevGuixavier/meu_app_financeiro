@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { motion } from "motion/react";
 import type { Aba } from "@/lib/types";
 
 function IconGastos({ ativo }: { ativo: boolean }) {
@@ -56,17 +57,25 @@ export function TabBar({
       {ABAS.map(({ valor, rotulo, Icone }) => {
         const ativo = abaAtiva === valor;
         return (
-          <button
+          <motion.button
             key={valor}
             type="button"
             onClick={() => aoSelecionar(valor)}
-            className={`flex flex-col items-center gap-0.5 rounded-xl px-3 py-1 transition-transform active:scale-90 ${
+            whileTap={{ scale: 0.88 }}
+            className={`relative flex flex-col items-center gap-0.5 px-3 py-1 ${
               ativo ? "text-accent" : "text-muted"
             }`}
           >
+            {ativo && (
+              <motion.div
+                layoutId="indicador-aba"
+                transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                className="absolute inset-0 -z-10 rounded-2xl bg-accent/10"
+              />
+            )}
             <Icone ativo={ativo} />
             <span className={`text-[11px] ${ativo ? "font-medium" : ""}`}>{rotulo}</span>
-          </button>
+          </motion.button>
         );
       })}
     </nav>

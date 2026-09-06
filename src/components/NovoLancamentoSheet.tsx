@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent, type MouseEvent, type PointerEvent } from "react";
+import { motion, useDragControls } from "motion/react";
 import type { Categoria, Pessoa, TipoTransacao } from "@/lib/types";
 import { dividirValor, type NovaTransacaoInput } from "@/lib/parcelamento";
 import { formatarMoeda } from "@/lib/moeda";
@@ -33,6 +34,7 @@ export function NovoLancamentoSheet({
   const [novaCategoria, setNovaCategoria] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const dragControls = useDragControls();
 
   const valor = Number(valorTexto.replace(",", "."));
   const numeroParcelas = Number(parcelas);
@@ -96,10 +98,37 @@ export function NovoLancamentoSheet({
   const estiloCampo =
     "borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted focus:border-accent";
 
+  function fecharSeCliqueForaDoPainel(evento: MouseEvent<HTMLDivElement>) {
+    if (evento.target === evento.currentTarget) aoFechar();
+  }
+
   return (
-    <div className="fixed inset-0 z-20 flex items-end justify-center bg-black/60 md:items-center md:p-6">
-      <div className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-[28px] bg-bg px-5 pb-8 pt-3 md:rounded-3xl md:border md:border-white/10 md:pt-5">
-        <div className="mb-2 flex justify-center md:hidden">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={fecharSeCliqueForaDoPainel}
+      className="fixed inset-0 z-20 flex items-end justify-center bg-black/60 md:items-center md:p-6"
+    >
+      <motion.div
+        drag="y"
+        dragControls={dragControls}
+        dragListener={false}
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0, bottom: 0.6 }}
+        onDragEnd={(_evento, info) => {
+          if (info.offset.y > 120 || info.velocity.y > 600) aoFechar();
+        }}
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ type: "spring", stiffness: 420, damping: 42 }}
+        className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-[28px] bg-bg px-5 pb-8 pt-3 md:rounded-3xl md:border md:border-white/10 md:pt-5"
+      >
+        <div
+          onPointerDown={(evento: PointerEvent) => dragControls.start(evento)}
+          className="mb-2 flex touch-none justify-center py-1 md:hidden"
+        >
           <span className="h-1.5 w-10 rounded-full bg-white/20" />
         </div>
         <div className="mb-4 flex items-center justify-between">
@@ -247,7 +276,7 @@ export function NovoLancamentoSheet({
             {salvando ? "Salvando..." : "Salvar"}
           </button>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

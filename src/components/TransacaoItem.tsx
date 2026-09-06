@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import type { Transacao } from "@/lib/types";
 import { formatarMoeda } from "@/lib/moeda";
 
@@ -46,22 +47,35 @@ export function TransacaoItem({
   const quitado = transacao.status === "quitado";
 
   return (
-    <li className="borda-sutil flex items-center gap-3 rounded-[20px] bg-surface px-4 py-3.5">
-      <button
+    <motion.li
+      layout
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.18 }}
+      className="borda-sutil flex items-center gap-3 rounded-[20px] bg-surface px-4 py-3.5"
+    >
+      <motion.button
         type="button"
         onClick={() => aoAlternarStatus(transacao)}
+        whileTap={{ scale: 0.85 }}
         aria-label={quitado ? "Marcar como pendente" : ROTULO_ACAO[transacao.tipo]}
         aria-pressed={quitado}
-        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-transform active:scale-90 ${
+        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
           quitado ? COR_MARCADOR_PREENCHIDO[transacao.tipo] : COR_MARCADOR[transacao.tipo]
         }`}
       >
         {quitado && (
-          <svg viewBox="0 0 12 12" className="h-3 w-3 fill-none stroke-bg stroke-2">
+          <motion.svg
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+            viewBox="0 0 12 12"
+            className="h-3 w-3 fill-none stroke-bg stroke-2"
+          >
             <path d="M2 6l2.5 2.5L10 3" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          </motion.svg>
         )}
-      </button>
+      </motion.button>
       <div className="min-w-0 flex-1">
         <p className={`truncate text-base ${quitado ? "text-muted line-through" : "text-ink"}`}>
           {transacao.titulo}
@@ -75,6 +89,6 @@ export function TransacaoItem({
       >
         {formatarMoeda(transacao.valor)}
       </span>
-    </li>
+    </motion.li>
   );
 }

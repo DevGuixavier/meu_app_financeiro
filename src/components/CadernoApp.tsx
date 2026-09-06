@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AnimatePresence } from "motion/react";
 import type { SupabaseClient, Session } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import type { Aba, Categoria, Pessoa, Transacao, TipoTransacao } from "@/lib/types";
@@ -173,17 +174,20 @@ export function CadernoApp({ session }: { session: Session }) {
               +
             </button>
 
-            {formAberto && (
-              <NovoLancamentoSheet
-                tipo={abaAtiva}
-                pessoas={pessoas}
-                categorias={categorias}
-                aoFechar={() => setFormAberto(false)}
-                aoSalvar={salvarLancamento}
-                aoCriarPessoa={criarPessoa}
-                aoCriarCategoria={criarCategoria}
-              />
-            )}
+            <AnimatePresence>
+              {formAberto && (
+                <NovoLancamentoSheet
+                  key="novo-lancamento"
+                  tipo={abaAtiva}
+                  pessoas={pessoas}
+                  categorias={categorias}
+                  aoFechar={() => setFormAberto(false)}
+                  aoSalvar={salvarLancamento}
+                  aoCriarPessoa={criarPessoa}
+                  aoCriarCategoria={criarCategoria}
+                />
+              )}
+            </AnimatePresence>
           </div>
         )}
       </div>
