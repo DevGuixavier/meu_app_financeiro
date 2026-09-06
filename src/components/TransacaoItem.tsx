@@ -8,9 +8,21 @@ const COR_VALOR = {
 } as const;
 
 const COR_MARCADOR = {
-  despesa: "bg-muted",
-  a_pagar: "bg-negative",
-  a_receber: "bg-accent",
+  despesa: "border-muted",
+  a_pagar: "border-negative",
+  a_receber: "border-accent",
+} as const;
+
+const COR_MARCADOR_PREENCHIDO = {
+  despesa: "border-muted bg-muted",
+  a_pagar: "border-negative bg-negative",
+  a_receber: "border-accent bg-accent",
+} as const;
+
+const ROTULO_ACAO = {
+  despesa: "Marcar como pago",
+  a_pagar: "Marcar como pago",
+  a_receber: "Marcar como recebido",
 } as const;
 
 function subtitulo(transacao: Transacao): string {
@@ -24,15 +36,43 @@ function subtitulo(transacao: Transacao): string {
   return partes.join(", ");
 }
 
-export function TransacaoItem({ transacao }: { transacao: Transacao }) {
+export function TransacaoItem({
+  transacao,
+  aoAlternarStatus,
+}: {
+  transacao: Transacao;
+  aoAlternarStatus: (transacao: Transacao) => void;
+}) {
+  const quitado = transacao.status === "quitado";
+
   return (
     <li className="borda-sutil flex items-center gap-3 rounded-2xl bg-surface px-4 py-3.5">
-      <span className={`h-2 w-2 shrink-0 rounded-full ${COR_MARCADOR[transacao.tipo]}`} aria-hidden />
+      <button
+        type="button"
+        onClick={() => aoAlternarStatus(transacao)}
+        aria-label={quitado ? "Marcar como pendente" : ROTULO_ACAO[transacao.tipo]}
+        aria-pressed={quitado}
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+          quitado ? COR_MARCADOR_PREENCHIDO[transacao.tipo] : COR_MARCADOR[transacao.tipo]
+        }`}
+      >
+        {quitado && (
+          <svg viewBox="0 0 12 12" className="h-2.5 w-2.5 fill-none stroke-bg stroke-2">
+            <path d="M2 6l2.5 2.5L10 3" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </button>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-base text-ink">{transacao.titulo}</p>
+        <p className={`truncate text-base ${quitado ? "text-muted line-through" : "text-ink"}`}>
+          {transacao.titulo}
+        </p>
         <p className="truncate text-sm text-muted">{subtitulo(transacao)}</p>
       </div>
-      <span className={`numeros-tabulares shrink-0 font-mono text-base ${COR_VALOR[transacao.tipo]}`}>
+      <span
+        className={`numeros-tabulares shrink-0 font-mono text-base ${
+          quitado ? "text-muted" : COR_VALOR[transacao.tipo]
+        }`}
+      >
         {formatarMoeda(transacao.valor)}
       </span>
     </li>

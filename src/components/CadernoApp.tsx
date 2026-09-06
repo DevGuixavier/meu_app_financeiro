@@ -96,7 +96,37 @@ export function CadernoApp({ session }: { session: Session }) {
     setTransacoes(await buscarTransacoes(supabase, tipoAtivo, chaveMes));
   }
 
+  async function alternarStatus(transacao: Transacao) {
+    const novoStatus = transacao.status === "quitado" ? "pendente" : "quitado";
+    const novaDataQuitacao = novoStatus === "quitado" ? new Date().toISOString().slice(0, 10) : null;
+
+    setTransacoes((atual) =>
+      atual.map((item) =>
+        item.id === transacao.id
+          ? { ...item, status: novoStatus, data_quitacao: novaDataQuitacao }
+          : item,
+      ),
+    );
+
+    const { error } = await supabase
+      .from("transacao")
+      .update({ status: novoStatus, data_quitacao: novaDataQuitacao })
+      .eq("id", transacao.id);
+
+    if (error) {
+      setTransacoes((atual) =>
+        atual.map((item) => (item.id === transacao.id ? transacao : item)),
+      );
+    }
+  }
+
   const total = transacoes.reduce((soma, transacao) => soma + transacao.valor, 0);
+
+  const mensagemVazio = {
+    despesa: "Nenhum gasto neste mês.",
+    a_pagar: "Você não deve nada neste mês.",
+    a_receber: "Ninguém te deve nada neste mês.",
+  }[tipoAtivo];
 
   return (
     <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col pb-32">
@@ -107,12 +137,12 @@ export function CadernoApp({ session }: { session: Session }) {
         aoNavegar={(deslocamento) => setChaveMes((atual) => deslocarMes(atual, deslocamento))}
       />
 
-      <ul className="flex flex-1 flex-col gap-2 px-4 py-4">
+      <ul className={`flex flex-1 flex-col gap-2 px-4 py-4 transition-opacity ${carregando ? "opacity-50" : ""}`}>
         {!carregando && transacoes.length === 0 && (
-          <li className="py-10 text-center text-sm text-muted">Nada lançado neste mês ainda.</li>
+          <li className="py-10 text-center text-sm text-muted">{mensagemVazio}</li>
         )}
         {transacoes.map((transacao) => (
-          <TransacaoItem key={transacao.id} transacao={transacao} />
+          <TransacaoItem key={transacao.id} transacao={transacao} aoAlternarStatus={alternarStatus} />
         ))}
       </ul>
 
@@ -120,7 +150,7 @@ export function CadernoApp({ session }: { session: Session }) {
         type="button"
         onClick={() => setFormAberto(true)}
         aria-label="Novo lançamento"
-        className="fixed bottom-20 right-5 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-bg shadow-[0_8px_24px_rgba(214,255,63,0.35)]"
+        className="fixed bottom-20 right-5 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-bg shadow-[0_8px_24px_rgba(227,166,75,0.35)]"
       >
         +
       </button>
