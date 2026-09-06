@@ -1,0 +1,145 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import type { SupabaseClient, Session } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
+import type { Categoria, Pessoa, Transacao, TipoTransacao } from "@/lib/types";
+import { chaveMesAtual, deslocarMes, limitesDoMes } from "@/lib/mes";
+import { gerarLancamentos, type NovaTransacaoInput } from "@/lib/parcelamento";
+import { Header } from "@/components/Header";
+import { TabBar } from "@/components/TabBar";
+import { TransacaoItem } from "@/components/TransacaoItem";
+import { NovoLancamentoSheet } from "@/components/NovoLancamentoSheet";
+
+async function buscarTransacoes(
+  supabase: SupabaseClient,
+  tipo: TipoTransacao,
+  chaveMes: string,
+): Promise<Transacao[]> {
+  const { inicio, fimExclusivo } = limitesDoMes(chaveMes);
+  const { data } = await supabase
+    .from("transacao")
+    .select("*, pessoa:pessoa_id(id, nome, telefone), categoria:categoria_id(id, nome, cor)")
+    .eq("tipo", tipo)
+    .gte("data_vencimento", inicio)
+    .lt("data_vencimento", fimExclusivo)
+    .order("data_vencimento", { ascending: true });
+  return (data as Transacao[] | null) ?? [];
+}
+
+export function CadernoApp({ session }: { session: Session }) {
+  const [supabase] = useState(() => createClient());
+  const [tipoAtivo, setTipoAtivo] = useState<TipoTransacao>("despesa");
+  const [chaveMes, setChaveMes] = useState(chaveMesAtual());
+  const [transacoes, setTransacoes] = useState<Transacao[]>([]);
+  const [pessoas, setPessoas] = useState<Pessoa[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [formAberto, setFormAberto] = useState(false);
+
+  useEffect(() => {
+    let cancelado = false;
+    async function carregar() {
+      setCarregando(true);
+      const dados = await buscarTransacoes(supabase, tipoAtivo, chaveMes);
+      if (!cancelado) {
+        setTransacoes(dados);
+        setCarregando(false);
+      }
+    }
+    carregar();
+    return () => {
+      cancelado = true;
+    };
+  }, [supabase, tipoAtivo, chaveMes]);
+
+  useEffect(() => {
+    supabase
+      .from("pessoa")
+      .select("id, nome, telefone")
+      .order("nome")
+      .then(({ data }) => setPessoas((data as Pessoa[] | null) ?? []));
+    supabase
+      .from("categoria")
+      .select("id, nome, cor")
+      .order("nome")
+      .then(({ data }) => setCategorias((data as Categoria[] | null) ?? []));
+  }, [supabase]);
+
+  async function criarPessoa(nome: string): Promise<Pessoa> {
+    const { data, error } = await supabase
+      .from("pessoa")
+      .insert({ nome, user_id: session.user.id })
+      .select("id, nome, telefone")
+      .single();
+    if (error || !data) throw new Error(error?.message ?? "Não foi possível criar a pessoa.");
+    return data as Pessoa;
+  }
+
+  async function criarCategoria(nome: string): Promise<Categoria> {
+    const { data, error } = await supabase
+      .from("categoria")
+      .insert({ nome, user_id: session.user.id })
+      .select("id, nome, cor")
+      .single();
+    if (error || !data) throw new Error(error?.message ?? "Não foi possível criar a categoria.");
+    return data as Categoria;
+  }
+
+  async function salvarLancamento(input: NovaTransacaoInput) {
+    const lancamentos = gerarLancamentos(input).map((lancamento) => ({
+      ...lancamento,
+      user_id: session.user.id,
+    }));
+    const { error } = await supabase.from("transacao").insert(lancamentos);
+    if (error) throw new Error(error.message);
+    setTransacoes(await buscarTransacoes(supabase, tipoAtivo, chaveMes));
+  }
+
+  const total = transacoes.reduce((soma, transacao) => soma + transacao.valor, 0);
+
+  return (
+    <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col pb-32">
+      <Header
+        chaveMes={chaveMes}
+        total={total}
+        tipoAtivo={tipoAtivo}
+        aoNavegar={(deslocamento) => setChaveMes((atual) => deslocarMes(atual, deslocamento))}
+      />
+
+      <ul className="flex-1">
+        {!carregando && transacoes.length === 0 && (
+          <li className="px-5 py-10 text-center text-sm text-graphite">
+            Nada lançado neste mês ainda.
+          </li>
+        )}
+        {transacoes.map((transacao) => (
+          <TransacaoItem key={transacao.id} transacao={transacao} />
+        ))}
+      </ul>
+
+      <button
+        type="button"
+        onClick={() => setFormAberto(true)}
+        aria-label="Novo lançamento"
+        className="fixed bottom-20 right-5 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-moss text-2xl text-paper shadow-lg"
+      >
+        +
+      </button>
+
+      <TabBar tipoAtivo={tipoAtivo} aoSelecionar={setTipoAtivo} />
+
+      {formAberto && (
+        <NovoLancamentoSheet
+          tipo={tipoAtivo}
+          pessoas={pessoas}
+          categorias={categorias}
+          aoFechar={() => setFormAberto(false)}
+          aoSalvar={salvarLancamento}
+          aoCriarPessoa={criarPessoa}
+          aoCriarCategoria={criarCategoria}
+        />
+      )}
+    </div>
+  );
+}
