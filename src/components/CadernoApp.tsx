@@ -132,11 +132,11 @@ export function CadernoApp({ session }: { session: Session }) {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col pb-32">
+    <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col pb-32 md:max-w-3xl">
       {abaAtiva === "resumo" ? (
         <ResumoPainel supabase={supabase} pessoas={pessoas} />
       ) : (
-        <>
+        <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col">
           <Header
             chaveMes={chaveMes}
             total={total}
@@ -175,7 +175,7 @@ export function CadernoApp({ session }: { session: Session }) {
               aoCriarCategoria={criarCategoria}
             />
           )}
-        </>
+        </div>
       )}
 
       <TabBar abaAtiva={abaAtiva} aoSelecionar={setAbaAtiva} />

@@ -139,7 +139,7 @@ function MiniEvolucao({
           {formatarMoeda(valorAtual)}
         </span>
       </div>
-      <div className="flex h-16 items-end gap-1.5">
+      <div className="flex h-16 items-end gap-1.5 md:h-28">
         {serie.map((valor, indice) => (
           <div key={mesesChaves[indice]} className="flex h-full flex-1 items-end justify-center">
             <div
@@ -200,45 +200,47 @@ export function ResumoPainel({
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 px-4 py-4">
+    <div className="flex flex-1 flex-col gap-4 px-4 py-4 md:px-6">
       <div className="flex gap-3">
         <StatTile rotulo="Gastos no mês" valor={dados.totalGastosMes} cor="text-ink" />
         <StatTile rotulo="Devo" valor={dados.totalAPagarPendente} cor="text-negative" />
         <StatTile rotulo="Me devem" valor={dados.totalAReceberPendente} cor="text-accent" />
       </div>
 
-      <Secao titulo="Gastos por categoria">
-        <ListaGastosPorCategoria dados={dados.gastosPorCategoria} />
-      </Secao>
-
       <Secao titulo="Evolução mensal">
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 md:grid md:grid-cols-3 md:gap-6">
           <MiniEvolucao tipo="despesa" serie={dados.evolucao.despesa} mesesChaves={mesesChaves} />
           <MiniEvolucao tipo="a_pagar" serie={dados.evolucao.a_pagar} mesesChaves={mesesChaves} />
           <MiniEvolucao tipo="a_receber" serie={dados.evolucao.a_receber} mesesChaves={mesesChaves} />
         </div>
       </Secao>
 
-      <Secao titulo="Saldo por pessoa">
-        {dados.saldoPorPessoa.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted">Nenhuma pendência com ninguém.</p>
-        ) : (
-          <ul className="flex flex-col gap-3">
-            {dados.saldoPorPessoa.map(({ pessoa, saldo }) => (
-              <li key={pessoa.id} className="flex items-center justify-between">
-                <span className="text-sm text-ink">{pessoa.nome}</span>
-                <span
-                  className={`numeros-tabulares font-mono text-sm ${
-                    saldo > 0 ? "text-accent" : "text-negative"
-                  }`}
-                >
-                  {formatarMoeda(saldo)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Secao>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Secao titulo="Gastos por categoria">
+          <ListaGastosPorCategoria dados={dados.gastosPorCategoria} />
+        </Secao>
+
+        <Secao titulo="Saldo por pessoa">
+          {dados.saldoPorPessoa.length === 0 ? (
+            <p className="py-6 text-center text-sm text-muted">Nenhuma pendência com ninguém.</p>
+          ) : (
+            <ul className="flex flex-col gap-3">
+              {dados.saldoPorPessoa.map(({ pessoa, saldo }) => (
+                <li key={pessoa.id} className="flex items-center justify-between">
+                  <span className="text-sm text-ink">{pessoa.nome}</span>
+                  <span
+                    className={`numeros-tabulares font-mono text-sm ${
+                      saldo > 0 ? "text-accent" : "text-negative"
+                    }`}
+                  >
+                    {formatarMoeda(saldo)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Secao>
+      </div>
     </div>
   );
 }
