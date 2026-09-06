@@ -98,11 +98,19 @@ export function NovoLancamentoSheet({
 
   return (
     <div className="fixed inset-0 z-20 flex items-end justify-center bg-black/60 md:items-center md:p-6">
-      <div className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-3xl bg-bg px-5 pb-8 pt-5 md:rounded-3xl md:border md:border-white/10">
+      <div className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-[28px] bg-bg px-5 pb-8 pt-3 md:rounded-3xl md:border md:border-white/10 md:pt-5">
+        <div className="mb-2 flex justify-center md:hidden">
+          <span className="h-1.5 w-10 rounded-full bg-white/20" />
+        </div>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-display text-xl font-semibold text-ink">Novo lançamento</h2>
-          <button type="button" onClick={aoFechar} aria-label="Fechar" className="text-sm text-muted">
-            Fechar
+          <button
+            type="button"
+            onClick={aoFechar}
+            aria-label="Fechar"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-sm text-muted active:scale-90"
+          >
+            ✕
           </button>
         </div>
 
@@ -191,7 +199,7 @@ export function NovoLancamentoSheet({
               <button
                 type="button"
                 onClick={confirmarNovaPessoa}
-                className="rounded-full px-3 text-sm font-medium text-accent"
+                className="rounded-full px-3 text-sm font-medium text-accent transition-transform active:scale-90"
               >
                 Adicionar
               </button>
@@ -222,7 +230,7 @@ export function NovoLancamentoSheet({
               <button
                 type="button"
                 onClick={confirmarNovaCategoria}
-                className="rounded-full px-3 text-sm font-medium text-accent"
+                className="rounded-full px-3 text-sm font-medium text-accent transition-transform active:scale-90"
               >
                 Adicionar
               </button>
@@ -234,7 +242,7 @@ export function NovoLancamentoSheet({
           <button
             type="submit"
             disabled={!formValido || salvando}
-            className="mt-2 rounded-full bg-accent py-3 text-base font-semibold text-bg disabled:opacity-40"
+            className="mt-2 rounded-full bg-accent py-3 text-base font-semibold text-bg transition-transform active:scale-[0.98] disabled:opacity-40"
           >
             {salvando ? "Salvando..." : "Salvar"}
           </button>

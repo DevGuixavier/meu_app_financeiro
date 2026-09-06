@@ -31,7 +31,7 @@ export function Sidebar({
         type="button"
         onClick={aoNovoLancamento}
         disabled={abaAtiva === "resumo"}
-        className="rounded-full bg-accent py-2.5 text-sm font-semibold text-bg disabled:opacity-40"
+        className="rounded-full bg-accent py-2.5 text-sm font-semibold text-bg transition-transform active:scale-[0.98] disabled:opacity-40"
       >
         + Novo lançamento
       </button>

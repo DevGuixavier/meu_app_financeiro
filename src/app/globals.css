@@ -17,7 +17,7 @@
   --color-muted: var(--color-muted);
   --color-accent: var(--color-accent);
   --color-negative: var(--color-negative);
-  --font-display: var(--font-display);
+  --font-display: var(--font-body);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
 }

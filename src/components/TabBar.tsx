@@ -1,10 +1,47 @@
+import type { ReactElement } from "react";
 import type { Aba } from "@/lib/types";
 
-const ABAS: { valor: Aba; rotulo: string }[] = [
-  { valor: "despesa", rotulo: "Gastos" },
-  { valor: "a_pagar", rotulo: "Devo" },
-  { valor: "a_receber", rotulo: "Me devem" },
-  { valor: "resumo", rotulo: "Resumo" },
+function IconGastos({ ativo }: { ativo: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
+      <rect x="3.5" y="6.5" width="17" height="13" rx="3" stroke="currentColor" />
+      <path d="M3.5 10.5h17" stroke="currentColor" strokeLinecap="round" />
+      <path d="M7 6.5V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.5" stroke="currentColor" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconDevo({ ativo }: { ativo: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
+      <path d="M12 8v8M9 12.5l3 3.2 3-3.2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconMeDevem({ ativo }: { ativo: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
+      <path d="M12 16V8M9 11.5l3-3.2 3 3.2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconResumo({ ativo }: { ativo: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
+      <path d="M4 20V13M11 20V4M18 20v-7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const ABAS: { valor: Aba; rotulo: string; Icone: (props: { ativo: boolean }) => ReactElement }[] = [
+  { valor: "despesa", rotulo: "Gastos", Icone: IconGastos },
+  { valor: "a_pagar", rotulo: "Devo", Icone: IconDevo },
+  { valor: "a_receber", rotulo: "Me devem", Icone: IconMeDevem },
+  { valor: "resumo", rotulo: "Resumo", Icone: IconResumo },
 ];
 
 export function TabBar({
@@ -15,19 +52,23 @@ export function TabBar({
   aoSelecionar: (aba: Aba) => void;
 }) {
   return (
-    <nav className="borda-sutil fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-[420px] gap-1 bg-surface p-2 md:hidden">
-      {ABAS.map((aba) => (
-        <button
-          key={aba.valor}
-          type="button"
-          onClick={() => aoSelecionar(aba.valor)}
-          className={`flex-1 rounded-full py-2.5 text-sm transition-colors ${
-            abaAtiva === aba.valor ? "bg-ink/10 font-medium text-ink" : "text-muted"
-          }`}
-        >
-          {aba.rotulo}
-        </button>
-      ))}
+    <nav className="fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-[420px] justify-around border-t border-white/10 bg-surface/80 pb-[calc(env(safe-area-inset-bottom)+0.375rem)] pt-1.5 backdrop-blur-xl md:hidden">
+      {ABAS.map(({ valor, rotulo, Icone }) => {
+        const ativo = abaAtiva === valor;
+        return (
+          <button
+            key={valor}
+            type="button"
+            onClick={() => aoSelecionar(valor)}
+            className={`flex flex-col items-center gap-0.5 rounded-xl px-3 py-1 transition-transform active:scale-90 ${
+              ativo ? "text-accent" : "text-muted"
+            }`}
+          >
+            <Icone ativo={ativo} />
+            <span className={`text-[11px] ${ativo ? "font-medium" : ""}`}>{rotulo}</span>
+          </button>
+        );
+      })}
     </nav>
   );
 }

@@ -71,7 +71,7 @@ async function buscarDadosResumo(supabase: SupabaseClient, pessoas: Pessoa[]): P
 
 function StatTile({ rotulo, valor, cor }: { rotulo: string; valor: number; cor: string }) {
   return (
-    <div className="borda-sutil min-w-0 rounded-2xl bg-surface px-4 py-3">
+    <div className="borda-sutil min-w-0 rounded-[20px] bg-surface px-4 py-3">
       <p className="truncate text-sm text-muted">{rotulo}</p>
       <p className={`numeros-tabulares mt-1 truncate font-mono text-base md:text-lg ${cor}`}>
         {formatarMoeda(valor)}
@@ -166,7 +166,7 @@ function MiniEvolucao({
 
 function Secao({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
-    <section className="borda-sutil rounded-2xl bg-surface p-4">
+    <section className="borda-sutil rounded-[22px] bg-surface p-4">
       <h2 className="mb-3 font-display text-base font-medium text-ink">{titulo}</h2>
       {children}
     </section>

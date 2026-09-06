@@ -46,18 +46,18 @@ export function TransacaoItem({
   const quitado = transacao.status === "quitado";
 
   return (
-    <li className="borda-sutil flex items-center gap-3 rounded-2xl bg-surface px-4 py-3.5">
+    <li className="borda-sutil flex items-center gap-3 rounded-[20px] bg-surface px-4 py-3.5">
       <button
         type="button"
         onClick={() => aoAlternarStatus(transacao)}
         aria-label={quitado ? "Marcar como pendente" : ROTULO_ACAO[transacao.tipo]}
         aria-pressed={quitado}
-        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-transform active:scale-90 ${
           quitado ? COR_MARCADOR_PREENCHIDO[transacao.tipo] : COR_MARCADOR[transacao.tipo]
         }`}
       >
         {quitado && (
-          <svg viewBox="0 0 12 12" className="h-2.5 w-2.5 fill-none stroke-bg stroke-2">
+          <svg viewBox="0 0 12 12" className="h-3 w-3 fill-none stroke-bg stroke-2">
             <path d="M2 6l2.5 2.5L10 3" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         )}

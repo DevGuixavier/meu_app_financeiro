@@ -25,21 +25,21 @@ export function Header({
           type="button"
           onClick={() => aoNavegar(-1)}
           aria-label="Mês anterior"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted transition-transform active:scale-90"
         >
           ‹
         </button>
-        <span className="font-display text-lg font-medium text-ink">{rotuloMes(chaveMes)}</span>
+        <span className="font-display text-lg font-semibold text-ink">{rotuloMes(chaveMes)}</span>
         <button
           type="button"
           onClick={() => aoNavegar(1)}
           aria-label="Próximo mês"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted transition-transform active:scale-90"
         >
           ›
         </button>
       </div>
-      <p className={`numeros-tabulares text-center font-mono text-3xl ${CORES_POR_TIPO[tipoAtivo]}`}>
+      <p className={`numeros-tabulares text-center font-mono text-3xl font-medium ${CORES_POR_TIPO[tipoAtivo]}`}>
         {formatarMoeda(total)}
       </p>
     </header>

@@ -67,7 +67,7 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
               <button
                 type="submit"
                 disabled={enviando}
-                className="mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-bg disabled:opacity-60"
+                className="mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-bg transition-transform active:scale-[0.98] disabled:opacity-60"
               >
                 {enviando ? "Enviando..." : "Enviar link de acesso"}
               </button>
