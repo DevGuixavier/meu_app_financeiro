@@ -71,9 +71,11 @@ async function buscarDadosResumo(supabase: SupabaseClient, pessoas: Pessoa[]): P
 
 function StatTile({ rotulo, valor, cor }: { rotulo: string; valor: number; cor: string }) {
   return (
-    <div className="borda-sutil flex-1 rounded-2xl bg-surface px-4 py-3">
-      <p className="text-sm text-muted">{rotulo}</p>
-      <p className={`mt-1 font-mono text-lg ${cor}`}>{formatarMoeda(valor)}</p>
+    <div className="borda-sutil min-w-0 rounded-2xl bg-surface px-4 py-3">
+      <p className="truncate text-sm text-muted">{rotulo}</p>
+      <p className={`numeros-tabulares mt-1 truncate font-mono text-base md:text-lg ${cor}`}>
+        {formatarMoeda(valor)}
+      </p>
     </div>
   );
 }
@@ -201,7 +203,7 @@ export function ResumoPainel({
 
   return (
     <div className="flex flex-1 flex-col gap-4 px-4 py-4 md:px-6">
-      <div className="flex gap-3">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         <StatTile rotulo="Gastos no mês" valor={dados.totalGastosMes} cor="text-ink" />
         <StatTile rotulo="Devo" valor={dados.totalAPagarPendente} cor="text-negative" />
         <StatTile rotulo="Me devem" valor={dados.totalAReceberPendente} cor="text-accent" />

@@ -97,8 +97,8 @@ export function NovoLancamentoSheet({
     "borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted focus:border-accent";
 
   return (
-    <div className="fixed inset-0 z-20 flex items-end justify-center bg-black/60">
-      <div className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-3xl bg-bg px-5 pb-8 pt-5">
+    <div className="fixed inset-0 z-20 flex items-end justify-center bg-black/60 md:items-center md:p-6">
+      <div className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-3xl bg-bg px-5 pb-8 pt-5 md:rounded-3xl md:border md:border-white/10">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-display text-xl font-semibold text-ink">Novo lançamento</h2>
           <button type="button" onClick={aoFechar} aria-label="Fechar" className="text-sm text-muted">

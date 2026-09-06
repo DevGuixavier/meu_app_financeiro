@@ -8,6 +8,7 @@ import { chaveMesAtual, deslocarMes, limitesDoMes } from "@/lib/mes";
 import { gerarLancamentos, type NovaTransacaoInput } from "@/lib/parcelamento";
 import { Header } from "@/components/Header";
 import { TabBar } from "@/components/TabBar";
+import { Sidebar } from "@/components/Sidebar";
 import { TransacaoItem } from "@/components/TransacaoItem";
 import { NovoLancamentoSheet } from "@/components/NovoLancamentoSheet";
 import { ResumoPainel } from "@/components/ResumoPainel";
@@ -132,51 +133,60 @@ export function CadernoApp({ session }: { session: Session }) {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col pb-32 md:max-w-3xl">
-      {abaAtiva === "resumo" ? (
-        <ResumoPainel supabase={supabase} pessoas={pessoas} />
-      ) : (
-        <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col">
-          <Header
-            chaveMes={chaveMes}
-            total={total}
-            tipoAtivo={abaAtiva}
-            aoNavegar={(deslocamento) => setChaveMes((atual) => deslocarMes(atual, deslocamento))}
-          />
+    <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col pb-32 md:max-w-5xl md:flex-row md:items-start md:gap-10 md:px-6 md:py-10 md:pb-10">
+      <Sidebar
+        abaAtiva={abaAtiva}
+        aoSelecionar={setAbaAtiva}
+        aoNovoLancamento={() => setFormAberto(true)}
+        aoSair={() => supabase.auth.signOut()}
+      />
 
-          <ul
-            className={`flex flex-1 flex-col gap-2 px-4 py-4 transition-opacity ${carregando ? "opacity-50" : ""}`}
-          >
-            {!carregando && transacoes.length === 0 && (
-              <li className="py-10 text-center text-sm text-muted">{mensagemVazio[abaAtiva]}</li>
-            )}
-            {transacoes.map((transacao) => (
-              <TransacaoItem key={transacao.id} transacao={transacao} aoAlternarStatus={alternarStatus} />
-            ))}
-          </ul>
-
-          <button
-            type="button"
-            onClick={() => setFormAberto(true)}
-            aria-label="Novo lançamento"
-            className="fixed bottom-20 right-5 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-bg shadow-[0_8px_24px_rgba(227,166,75,0.35)]"
-          >
-            +
-          </button>
-
-          {formAberto && (
-            <NovoLancamentoSheet
-              tipo={abaAtiva}
-              pessoas={pessoas}
-              categorias={categorias}
-              aoFechar={() => setFormAberto(false)}
-              aoSalvar={salvarLancamento}
-              aoCriarPessoa={criarPessoa}
-              aoCriarCategoria={criarCategoria}
+      <div className="flex w-full flex-1 flex-col md:min-w-0">
+        {abaAtiva === "resumo" ? (
+          <ResumoPainel supabase={supabase} pessoas={pessoas} />
+        ) : (
+          <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col md:mx-0 md:max-w-xl">
+            <Header
+              chaveMes={chaveMes}
+              total={total}
+              tipoAtivo={abaAtiva}
+              aoNavegar={(deslocamento) => setChaveMes((atual) => deslocarMes(atual, deslocamento))}
             />
-          )}
-        </div>
-      )}
+
+            <ul
+              className={`flex flex-1 flex-col gap-2 px-4 py-4 transition-opacity md:px-0 ${carregando ? "opacity-50" : ""}`}
+            >
+              {!carregando && transacoes.length === 0 && (
+                <li className="py-10 text-center text-sm text-muted">{mensagemVazio[abaAtiva]}</li>
+              )}
+              {transacoes.map((transacao) => (
+                <TransacaoItem key={transacao.id} transacao={transacao} aoAlternarStatus={alternarStatus} />
+              ))}
+            </ul>
+
+            <button
+              type="button"
+              onClick={() => setFormAberto(true)}
+              aria-label="Novo lançamento"
+              className="fixed bottom-20 right-5 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-bg shadow-[0_8px_24px_rgba(227,166,75,0.35)] md:hidden"
+            >
+              +
+            </button>
+
+            {formAberto && (
+              <NovoLancamentoSheet
+                tipo={abaAtiva}
+                pessoas={pessoas}
+                categorias={categorias}
+                aoFechar={() => setFormAberto(false)}
+                aoSalvar={salvarLancamento}
+                aoCriarPessoa={criarPessoa}
+                aoCriarCategoria={criarCategoria}
+              />
+            )}
+          </div>
+        )}
+      </div>
 
       <TabBar abaAtiva={abaAtiva} aoSelecionar={setAbaAtiva} />
     </div>
