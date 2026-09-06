@@ -1,21 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --color-paper: #f3f4f1;
-  --color-ink: #1c2321;
-  --color-moss: #2f6f4e;
-  --color-rust: #a23e2b;
-  --color-graphite: #6b6f6a;
-  --color-brass: #c79a3e;
-  --linha: rgba(28, 35, 33, 0.1);
+  --color-bg: #0a0b08;
+  --color-surface: #17180f;
+  --color-ink: #f4f5ef;
+  --color-muted: #8c8f82;
+  --color-accent: #d6ff3f;
+  --color-negative: #ff6b57;
+  --color-brass: #e8b34a;
+  --borda: rgba(244, 245, 239, 0.09);
 }
 
 @theme inline {
-  --color-paper: var(--color-paper);
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
   --color-ink: var(--color-ink);
-  --color-moss: var(--color-moss);
-  --color-rust: var(--color-rust);
-  --color-graphite: var(--color-graphite);
+  --color-muted: var(--color-muted);
+  --color-accent: var(--color-accent);
+  --color-negative: var(--color-negative);
   --color-brass: var(--color-brass);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
@@ -23,12 +25,15 @@
 }
 
 body {
-  background: var(--color-paper);
+  background: var(--color-bg);
 }
 
-/* pauta do caderno: separador fino entre lançamentos */
-.linha-pauta {
-  border-bottom: 1px solid var(--linha);
+.borda-sutil {
+  border: 1px solid var(--borda);
+}
+
+.linha-divisoria {
+  border-bottom: 1px solid var(--borda);
 }
 
 .numeros-tabulares {

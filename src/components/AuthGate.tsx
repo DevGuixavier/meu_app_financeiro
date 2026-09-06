@@ -41,13 +41,16 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
     return (
       <main className="flex flex-1 flex-col items-center justify-center px-6">
         <div className="w-full max-w-xs">
-          <h1 className="font-display text-3xl text-ink">Caderno</h1>
-          <p className="mt-2 text-sm text-graphite">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent">
+            <span className="font-display text-xl font-semibold text-bg">C</span>
+          </div>
+          <h1 className="mt-5 font-display text-3xl font-semibold text-ink">Caderno</h1>
+          <p className="mt-2 text-sm text-muted">
             Controle de gastos e fiado. Entre com seu email para continuar.
           </p>
 
           {enviado ? (
-            <p className="mt-8 text-sm text-moss">
+            <p className="mt-8 text-sm text-accent">
               Link de acesso enviado para {email}. Abra seu email para entrar.
             </p>
           ) : (
@@ -58,13 +61,13 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(evento) => setEmail(evento.target.value)}
-                className="linha-pauta bg-transparent px-1 py-2 text-base text-ink outline-none placeholder:text-graphite/60"
+                className="borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted"
               />
-              {erro && <p className="text-sm text-rust">{erro}</p>}
+              {erro && <p className="text-sm text-negative">{erro}</p>}
               <button
                 type="submit"
                 disabled={enviando}
-                className="mt-2 rounded-sm bg-moss px-4 py-3 text-sm font-medium text-paper disabled:opacity-60"
+                className="mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-bg disabled:opacity-60"
               >
                 {enviando ? "Enviando..." : "Enviar link de acesso"}
               </button>

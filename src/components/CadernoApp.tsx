@@ -107,11 +107,9 @@ export function CadernoApp({ session }: { session: Session }) {
         aoNavegar={(deslocamento) => setChaveMes((atual) => deslocarMes(atual, deslocamento))}
       />
 
-      <ul className="flex-1">
+      <ul className="flex flex-1 flex-col gap-2 px-4 py-4">
         {!carregando && transacoes.length === 0 && (
-          <li className="px-5 py-10 text-center text-sm text-graphite">
-            Nada lançado neste mês ainda.
-          </li>
+          <li className="py-10 text-center text-sm text-muted">Nada lançado neste mês ainda.</li>
         )}
         {transacoes.map((transacao) => (
           <TransacaoItem key={transacao.id} transacao={transacao} />
@@ -122,7 +120,7 @@ export function CadernoApp({ session }: { session: Session }) {
         type="button"
         onClick={() => setFormAberto(true)}
         aria-label="Novo lançamento"
-        className="fixed bottom-20 right-5 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-moss text-2xl text-paper shadow-lg"
+        className="fixed bottom-20 right-5 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-bg shadow-[0_8px_24px_rgba(214,255,63,0.35)]"
       >
         +
       </button>

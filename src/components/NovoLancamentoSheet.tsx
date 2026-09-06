@@ -93,34 +93,37 @@ export function NovoLancamentoSheet({
     }
   }
 
+  const estiloCampo =
+    "borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted focus:border-accent";
+
   return (
-    <div className="fixed inset-0 z-20 flex items-end justify-center bg-ink/30">
-      <div className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-lg bg-paper px-5 pb-8 pt-5">
+    <div className="fixed inset-0 z-20 flex items-end justify-center bg-black/60">
+      <div className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-3xl bg-bg px-5 pb-8 pt-5">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-display text-xl text-ink">Novo lançamento</h2>
-          <button type="button" onClick={aoFechar} aria-label="Fechar" className="text-graphite">
+          <h2 className="font-display text-xl font-semibold text-ink">Novo lançamento</h2>
+          <button type="button" onClick={aoFechar} aria-label="Fechar" className="text-sm text-muted">
             Fechar
           </button>
         </div>
 
         <form onSubmit={enviar} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1">
-            <span className="text-sm text-graphite">Título</span>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm text-muted">Título</span>
             <input
               value={titulo}
               onChange={(evento) => setTitulo(evento.target.value)}
-              className="linha-pauta bg-transparent py-2 text-base text-ink outline-none"
+              className={estiloCampo}
               placeholder="Ex.: Mercado, empréstimo pro João"
             />
           </label>
 
-          <label className="flex flex-col gap-1">
-            <span className="text-sm text-graphite">Valor total</span>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm text-muted">Valor total</span>
             <input
               inputMode="decimal"
               value={valorTexto}
               onChange={(evento) => setValorTexto(evento.target.value)}
-              className="linha-pauta numeros-tabulares bg-transparent py-2 font-mono text-base text-ink outline-none"
+              className={`${estiloCampo} numeros-tabulares font-mono`}
               placeholder="0,00"
             />
           </label>
@@ -130,46 +133,46 @@ export function NovoLancamentoSheet({
               type="checkbox"
               checked={parcelado}
               onChange={(evento) => setParcelado(evento.target.checked)}
-              className="h-4 w-4"
+              className="h-4 w-4 accent-accent"
             />
             <span className="text-sm text-ink">Parcelado</span>
           </label>
 
           {parcelado && (
-            <label className="flex flex-col gap-1">
-              <span className="text-sm text-graphite">Número de parcelas</span>
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm text-muted">Número de parcelas</span>
               <input
                 type="number"
                 min={2}
                 value={parcelas}
                 onChange={(evento) => setParcelas(evento.target.value)}
-                className="linha-pauta bg-transparent py-2 text-base text-ink outline-none"
+                className={estiloCampo}
               />
               {previaParcelas && (
-                <span className="numeros-tabulares mt-1 font-mono text-sm text-graphite">
+                <span className="numeros-tabulares mt-1 font-mono text-sm text-accent">
                   {previaParcelas}
                 </span>
               )}
             </label>
           )}
 
-          <label className="flex flex-col gap-1">
-            <span className="text-sm text-graphite">Descrição (opcional)</span>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm text-muted">Descrição (opcional)</span>
             <textarea
               value={descricao}
               onChange={(evento) => setDescricao(evento.target.value)}
               rows={2}
-              className="linha-pauta resize-none bg-transparent py-2 text-base text-ink outline-none"
+              className={`${estiloCampo} resize-none`}
               placeholder="Contexto livre: eu paguei X, ele pagou Y..."
             />
           </label>
 
-          <div className="flex flex-col gap-1">
-            <span className="text-sm text-graphite">Pessoa (opcional)</span>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-sm text-muted">Pessoa (opcional)</span>
             <select
               value={pessoaId}
               onChange={(evento) => setPessoaId(evento.target.value)}
-              className="linha-pauta bg-transparent py-2 text-base text-ink outline-none"
+              className={estiloCampo}
             >
               <option value="">Nenhuma</option>
               {pessoas.map((pessoa) => (
@@ -183,20 +186,24 @@ export function NovoLancamentoSheet({
                 value={novaPessoa}
                 onChange={(evento) => setNovaPessoa(evento.target.value)}
                 placeholder="Nova pessoa"
-                className="linha-pauta flex-1 bg-transparent py-1 text-sm text-ink outline-none"
+                className="borda-sutil flex-1 rounded-full bg-surface px-4 py-2 text-sm text-ink outline-none placeholder:text-muted"
               />
-              <button type="button" onClick={confirmarNovaPessoa} className="text-sm text-moss">
+              <button
+                type="button"
+                onClick={confirmarNovaPessoa}
+                className="rounded-full px-3 text-sm font-medium text-accent"
+              >
                 Adicionar
               </button>
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <span className="text-sm text-graphite">Categoria (opcional)</span>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-sm text-muted">Categoria (opcional)</span>
             <select
               value={categoriaId}
               onChange={(evento) => setCategoriaId(evento.target.value)}
-              className="linha-pauta bg-transparent py-2 text-base text-ink outline-none"
+              className={estiloCampo}
             >
               <option value="">Nenhuma</option>
               {categorias.map((categoria) => (
@@ -210,20 +217,24 @@ export function NovoLancamentoSheet({
                 value={novaCategoria}
                 onChange={(evento) => setNovaCategoria(evento.target.value)}
                 placeholder="Nova categoria"
-                className="linha-pauta flex-1 bg-transparent py-1 text-sm text-ink outline-none"
+                className="borda-sutil flex-1 rounded-full bg-surface px-4 py-2 text-sm text-ink outline-none placeholder:text-muted"
               />
-              <button type="button" onClick={confirmarNovaCategoria} className="text-sm text-moss">
+              <button
+                type="button"
+                onClick={confirmarNovaCategoria}
+                className="rounded-full px-3 text-sm font-medium text-accent"
+              >
                 Adicionar
               </button>
             </div>
           </div>
 
-          {erro && <p className="text-sm text-rust">{erro}</p>}
+          {erro && <p className="text-sm text-negative">{erro}</p>}
 
           <button
             type="submit"
             disabled={!formValido || salvando}
-            className="mt-2 rounded-sm bg-moss py-3 text-base font-medium text-paper disabled:opacity-40"
+            className="mt-2 rounded-full bg-accent py-3 text-base font-semibold text-bg disabled:opacity-40"
           >
             {salvando ? "Salvando..." : "Salvar"}
           </button>

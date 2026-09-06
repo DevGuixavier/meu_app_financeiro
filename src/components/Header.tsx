@@ -2,9 +2,9 @@ import { rotuloMes } from "@/lib/mes";
 import { formatarMoeda } from "@/lib/moeda";
 
 const CORES_POR_TIPO = {
-  despesa: "text-graphite",
-  a_pagar: "text-rust",
-  a_receber: "text-moss",
+  despesa: "text-ink",
+  a_pagar: "text-negative",
+  a_receber: "text-accent",
 } as const;
 
 export function Header({
@@ -19,22 +19,22 @@ export function Header({
   aoNavegar: (deslocamento: -1 | 1) => void;
 }) {
   return (
-    <header className="linha-pauta flex flex-col gap-3 px-5 pb-4 pt-6">
+    <header className="linha-divisoria flex flex-col gap-3 px-5 pb-5 pt-6">
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => aoNavegar(-1)}
           aria-label="Mês anterior"
-          className="px-2 py-1 text-lg text-graphite"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted"
         >
           ‹
         </button>
-        <span className="font-display text-lg text-ink">{rotuloMes(chaveMes)}</span>
+        <span className="font-display text-lg font-medium text-ink">{rotuloMes(chaveMes)}</span>
         <button
           type="button"
           onClick={() => aoNavegar(1)}
           aria-label="Próximo mês"
-          className="px-2 py-1 text-lg text-graphite"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted"
         >
           ›
         </button>

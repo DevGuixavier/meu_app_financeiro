@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
   subsets: ["latin"],
-  axes: ["opsz"],
+  weight: ["500", "600", "700"],
 });
 
 const plexSans = IBM_Plex_Sans({
@@ -22,22 +22,22 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "Caderno",
-  description: "Controle financeiro pessoal e fiado, no formato de um caderno de razão.",
+  description: "Controle financeiro pessoal e fiado.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#F3F4F1",
+  themeColor: "#0A0B08",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable} h-full`}
+      className={`${spaceGrotesk.variable} ${plexSans.variable} ${plexMono.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col bg-paper text-ink font-body antialiased">
+      <body className="min-h-full flex flex-col bg-bg text-ink font-body antialiased">
         {children}
       </body>
     </html>
