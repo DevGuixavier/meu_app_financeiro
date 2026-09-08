@@ -53,7 +53,7 @@ export function TabBar({
   aoSelecionar: (aba: Aba) => void;
 }) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-[420px] justify-around border-t border-[color:var(--borda)] bg-surface/80 pb-[calc(env(safe-area-inset-bottom)+0.375rem)] pt-1.5 backdrop-blur-xl md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-[420px] justify-around border-t border-[color:var(--borda)] bg-bg/75 pb-[calc(env(safe-area-inset-bottom)+0.375rem)] pt-1.5 backdrop-blur-xl md:hidden">
       {ABAS.map(({ valor, rotulo, Icone }) => {
         const ativo = abaAtiva === valor;
         return (
@@ -70,11 +70,15 @@ export function TabBar({
               <motion.div
                 layoutId="indicador-aba"
                 transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                className="absolute inset-0 -z-10 rounded-2xl bg-accent/10"
+                className="absolute inset-0 -z-10 rounded-2xl border border-accent/30 bg-accent/10 shadow-[0_0_18px_rgba(0,242,254,0.25)]"
               />
             )}
-            <Icone ativo={ativo} />
-            <span className={`text-[11px] ${ativo ? "font-medium" : ""}`}>{rotulo}</span>
+            <span className={ativo ? "drop-shadow-[0_0_8px_rgba(0,242,254,0.55)]" : ""}>
+              <Icone ativo={ativo} />
+            </span>
+            <span className={`text-[10px] tracking-wide ${ativo ? "font-semibold" : ""}`}>
+              {rotulo}
+            </span>
           </motion.button>
         );
       })}

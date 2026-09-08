@@ -151,6 +151,7 @@ export function CadernoApp({ session }: { session: Session }) {
               chaveMes={chaveMes}
               total={total}
               tipoAtivo={abaAtiva}
+              quantidade={transacoes.length}
               aoNavegar={(deslocamento) => setChaveMes((atual) => deslocarMes(atual, deslocamento))}
             />
 

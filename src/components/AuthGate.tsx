@@ -40,11 +40,11 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
   if (session === null) {
     return (
       <main className="flex flex-1 flex-col items-center justify-center px-6">
-        <div className="w-full max-w-xs">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent">
-            <span className="font-display text-xl font-semibold text-on-accent">C</span>
+        <div className="borda-sutil w-full max-w-xs rounded-[24px] bg-surface p-6">
+          <div className="brilho-accent flex h-11 w-11 items-center justify-center rounded-2xl bg-accent">
+            <span className="font-display text-xl font-bold text-on-accent">C</span>
           </div>
-          <h1 className="mt-5 font-display text-3xl font-semibold text-ink">Caderno</h1>
+          <h1 className="texto-brilho mt-5 font-display text-3xl font-semibold text-ink">Caderno</h1>
           <p className="mt-2 text-sm text-muted">
             Controle de gastos e fiado. Entre com seu email para continuar.
           </p>
@@ -67,7 +67,7 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
               <button
                 type="submit"
                 disabled={enviando}
-                className="mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-60"
+                className="brilho-accent mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-60 disabled:shadow-none"
               >
                 {enviando ? "Enviando..." : "Enviar link de acesso"}
               </button>

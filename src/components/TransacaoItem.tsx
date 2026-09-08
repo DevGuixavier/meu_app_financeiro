@@ -26,15 +26,21 @@ const ROTULO_ACAO = {
   a_receber: "Marcar como recebido",
 } as const;
 
-function subtitulo(transacao: Transacao): string {
-  const partes: string[] = [];
-  if (transacao.pessoa) partes.push(transacao.pessoa.nome);
-  if (transacao.parcela_total) {
-    partes.push(`${transacao.parcela_atual}/${transacao.parcela_total}`);
-  } else {
-    partes.push(transacao.status === "quitado" ? "quitado" : "pendente");
-  }
-  return partes.join(", ");
+function Badge({ transacao }: { transacao: Transacao }) {
+  const quitado = transacao.status === "quitado";
+  const rotulo = quitado ? "Quitado" : "A vencer";
+  const cor = quitado
+    ? "border-accent/40 bg-accent/10 text-accent"
+    : "border-negative/40 bg-negative/10 text-negative";
+
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${cor}`}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden />
+      {rotulo}
+    </span>
+  );
 }
 
 export function TransacaoItem({
@@ -45,6 +51,7 @@ export function TransacaoItem({
   aoAlternarStatus: (transacao: Transacao) => void;
 }) {
   const quitado = transacao.status === "quitado";
+  const numeroParcela = transacao.parcela_atual ?? 1;
 
   return (
     <motion.li
@@ -52,15 +59,44 @@ export function TransacaoItem({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18 }}
-      className="borda-sutil flex items-center gap-3 rounded-[20px] bg-surface px-4 py-3.5"
+      className="borda-sutil flex items-center gap-3 rounded-[20px] bg-surface px-3.5 py-3.5"
     >
+      <span
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-accent/25 bg-accent/10 font-mono text-sm font-semibold text-accent"
+        aria-hidden
+      >
+        {numeroParcela}
+      </span>
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <p className={`truncate text-[15px] ${quitado ? "text-muted line-through" : "text-ink"}`}>
+            {transacao.titulo}
+          </p>
+          <Badge transacao={transacao} />
+        </div>
+        <p className="mt-0.5 truncate text-xs text-muted">
+          {transacao.pessoa ? `${transacao.pessoa.nome} · ` : ""}
+          {transacao.parcela_total
+            ? `parcela ${numeroParcela}/${transacao.parcela_total}`
+            : "parcela única"}
+        </p>
+        <p
+          className={`numeros-tabulares mt-1 font-mono text-base ${
+            quitado ? "text-muted" : COR_VALOR[transacao.tipo]
+          }`}
+        >
+          {formatarMoeda(transacao.valor)}
+        </p>
+      </div>
+
       <motion.button
         type="button"
         onClick={() => aoAlternarStatus(transacao)}
         whileTap={{ scale: 0.85 }}
         aria-label={quitado ? "Marcar como pendente" : ROTULO_ACAO[transacao.tipo]}
         aria-pressed={quitado}
-        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 ${
           quitado ? COR_MARCADOR_PREENCHIDO[transacao.tipo] : COR_MARCADOR[transacao.tipo]
         }`}
       >
@@ -70,25 +106,12 @@ export function TransacaoItem({
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 500, damping: 25 }}
             viewBox="0 0 12 12"
-            className="h-3 w-3 fill-none stroke-on-accent stroke-2"
+            className="h-3.5 w-3.5 fill-none stroke-on-accent stroke-2"
           >
             <path d="M2 6l2.5 2.5L10 3" strokeLinecap="round" strokeLinejoin="round" />
           </motion.svg>
         )}
       </motion.button>
-      <div className="min-w-0 flex-1">
-        <p className={`truncate text-base ${quitado ? "text-muted line-through" : "text-ink"}`}>
-          {transacao.titulo}
-        </p>
-        <p className="truncate text-sm text-muted">{subtitulo(transacao)}</p>
-      </div>
-      <span
-        className={`numeros-tabulares shrink-0 font-mono text-base ${
-          quitado ? "text-muted" : COR_VALOR[transacao.tipo]
-        }`}
-      >
-        {formatarMoeda(transacao.valor)}
-      </span>
     </motion.li>
   );
 }

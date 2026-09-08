@@ -96,7 +96,7 @@ export function NovoLancamentoSheet({
   }
 
   const estiloCampo =
-    "borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted focus:border-accent";
+    "borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted focus:border-accent/60 focus:shadow-[0_0_0_1px_rgba(0,242,254,0.35),0_0_18px_rgba(0,242,254,0.18)]";
 
   function fecharSeCliqueForaDoPainel(evento: MouseEvent<HTMLDivElement>) {
     if (evento.target === evento.currentTarget) aoFechar();
@@ -123,7 +123,7 @@ export function NovoLancamentoSheet({
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", stiffness: 420, damping: 42 }}
-        className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-[28px] bg-bg px-5 pb-8 pt-3 md:rounded-3xl md:border md:border-[color:var(--borda)] md:pt-5"
+        className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-[28px] bg-solido px-5 pb-8 pt-3 md:rounded-3xl md:border md:border-[color:var(--borda)] md:pt-5"
       >
         <div
           onPointerDown={(evento: PointerEvent) => dragControls.start(evento)}
@@ -137,7 +137,7 @@ export function NovoLancamentoSheet({
             type="button"
             onClick={aoFechar}
             aria-label="Fechar"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-sm text-muted active:scale-90"
+            className="borda-sutil flex h-8 w-8 items-center justify-center rounded-full bg-surface text-sm text-muted active:scale-90"
           >
             ✕
           </button>
@@ -145,7 +145,7 @@ export function NovoLancamentoSheet({
 
         <form onSubmit={enviar} className="flex flex-col gap-4">
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm text-muted">Título</span>
+            <span className="rotulo-hud text-muted">Título</span>
             <input
               value={titulo}
               onChange={(evento) => setTitulo(evento.target.value)}
@@ -155,7 +155,7 @@ export function NovoLancamentoSheet({
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm text-muted">Valor total</span>
+            <span className="rotulo-hud text-muted">Valor total</span>
             <input
               inputMode="decimal"
               value={valorTexto}
@@ -177,7 +177,7 @@ export function NovoLancamentoSheet({
 
           {parcelado && (
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm text-muted">Número de parcelas</span>
+              <span className="rotulo-hud text-muted">Número de parcelas</span>
               <input
                 type="number"
                 min={2}
@@ -194,7 +194,7 @@ export function NovoLancamentoSheet({
           )}
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm text-muted">Descrição (opcional)</span>
+            <span className="rotulo-hud text-muted">Descrição (opcional)</span>
             <textarea
               value={descricao}
               onChange={(evento) => setDescricao(evento.target.value)}
@@ -205,7 +205,7 @@ export function NovoLancamentoSheet({
           </label>
 
           <div className="flex flex-col gap-1.5">
-            <span className="text-sm text-muted">Pessoa (opcional)</span>
+            <span className="rotulo-hud text-muted">Pessoa (opcional)</span>
             <select
               value={pessoaId}
               onChange={(evento) => setPessoaId(evento.target.value)}
@@ -236,7 +236,7 @@ export function NovoLancamentoSheet({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <span className="text-sm text-muted">Categoria (opcional)</span>
+            <span className="rotulo-hud text-muted">Categoria (opcional)</span>
             <select
               value={categoriaId}
               onChange={(evento) => setCategoriaId(evento.target.value)}
@@ -271,7 +271,7 @@ export function NovoLancamentoSheet({
           <button
             type="submit"
             disabled={!formValido || salvando}
-            className="mt-2 rounded-full bg-accent py-3 text-base font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-40"
+            className="brilho-accent mt-2 rounded-full bg-accent py-3 text-base font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-40 disabled:shadow-none"
           >
             {salvando ? "Salvando..." : "Salvar"}
           </button>

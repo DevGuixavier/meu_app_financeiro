@@ -1,45 +1,97 @@
 @import "tailwindcss";
 
 :root {
-  --color-bg: #faf6f3;
-  --color-surface: #ffffff;
-  --color-ink: #26201a;
-  --color-muted: #8c8275;
-  --color-accent: #e3a64b;
-  --color-negative: #d9694a;
-  --color-on-accent: #2b2013;
-  --borda: rgba(38, 32, 26, 0.08);
+  /* base */
+  --color-bg: #0b0f19;
+  --color-solido: #121826;
+  --color-surface: rgba(233, 238, 251, 0.05);
+  --color-ink: #e9eefb;
+  --color-muted: #7f8ca6;
+
+  /* neon — chrome da interface (glow, ações, estado ativo) */
+  --color-accent: #00f2fe;
+  --color-accent-2: #4facfe;
+  --color-negative: #ff4d8d;
+  --color-on-accent: #03121a;
+
+  /* marcas de gráfico — degraus validados por scripts/validate_palette.js
+     (faixa de luminosidade, chroma, separação CVD e contraste em dark) */
+  --color-serie-gastos: #6b5ce0;
+  --color-serie-devo: #e03a6d;
+  --color-serie-receber: #0e96a6;
+
+  --borda: rgba(180, 210, 255, 0.12);
 }
 
 @theme inline {
   --color-bg: var(--color-bg);
+  --color-solido: var(--color-solido);
   --color-surface: var(--color-surface);
   --color-ink: var(--color-ink);
   --color-muted: var(--color-muted);
   --color-accent: var(--color-accent);
+  --color-accent-2: var(--color-accent-2);
   --color-negative: var(--color-negative);
   --color-on-accent: var(--color-on-accent);
+  --color-serie-gastos: var(--color-serie-gastos);
+  --color-serie-devo: var(--color-serie-devo);
+  --color-serie-receber: var(--color-serie-receber);
   --font-display: var(--font-body);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
 }
 
 body {
-  background: var(--color-bg);
+  background:
+    radial-gradient(1100px 600px at 12% -8%, rgba(79, 172, 254, 0.14), transparent 60%),
+    radial-gradient(900px 520px at 92% 8%, rgba(0, 242, 254, 0.09), transparent 62%),
+    var(--color-bg);
+  background-attachment: fixed;
 }
 
+/* Cartão de vidro: hairline + brilho interno no topo + desfoque do fundo */
 .borda-sutil {
   border: 1px solid var(--borda);
   box-shadow:
-    0 1px 2px rgba(38, 32, 26, 0.03),
-    0 8px 20px rgba(38, 32, 26, 0.04);
+    inset 0 1px 0 rgba(233, 238, 251, 0.07),
+    0 10px 34px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .linha-divisoria {
   border-bottom: 1px solid var(--borda);
 }
 
+/* Micro-rótulo estilo HUD (caixa alta pequena com tracking) */
+.rotulo-hud {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.brilho-accent {
+  box-shadow:
+    0 0 0 1px rgba(0, 242, 254, 0.35),
+    0 0 22px rgba(0, 242, 254, 0.28);
+}
+
+.texto-brilho {
+  text-shadow: 0 0 18px rgba(0, 242, 254, 0.45);
+}
+
 .numeros-tabulares {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
