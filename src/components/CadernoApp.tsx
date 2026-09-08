@@ -169,7 +169,7 @@ export function CadernoApp({ session }: { session: Session }) {
               type="button"
               onClick={() => setFormAberto(true)}
               aria-label="Novo lançamento"
-              className="fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-bg shadow-[0_8px_24px_rgba(227,166,75,0.35)] transition-transform active:scale-90 md:hidden"
+              className="fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-on-accent shadow-[0_8px_24px_rgba(227,166,75,0.35)] transition-transform active:scale-90 md:hidden"
             >
               +
             </button>

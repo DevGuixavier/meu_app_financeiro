@@ -22,7 +22,7 @@ export function Sidebar({
     <aside className="sticky top-8 hidden w-56 shrink-0 flex-col gap-8 md:flex">
       <div className="flex items-center gap-2.5">
         <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-accent">
-          <span className="font-display text-base font-semibold text-bg">C</span>
+          <span className="font-display text-base font-semibold text-on-accent">C</span>
         </div>
         <span className="font-display text-lg font-medium text-ink">Caderno</span>
       </div>
@@ -31,7 +31,7 @@ export function Sidebar({
         type="button"
         onClick={aoNovoLancamento}
         disabled={abaAtiva === "resumo"}
-        className="rounded-full bg-accent py-2.5 text-sm font-semibold text-bg transition-transform active:scale-[0.98] disabled:opacity-40"
+        className="rounded-full bg-accent py-2.5 text-sm font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-40"
       >
         + Novo lançamento
       </button>

@@ -123,13 +123,13 @@ export function NovoLancamentoSheet({
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", stiffness: 420, damping: 42 }}
-        className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-[28px] bg-bg px-5 pb-8 pt-3 md:rounded-3xl md:border md:border-white/10 md:pt-5"
+        className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-[28px] bg-bg px-5 pb-8 pt-3 md:rounded-3xl md:border md:border-[color:var(--borda)] md:pt-5"
       >
         <div
           onPointerDown={(evento: PointerEvent) => dragControls.start(evento)}
           className="mb-2 flex touch-none justify-center py-1 md:hidden"
         >
-          <span className="h-1.5 w-10 rounded-full bg-white/20" />
+          <span className="h-1.5 w-10 rounded-full bg-ink/15" />
         </div>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-display text-xl font-semibold text-ink">Novo lançamento</h2>
@@ -271,7 +271,7 @@ export function NovoLancamentoSheet({
           <button
             type="submit"
             disabled={!formValido || salvando}
-            className="mt-2 rounded-full bg-accent py-3 text-base font-semibold text-bg transition-transform active:scale-[0.98] disabled:opacity-40"
+            className="mt-2 rounded-full bg-accent py-3 text-base font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-40"
           >
             {salvando ? "Salvando..." : "Salvar"}
           </button>

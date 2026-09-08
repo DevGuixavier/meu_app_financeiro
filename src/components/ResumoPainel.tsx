@@ -69,9 +69,46 @@ async function buscarDadosResumo(supabase: SupabaseClient, pessoas: Pessoa[]): P
   };
 }
 
-function StatTile({ rotulo, valor, cor }: { rotulo: string; valor: number; cor: string }) {
+function IconCarteira() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth={1.8} className="h-4 w-4">
+      <rect x="3.5" y="6.5" width="17" height="13" rx="3" stroke="currentColor" />
+      <path d="M3.5 10.5h17" stroke="currentColor" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconSeta({ subindo }: { subindo: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth={1.8} className="h-4 w-4">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
+      {subindo ? (
+        <path d="M12 16V8M9 11.5l3-3.2 3 3.2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+      ) : (
+        <path d="M12 8v8M9 12.5l3 3.2 3-3.2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+      )}
+    </svg>
+  );
+}
+
+function StatTile({
+  rotulo,
+  valor,
+  cor,
+  fundoIcone,
+  icone,
+}: {
+  rotulo: string;
+  valor: number;
+  cor: string;
+  fundoIcone: string;
+  icone: ReactNode;
+}) {
   return (
     <div className="borda-sutil min-w-0 rounded-[20px] bg-surface px-4 py-3">
+      <div className={`mb-2 flex h-7 w-7 items-center justify-center rounded-xl ${fundoIcone} ${cor}`}>
+        {icone}
+      </div>
       <p className="truncate text-sm text-muted">{rotulo}</p>
       <p className={`numeros-tabulares mt-1 truncate font-mono text-base md:text-lg ${cor}`}>
         {formatarMoeda(valor)}
@@ -204,9 +241,27 @@ export function ResumoPainel({
   return (
     <div className="flex flex-1 flex-col gap-4 px-4 py-4 md:px-6">
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-        <StatTile rotulo="Gastos no mês" valor={dados.totalGastosMes} cor="text-ink" />
-        <StatTile rotulo="Devo" valor={dados.totalAPagarPendente} cor="text-negative" />
-        <StatTile rotulo="Me devem" valor={dados.totalAReceberPendente} cor="text-accent" />
+        <StatTile
+          rotulo="Gastos no mês"
+          valor={dados.totalGastosMes}
+          cor="text-ink"
+          fundoIcone="bg-ink/8"
+          icone={<IconCarteira />}
+        />
+        <StatTile
+          rotulo="Devo"
+          valor={dados.totalAPagarPendente}
+          cor="text-negative"
+          fundoIcone="bg-negative/10"
+          icone={<IconSeta subindo={false} />}
+        />
+        <StatTile
+          rotulo="Me devem"
+          valor={dados.totalAReceberPendente}
+          cor="text-accent"
+          fundoIcone="bg-accent/10"
+          icone={<IconSeta subindo={true} />}
+        />
       </div>
 
       <Secao titulo="Evolução mensal">

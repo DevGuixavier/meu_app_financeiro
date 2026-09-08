@@ -53,7 +53,7 @@ export function TabBar({
   aoSelecionar: (aba: Aba) => void;
 }) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-[420px] justify-around border-t border-white/10 bg-surface/80 pb-[calc(env(safe-area-inset-bottom)+0.375rem)] pt-1.5 backdrop-blur-xl md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-[420px] justify-around border-t border-[color:var(--borda)] bg-surface/80 pb-[calc(env(safe-area-inset-bottom)+0.375rem)] pt-1.5 backdrop-blur-xl md:hidden">
       {ABAS.map(({ valor, rotulo, Icone }) => {
         const ativo = abaAtiva === valor;
         return (

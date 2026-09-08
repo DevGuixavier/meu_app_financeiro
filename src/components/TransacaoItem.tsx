@@ -70,7 +70,7 @@ export function TransacaoItem({
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 500, damping: 25 }}
             viewBox="0 0 12 12"
-            className="h-3 w-3 fill-none stroke-bg stroke-2"
+            className="h-3 w-3 fill-none stroke-on-accent stroke-2"
           >
             <path d="M2 6l2.5 2.5L10 3" strokeLinecap="round" strokeLinejoin="round" />
           </motion.svg>

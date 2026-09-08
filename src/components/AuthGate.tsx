@@ -42,7 +42,7 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
       <main className="flex flex-1 flex-col items-center justify-center px-6">
         <div className="w-full max-w-xs">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent">
-            <span className="font-display text-xl font-semibold text-bg">C</span>
+            <span className="font-display text-xl font-semibold text-on-accent">C</span>
           </div>
           <h1 className="mt-5 font-display text-3xl font-semibold text-ink">Caderno</h1>
           <p className="mt-2 text-sm text-muted">
@@ -67,7 +67,7 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
               <button
                 type="submit"
                 disabled={enviando}
-                className="mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-bg transition-transform active:scale-[0.98] disabled:opacity-60"
+                className="mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-60"
               >
                 {enviando ? "Enviando..." : "Enviar link de acesso"}
               </button>

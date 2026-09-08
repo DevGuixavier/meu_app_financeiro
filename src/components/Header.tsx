@@ -25,7 +25,7 @@ export function Header({
           type="button"
           onClick={() => aoNavegar(-1)}
           aria-label="Mês anterior"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted transition-transform active:scale-90"
+          className="borda-sutil flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted transition-transform active:scale-90"
         >
           ‹
         </button>
@@ -34,7 +34,7 @@ export function Header({
           type="button"
           onClick={() => aoNavegar(1)}
           aria-label="Próximo mês"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted transition-transform active:scale-90"
+          className="borda-sutil flex h-8 w-8 items-center justify-center rounded-full bg-surface text-lg text-muted transition-transform active:scale-90"
         >
           ›
         </button>
