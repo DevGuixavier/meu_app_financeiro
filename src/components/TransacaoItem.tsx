@@ -61,11 +61,17 @@ export function TransacaoItem({
       transition={{ duration: 0.18 }}
       className="borda-sutil flex items-center gap-3 rounded-[20px] bg-surface px-3.5 py-3.5"
     >
+      {/* O badge só mostra número quando existe parcelamento — num lançamento
+          avulso, um "1" ali sugeriria uma parcela que não existe. */}
       <span
         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-accent/25 bg-accent/10 font-mono text-sm font-semibold text-accent"
         aria-hidden
       >
-        {numeroParcela}
+        {transacao.parcela_total ? (
+          numeroParcela
+        ) : (
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+        )}
       </span>
 
       <div className="min-w-0 flex-1">

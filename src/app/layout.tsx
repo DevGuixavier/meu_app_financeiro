@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Roboto, Roboto_Mono } from "next/font/google";
+import { Public_Sans, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
-// Mesma superfamília na interface e nos valores: os dígitos do mono derivam
-// do sans, então rótulo e número não parecem vir de dois projetos diferentes.
-const roboto = Roboto({
+// Public Sans (derivada da Libre Franklin) na interface. Ela não tem uma mono
+// irmã, então os valores usam Roboto Mono — mono neutra, sem personalidade
+// que brigue com o esqueleto gótico da Public Sans.
+const publicSans = Public_Sans({
   variable: "--font-body",
   subsets: ["latin"],
   // 600 incluído porque a UI usa font-semibold e o .rotulo-hud pede 600 —
@@ -33,7 +34,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${roboto.variable} ${robotoMono.variable} h-full`}>
+    <html lang="pt-BR" className={`${publicSans.variable} ${robotoMono.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-bg text-ink font-body antialiased">
         {children}
       </body>
