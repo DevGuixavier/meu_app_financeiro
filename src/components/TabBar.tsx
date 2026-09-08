@@ -12,7 +12,7 @@ function IconGastos({ ativo }: { ativo: boolean }) {
   );
 }
 
-function IconDevo({ ativo }: { ativo: boolean }) {
+function IconAPagar({ ativo }: { ativo: boolean }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
       <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
@@ -21,7 +21,7 @@ function IconDevo({ ativo }: { ativo: boolean }) {
   );
 }
 
-function IconMeDevem({ ativo }: { ativo: boolean }) {
+function IconAReceber({ ativo }: { ativo: boolean }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
       <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
@@ -40,8 +40,8 @@ function IconResumo({ ativo }: { ativo: boolean }) {
 
 const ABAS: { valor: Aba; rotulo: string; Icone: (props: { ativo: boolean }) => ReactElement }[] = [
   { valor: "despesa", rotulo: "Gastos", Icone: IconGastos },
-  { valor: "a_pagar", rotulo: "Devo", Icone: IconDevo },
-  { valor: "a_receber", rotulo: "Me devem", Icone: IconMeDevem },
+  { valor: "a_pagar", rotulo: "A pagar", Icone: IconAPagar },
+  { valor: "a_receber", rotulo: "A receber", Icone: IconAReceber },
   { valor: "resumo", rotulo: "Resumo", Icone: IconResumo },
 ];
 
@@ -70,12 +70,10 @@ export function TabBar({
               <motion.div
                 layoutId="indicador-aba"
                 transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                className="absolute inset-0 -z-10 rounded-2xl border border-accent/30 bg-accent/10 shadow-[0_0_18px_rgba(0,242,254,0.25)]"
+                className="absolute inset-0 -z-10 rounded-2xl border border-accent/30 bg-accent/10 shadow-[0_2px_8px_rgba(227,166,75,0.25)]"
               />
             )}
-            <span className={ativo ? "drop-shadow-[0_0_8px_rgba(0,242,254,0.55)]" : ""}>
-              <Icone ativo={ativo} />
-            </span>
+            <Icone ativo={ativo} />
             <span className={`text-[10px] tracking-wide ${ativo ? "font-semibold" : ""}`}>
               {rotulo}
             </span>

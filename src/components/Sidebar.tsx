@@ -10,7 +10,7 @@ function IconGastos() {
   );
 }
 
-function IconDevo() {
+function IconAPagar() {
   return (
     <svg viewBox="0 0 24 24" fill="none" strokeWidth={1.4} className="h-[18px] w-[18px]">
       <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
@@ -19,7 +19,7 @@ function IconDevo() {
   );
 }
 
-function IconMeDevem() {
+function IconAReceber() {
   return (
     <svg viewBox="0 0 24 24" fill="none" strokeWidth={1.4} className="h-[18px] w-[18px]">
       <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
@@ -38,8 +38,8 @@ function IconResumo() {
 
 const ITENS: { valor: Aba; rotulo: string; Icone: () => ReactElement }[] = [
   { valor: "despesa", rotulo: "Gastos", Icone: IconGastos },
-  { valor: "a_pagar", rotulo: "Devo", Icone: IconDevo },
-  { valor: "a_receber", rotulo: "Me devem", Icone: IconMeDevem },
+  { valor: "a_pagar", rotulo: "A pagar", Icone: IconAPagar },
+  { valor: "a_receber", rotulo: "A receber", Icone: IconAReceber },
   { valor: "resumo", rotulo: "Resumo", Icone: IconResumo },
 ];
 
@@ -86,15 +86,7 @@ export function Sidebar({
                   : "border-transparent text-muted hover:border-[color:var(--borda)] hover:text-ink"
               }`}
             >
-              <span
-                className={
-                  ativo
-                    ? "drop-shadow-[0_0_8px_rgba(0,242,254,0.55)]"
-                    : "transition-[filter] group-hover:drop-shadow-[0_0_6px_rgba(0,242,254,0.35)]"
-                }
-              >
-                <Icone />
-              </span>
+              <Icone />
               {rotulo}
             </button>
           );

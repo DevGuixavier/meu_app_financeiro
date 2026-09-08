@@ -44,7 +44,7 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
           <div className="brilho-accent flex h-11 w-11 items-center justify-center rounded-2xl bg-accent">
             <span className="font-display text-xl font-bold text-on-accent">C</span>
           </div>
-          <h1 className="texto-brilho mt-5 font-display text-3xl font-semibold text-ink">Caderno</h1>
+          <h1 className="mt-5 font-display text-3xl font-semibold text-ink">Caderno</h1>
           <p className="mt-2 text-sm text-muted">
             Controle de gastos e fiado. Entre com seu email para continuar.
           </p>

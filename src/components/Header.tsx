@@ -53,7 +53,7 @@ export function Header({
           <div className="min-w-0">
             <p className="rotulo-hud text-muted">{ROTULO_POR_TIPO[tipoAtivo]}</p>
             <p
-              className={`numeros-tabulares texto-brilho mt-1.5 truncate font-mono text-[28px] leading-none font-semibold ${CORES_POR_TIPO[tipoAtivo]}`}
+              className={`numeros-tabulares mt-1.5 truncate font-mono text-[28px] leading-none font-semibold ${CORES_POR_TIPO[tipoAtivo]}`}
             >
               {formatarMoeda(total)}
             </p>

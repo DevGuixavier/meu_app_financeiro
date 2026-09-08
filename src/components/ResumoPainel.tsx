@@ -13,15 +13,16 @@ const QUANTIDADE_RECENTES = 6;
 
 const ROTULO_TIPO: Record<TipoTransacao, string> = {
   despesa: "Gastos",
-  a_pagar: "Devo",
-  a_receber: "Me devem",
+  a_pagar: "A pagar",
+  a_receber: "A receber",
 };
 
-/** Marcas de gráfico: degraus validados (faixa L, chroma, CVD e contraste) —
- * distintos do neon do chrome da UI, que é claro demais para virar marca. */
+/** Marcas de gráfico: degraus validados (faixa L, chroma, CVD e contraste).
+ * A terracota da UI fica perto demais do âmbar quando as duas viram marca
+ * lado a lado, então a série "a pagar" usa um degrau mais escuro. */
 const COR_SERIE: Record<TipoTransacao, string> = {
   despesa: "var(--color-serie-gastos)",
-  a_pagar: "var(--color-serie-devo)",
+  a_pagar: "var(--color-serie-pagar)",
   a_receber: "var(--color-serie-receber)",
 };
 
@@ -177,7 +178,7 @@ function AnelKpi({
             initial={{ strokeDashoffset: circunferencia }}
             animate={{ strokeDashoffset: circunferencia * (1 - fracao) }}
             transition={{ type: "spring", stiffness: 90, damping: 20 }}
-            style={{ stroke: cor, filter: `drop-shadow(0 0 6px ${cor})` }}
+            style={{ stroke: cor }}
           />
         </svg>
         <span className="numeros-tabulares absolute inset-0 flex items-center justify-center font-mono text-sm font-semibold text-ink">
@@ -301,7 +302,7 @@ function GraficoTemporal({
           strokeLinecap="round"
           strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
-          style={{ stroke: cor, filter: `drop-shadow(0 0 6px ${cor})` }}
+          style={{ stroke: cor }}
         />
 
         {ativo && (
@@ -398,7 +399,7 @@ function ListaGastosPorCategoria({ dados }: { dados: GastoPorCategoria[] }) {
               className="h-1.5 rounded-full"
               style={{
                 background: "var(--color-serie-gastos)",
-                boxShadow: "0 0 10px var(--color-serie-gastos)",
+                
               }}
             />
           </div>
@@ -421,7 +422,7 @@ function FeedRecentes({ recentes }: { recentes: Transacao[] }) {
             className="h-1.5 w-1.5 shrink-0 rounded-full"
             style={{
               background: COR_SERIE[transacao.tipo],
-              boxShadow: `0 0 8px ${COR_SERIE[transacao.tipo]}`,
+              
             }}
             aria-hidden
           />
@@ -492,7 +493,7 @@ export function ResumoPainel({
                 key={tipo}
                 type="button"
                 onClick={() => setSerieAtiva(tipo)}
-                className={`rounded-full border px-2.5 py-1 text-[11px] transition-colors ${
+                className={`rounded-full border px-2.5 py-1 text-[11px] whitespace-nowrap transition-colors ${
                   serieAtiva === tipo
                     ? "border-accent/40 bg-accent/10 text-accent"
                     : "border-[color:var(--borda)] text-muted hover:text-ink"

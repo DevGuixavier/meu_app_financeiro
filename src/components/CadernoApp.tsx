@@ -129,8 +129,8 @@ export function CadernoApp({ session }: { session: Session }) {
 
   const mensagemVazio: Record<TipoTransacao, string> = {
     despesa: "Nenhum gasto neste mês.",
-    a_pagar: "Você não deve nada neste mês.",
-    a_receber: "Ninguém te deve nada neste mês.",
+    a_pagar: "Nada a pagar neste mês.",
+    a_receber: "Nada a receber neste mês.",
   };
 
   return (
