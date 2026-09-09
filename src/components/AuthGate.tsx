@@ -76,10 +76,10 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 required
-                placeholder="000000"
+                placeholder="Código recebido por email"
                 value={codigo}
                 onChange={(evento) => setCodigo(evento.target.value)}
-                className="borda-sutil rounded-2xl bg-surface px-4 py-3 text-center text-lg tracking-[0.3em] text-ink outline-none placeholder:text-muted"
+                className="borda-sutil rounded-2xl bg-surface px-4 py-3 text-center text-lg tracking-[0.3em] text-ink outline-none placeholder:text-sm placeholder:tracking-normal placeholder:text-muted"
               />
               {erro && <p className="text-sm text-negative">{erro}</p>}
               <button
