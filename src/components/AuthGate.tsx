@@ -8,6 +8,7 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
   const [supabase] = useState(() => createClient());
   const [session, setSession] = useState<Session | null | undefined>(undefined);
   const [email, setEmail] = useState("");
+  const [codigo, setCodigo] = useState("");
   const [enviado, setEnviado] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
@@ -20,7 +21,7 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
     return () => subscription.subscription.unsubscribe();
   }, [supabase]);
 
-  async function enviarLinkDeAcesso(evento: FormEvent) {
+  async function enviarCodigo(evento: FormEvent) {
     evento.preventDefault();
     setErro(null);
     setEnviando(true);
@@ -31,6 +32,22 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
       return;
     }
     setEnviado(true);
+  }
+
+  // Verifica o código de 6 dígitos em vez de depender do link clicável do
+  // email — o link é reescrito e pré-acessado por scanners de segurança
+  // (Gmail, Outlook), o que consome o token PKCE de uso único antes do
+  // usuário clicar e derruba o login com "otp_expired".
+  async function confirmarCodigo(evento: FormEvent) {
+    evento.preventDefault();
+    setErro(null);
+    setEnviando(true);
+    const { error } = await supabase.auth.verifyOtp({ email, token: codigo, type: "email" });
+    setEnviando(false);
+    if (error) {
+      setErro(error.message);
+      return;
+    }
   }
 
   if (session === undefined) {
@@ -50,11 +67,31 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
           </p>
 
           {enviado ? (
-            <p className="mt-8 text-sm text-accent">
-              Link de acesso enviado para {email}. Abra seu email para entrar.
-            </p>
+            <form onSubmit={confirmarCodigo} className="mt-8 flex flex-col gap-3">
+              <p className="text-sm text-muted">
+                Enviamos um código de 6 dígitos para {email}.
+              </p>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                required
+                placeholder="000000"
+                value={codigo}
+                onChange={(evento) => setCodigo(evento.target.value)}
+                className="borda-sutil rounded-2xl bg-surface px-4 py-3 text-center text-lg tracking-[0.3em] text-ink outline-none placeholder:text-muted"
+              />
+              {erro && <p className="text-sm text-negative">{erro}</p>}
+              <button
+                type="submit"
+                disabled={enviando}
+                className="brilho-accent mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-60 disabled:shadow-none"
+              >
+                {enviando ? "Confirmando..." : "Confirmar código"}
+              </button>
+            </form>
           ) : (
-            <form onSubmit={enviarLinkDeAcesso} className="mt-8 flex flex-col gap-3">
+            <form onSubmit={enviarCodigo} className="mt-8 flex flex-col gap-3">
               <input
                 type="email"
                 required
@@ -69,7 +106,7 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
                 disabled={enviando}
                 className="brilho-accent mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-60 disabled:shadow-none"
               >
-                {enviando ? "Enviando..." : "Enviar link de acesso"}
+                {enviando ? "Enviando..." : "Enviar código de acesso"}
               </button>
             </form>
           )}
