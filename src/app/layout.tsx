@@ -22,8 +22,8 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Caderno",
-  description: "Controle financeiro pessoal e fiado.",
+  title: "Saldo",
+  description: "Controle de gastos e cobranças.",
 };
 
 export const viewport: Viewport = {

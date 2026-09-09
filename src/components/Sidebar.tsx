@@ -58,9 +58,9 @@ export function Sidebar({
     <aside className="sticky top-8 hidden w-56 shrink-0 flex-col gap-7 md:flex">
       <div className="flex items-center gap-2.5">
         <div className="brilho-accent flex h-9 w-9 items-center justify-center rounded-2xl bg-accent">
-          <span className="font-display text-base font-bold text-on-accent">C</span>
+          <span className="font-display text-base font-bold text-on-accent">S</span>
         </div>
-        <span className="rotulo-hud text-ink">Caderno</span>
+        <span className="rotulo-hud text-ink">Saldo</span>
       </div>
 
       <button
