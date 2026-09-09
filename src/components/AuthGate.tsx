@@ -59,11 +59,11 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
       <main className="flex flex-1 flex-col items-center justify-center px-6">
         <div className="borda-sutil w-full max-w-xs rounded-[24px] bg-surface p-6">
           <div className="brilho-accent flex h-11 w-11 items-center justify-center rounded-2xl bg-accent">
-            <span className="font-display text-xl font-bold text-on-accent">C</span>
+            <span className="font-display text-xl font-bold text-on-accent">S</span>
           </div>
-          <h1 className="mt-5 font-display text-3xl font-semibold text-ink">Caderno</h1>
+          <h1 className="mt-5 font-display text-3xl font-semibold text-ink">Saldo</h1>
           <p className="mt-2 text-sm text-muted">
-            Controle de gastos e fiado. Entre com seu email para continuar.
+            Controle de gastos e cobranças. Entre com seu email para continuar.
           </p>
 
           {enviado ? (
