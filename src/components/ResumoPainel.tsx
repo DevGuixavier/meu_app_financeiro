@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState, type PointerEvent, type ReactNode } from "react";
+import { Download } from "lucide-react";
+import { toast } from "sonner";
 import { motion } from "motion/react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Pessoa, TipoTransacao, Transacao } from "@/lib/types";
@@ -14,6 +16,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { buscarTodasTransacoes, exportarCsv, exportarXlsx } from "@/lib/exportacao";
 
 const QUANTIDADE_MESES_EVOLUCAO = 6;
 const QUANTIDADE_RECENTES = 6;
@@ -460,6 +470,27 @@ export function ResumoPainel({
 }) {
   const [dados, setDados] = useState<DadosResumo | null>(null);
   const [serieAtiva, setSerieAtiva] = useState<TipoTransacao>("despesa");
+  const [exportando, setExportando] = useState(false);
+
+  async function exportar(formato: "csv" | "xlsx") {
+    setExportando(true);
+    try {
+      const transacoes = await buscarTodasTransacoes(supabase);
+      if (transacoes.length === 0) {
+        toast.info("Não há lançamentos para exportar ainda.");
+        return;
+      }
+      if (formato === "csv") exportarCsv(transacoes);
+      else exportarXlsx(transacoes);
+      toast.success(`${transacoes.length} lançamentos exportados.`);
+    } catch (excecao) {
+      toast.error(
+        excecao instanceof Error ? excecao.message : "Não foi possível exportar os dados.",
+      );
+    } finally {
+      setExportando(false);
+    }
+  }
 
   useEffect(() => {
     let cancelado = false;
@@ -477,6 +508,21 @@ export function ResumoPainel({
 
   return (
     <div className="flex flex-1 flex-col gap-4 px-4 py-4 md:px-6">
+      <div className="flex justify-end">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" disabled={exportando}>
+              <Download />
+              {exportando ? "Exportando..." : "Exportar"}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onSelect={() => exportar("xlsx")}>Excel (.xlsx)</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => exportar("csv")}>CSV (.csv)</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       <div className="grid grid-cols-3 gap-3">
         <AnelKpi tipo="despesa" valor={dados.totalGastosMes} progresso={dados.progresso.despesa} />
         <AnelKpi
