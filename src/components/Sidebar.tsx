@@ -2,6 +2,7 @@ import { ArrowDownLeft, ArrowUpRight, BarChart3, LogOut, Plus, Wallet } from "lu
 import type { LucideIcon } from "lucide-react";
 import type { Aba } from "@/lib/types";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 const ITENS: { valor: Aba; rotulo: string; Icone: LucideIcon }[] = [
@@ -59,10 +60,13 @@ export function Sidebar({
         })}
       </nav>
 
-      <Button variant="ghost" size="sm" onClick={aoSair} className="mt-auto self-start">
-        <LogOut />
-        Sair
-      </Button>
+      <div className="mt-auto flex items-center justify-between">
+        <Button variant="ghost" size="sm" onClick={aoSair} className="self-start">
+          <LogOut />
+          Sair
+        </Button>
+        <ThemeToggle />
+      </div>
     </aside>
   );
 }
