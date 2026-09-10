@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { MdCheck } from "react-icons/md";
 import { motion } from "motion/react";
 import type { Transacao } from "@/lib/types";
 import { formatarMoeda } from "@/lib/moeda";
@@ -99,7 +99,7 @@ export function TransacaoItem({
             : "border-muted-foreground/40 hover:border-primary",
         )}
       >
-        {quitado && <Check className="size-4" strokeWidth={3} />}
+        {quitado && <MdCheck className="size-4" />}
       </motion.button>
     </motion.li>
   );

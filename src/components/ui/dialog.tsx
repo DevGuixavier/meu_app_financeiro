@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { XIcon } from "lucide-react";
+import { MdClose } from "react-icons/md";
 
 import { cn } from "@/lib/utils";
 
@@ -53,7 +53,7 @@ function DialogContent({
             data-slot="dialog-close"
             className="ring-offset-background focus:ring-ring absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
           >
-            <XIcon />
+            <MdClose />
             <span className="sr-only">Fechar</span>
           </DialogPrimitive.Close>
         )}

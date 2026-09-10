@@ -5,114 +5,108 @@
 
 /* Tokens no vocabulário do shadcn/ui.
 
-   IDENTIDADE (rev. 3): a marca agora é a logo real que o usuário desenhou —
-   um "A" em degradê verde-esmeralda/teal com glow. As cores abaixo foram
-   extraídas por amostragem de pixel do arquivo da logo (não "no olho"),
-   script ad-hoc em /tmp, não faz parte do repo — dois pontos reais do
-   degradê: núcleo #13c092 (a cor mais presente) e ponta clara #3df788/
-   #47f97f (spring-green, nas extremidades do "A"). Isso substitui a rev.2
-   (laranja/violeta/teal) — não agradou visualmente, foi trocada de vez.
+   IDENTIDADE (rev. 4): verde fluorescente + preto + branco. O verde é o
+   #47f97f — extraído por amostragem de pixel do arquivo da logo que o
+   usuário desenhou (script ad-hoc em /tmp, não faz parte do repo), o
+   ponto mais vivo do degradê do "A". Superfícies são preto e branco
+   neutros de verdade, sem viés de cor: quem carrega cor é o verde,
+   sozinho. Substitui a rev.3 (esmeralda/teal, dois verdes competindo).
 
-   Mesma regra de sempre: um hex do design (aqui, da própria logo) não vai
-   direto pro código sem recalcular o par contra o fundo real de uso — o
-   verde-núcleo #13c092, por exemplo, reprova como texto contra card branco
-   (2.34:1) mas passa liso como fundo de botão com tinta escura em cima
-   (8.25:1). Todo par abaixo checado contra WCAG AA (4.5:1 texto normal,
-   3:1 ícone/UI/foco). */
+   Mesma regra de sempre: um hex do design não vai direto pro código sem
+   recalcular o par contra o fundo real de uso — o fluorescente funciona
+   como FUNDO de botão com texto preto (14.26:1) e como TEXTO sobre preto
+   (14.68:1), mas reprova como texto sobre branco (1.39:1), onde entra a
+   variante escura --brand (6.36:1). Todo par abaixo checado contra WCAG
+   AA (4.5:1 texto normal, 3:1 ícone/UI/foco). */
 :root {
   --radius: 1.125rem;
 
-  --background: #fafafc;
-  --foreground: #12101a;
+  --background: #f7f7f7;
+  --foreground: #0a0a0a;
 
   --card: #ffffff;
-  --card-foreground: #12101a;
+  --card-foreground: #0a0a0a;
 
   --popover: #ffffff;
-  --popover-foreground: #12101a;
+  --popover-foreground: #0a0a0a;
 
-  /* Verde-núcleo da logo como fundo de botão, com tinta escura em cima —
-     branco reprovaria (2.34:1); tinta escura dá 8.25:1. Mesmo valor nos
-     dois temas: é a cor da marca, não deveria mudar com o tema. */
-  --primary: #13c092;
-  --primary-foreground: #0b0f0d;
+  /* Verde fluorescente (#47f97f — o pixel mais vivo do degradê da logo)
+     com texto PRETO em cima: 14.26:1. Branco em cima dele seria 1.39:1,
+     ilegível. Mesmo valor nos dois temas: é a cor da marca. */
+  --primary: #47f97f;
+  --primary-foreground: #0a0a0a;
 
-  --secondary: #f1f5f3;
-  --secondary-foreground: #12101a;
+  --secondary: #f2f2f2;
+  --secondary-foreground: #0a0a0a;
 
-  --muted: #f1f5f3;
-  --muted-foreground: #57615c;
+  --muted: #f2f2f2;
+  --muted-foreground: #5c5c5c;
 
-  --accent: #e8faf3;
-  --accent-foreground: #05695f;
+  --accent: #eafff1;
+  --accent-foreground: #0a6e39;
 
   --destructive: #c2183d;
   --destructive-foreground: #ffffff;
 
   /* Alinhado ao --chart-3 (mesmo conceito: "recebido/positivo"). */
-  --success: #0f7a40;
+  --success: #0a6e39;
   --success-foreground: #ffffff;
 
-  --border: rgba(19, 192, 146, 0.16);
-  --input: rgba(19, 192, 146, 0.18);
-  /* Anel de foco: #0ca386 passa 3.18:1 (não-texto) contra card branco —
-     o núcleo puro #13c092 fica perto demais do fundo claro pra marcar bem
-     o contorno. */
-  --ring: #0ca386;
+  --border: #e6e6e6;
+  --input: #e0e0e0;
+  /* Anel de foco precisa só de 3:1 (não-texto): #0f9c4e dá 3.57 contra
+     branco. O fluorescente puro sumiria no fundo claro (1.39:1). */
+  --ring: #0f9c4e;
 
-  /* Âncora de marca — texto, links, título, acento de categoria. Não é o
-     --primary (esse é fundo de botão): o núcleo da logo como TEXTO contra
-     card branco reprova (2.34:1); esta variante mais escura, tirada da
-     base do degradê da própria logo, dá 6.58:1. */
-  --brand: #05695f;
-  /* Fixo — não muda com o tema. Único fallback de cor sólida pro selo de
-     marca; o app usa a imagem da logo (public/logo.png) na maioria dos
-     lugares, mas isto cobre qualquer contexto que precise de um swatch. */
-  --brand-solido: #13c092;
+  /* Verde como TEXTO (link, badge, acento) — o fluorescente reprova
+     contra branco (1.39:1); esta variante escura dá 6.36:1 e continua
+     lendo como "verde", não como cinza. */
+  --brand: #0a6e39;
+  /* Fixo, não muda com o tema — swatch de marca pra contextos que
+     precisem de cor sólida (o app usa a imagem da logo na maioria). */
+  --brand-solido: #47f97f;
 
-  /* Painel de marca do login: escuro nos dois temas de propósito — é o
+  /* Painel de marca do login: preto nos dois temas de propósito — é o
      contraste entre os dois lados que faz o split screen se ler. */
-  --pane: #060b09;
-  --pane-foreground: #f2fbf7;
-  --pane-muted: #93a8a0;
+  --pane: #050505;
+  --pane-foreground: #f5f5f5;
+  --pane-muted: #9a9a9a;
 
   /* Halo atmosférico do hero. No claro fica quase imperceptível de
      propósito — um véu, não um banner colorido. */
   --aura-hero: radial-gradient(
     120% 90% at 50% -20%,
-    rgba(19, 192, 146, 0.14) 0%,
-    rgba(19, 192, 146, 0.04) 45%,
+    rgba(71, 249, 127, 0.16) 0%,
+    rgba(71, 249, 127, 0.05) 45%,
     transparent 72%
   );
-  --aura-linha: rgba(18, 16, 26, 0.07);
+  --aura-linha: rgba(10, 10, 10, 0.07);
 
-  /* Fixos (não viram com o tema): --pane é escuro nos dois temas de
-     propósito, então a atmosfera dele usa sempre a versão "forte". */
+  /* Fixos (não viram com o tema): --pane é preto nos dois temas, então a
+     atmosfera dele usa sempre a versão "forte". */
   --pane-aura: radial-gradient(
     120% 90% at 50% -20%,
-    rgba(61, 247, 136, 0.4) 0%,
-    rgba(19, 192, 146, 0.14) 45%,
+    rgba(71, 249, 127, 0.34) 0%,
+    rgba(71, 249, 127, 0.1) 45%,
     transparent 72%
   );
   --pane-linha: rgba(255, 255, 255, 0.07);
 
-  /* Marcas de gráfico, checadas contra a superfície do card (branco).
-     chart-1 (despesa) usa a mesma variante escura do --brand — despesa é
-     a categoria mais "neutra/âncora". chart-3 (a receber) puxa pro lado
-     spring-green do degradê da logo (extremidade clara do "A"), pra não
-     ficar visualmente idêntico ao chart-1 num gráfico com as duas séries;
-     é o mesmo valor do --success (os dois são "recebido/positivo"). */
-  --chart-1: #05695f;
+  /* Marcas de gráfico. Numa identidade verde+preto+branco, deixar o verde
+     valer só pra "dinheiro entrando" é mais legível do que ter dois verdes
+     parecidos disputando: despesa (a série mais neutra) vira grafite,
+     a_pagar segue vermelho, a_receber fica com o verde. */
+  --chart-1: #3f3f46;
   --chart-2: #c2183d;
-  --chart-3: #0f7a40;
+  --chart-3: #0a6e39;
   --chart-4: #0369a1;
   --chart-5: #b45309;
 
   /* Sombra ambiente do Card (glow + elevação real). No claro a sombra
      preta precisa ser bem sutil — sombra escura pesada em fundo claro lê
      como "sujeira", não como profundidade. */
-  --card-shadow: 0 2px 8px rgba(18, 16, 26, 0.06), 0 0 20px rgba(19, 192, 146, 0.1);
-  --card-shadow-hover: 0 12px 32px rgba(18, 16, 26, 0.12), 0 0 32px rgba(19, 192, 146, 0.2);
+  --card-shadow: 0 2px 8px rgba(10, 10, 10, 0.06), 0 0 20px rgba(71, 249, 127, 0.12);
+  --card-shadow-hover: 0 12px 32px rgba(10, 10, 10, 0.12), 0 0 32px rgba(71, 249, 127, 0.22);
 }
 
 /* Três estados possíveis: sem escolha explícita (segue o sistema via
@@ -120,136 +114,132 @@
    clara de "claro" vencer um sistema escuro), e dois blocos [data-theme]
    pra quando a pessoa mexe no alternador — script inline no <head>
    resolve o valor antes da primeira pintura, sem flash. */
-/* Escuro: preto com viés verde-esmeralda (#06110d), não neutro nem
-   violeta. O viés é o que faz o halo do hero e o glow do card parecerem
-   luz saindo da própria superfície — mesma lógica de sempre, só que
-   acompanhando a cor real da logo agora. */
+/* Escuro: preto neutro de verdade (#050505), sem viés de cor nas
+   superfícies — quem carrega a cor é o verde fluorescente, sozinho. É
+   literalmente o contexto onde a logo foi desenhada (verde neon sobre
+   preto), então é aqui que a identidade fica mais forte. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #06110d;
-    --foreground: #f2fbf7;
+    --background: #050505;
+    --foreground: #f5f5f5;
 
-    --card: #0f1f19;
-    --card-foreground: #f2fbf7;
+    --card: #101010;
+    --card-foreground: #f5f5f5;
 
-    --popover: #0f1f19;
-    --popover-foreground: #f2fbf7;
+    --popover: #101010;
+    --popover-foreground: #f5f5f5;
 
-    --primary: #13c092;
-    --primary-foreground: #0b0f0d;
+    --primary: #47f97f;
+    --primary-foreground: #0a0a0a;
 
-    --secondary: #16241f;
-    --secondary-foreground: #f2fbf7;
+    --secondary: #1a1a1a;
+    --secondary-foreground: #f5f5f5;
 
-    --muted: #16241f;
-    --muted-foreground: #93a8a0;
+    --muted: #1a1a1a;
+    --muted-foreground: #9a9a9a;
 
-    --accent: #16241f;
+    --accent: #1a1a1a;
     --accent-foreground: #47f97f;
 
     --destructive: #c2183d;
     --destructive-foreground: #ffffff;
 
     --success: #47f97f;
-    --success-foreground: #0b0f0d;
+    --success-foreground: #0a0a0a;
 
-    --border: rgba(61, 247, 136, 0.18);
-    --input: rgba(61, 247, 136, 0.22);
-    /* Mint claro — no fundo quase preto tem folga enorme (12:1), o oposto
-       do claro onde precisou escurecer pra não sumir no branco. */
-    --ring: #3df788;
+    --border: rgba(71, 249, 127, 0.16);
+    --input: rgba(71, 249, 127, 0.2);
+    /* Contra preto o fluorescente puro tem folga enorme (14.68:1) — o
+       oposto do claro, onde precisou escurecer pra não sumir no branco. */
+    --ring: #47f97f;
 
-    /* Núcleo da logo (#13c092) como texto contra o card escuro é 7.3:1 —
-       ao contrário do claro, aqui o valor "puro" já funciona bem, sem
-       precisar de variante separada. */
-    --brand: #13c092;
+    --brand: #47f97f;
 
-    --pane: #030805;
-    --pane-foreground: #f2fbf7;
-    --pane-muted: #93a8a0;
+    --pane: #000000;
+    --pane-foreground: #f5f5f5;
+    --pane-muted: #9a9a9a;
 
     --aura-hero: radial-gradient(
       120% 90% at 50% -20%,
-      rgba(61, 247, 136, 0.38) 0%,
-      rgba(19, 192, 146, 0.14) 45%,
+      rgba(71, 249, 127, 0.32) 0%,
+      rgba(71, 249, 127, 0.1) 45%,
       transparent 72%
     );
     --aura-linha: rgba(255, 255, 255, 0.07);
 
-    /* Degraus mais vivos que os do claro: contra preto quase puro um tom
-       mais claro lê melhor. chart-3 vai pro spring-green mais aberto —
-       mesma lógica do claro, só que já é o extremo vivo do degradê. */
-    --chart-1: #13c092;
+    /* Mesma divisão do claro (verde só pra "entrando"), invertida pro
+       fundo preto: despesa em grafite claro, a_receber no fluorescente. */
+    --chart-1: #d4d4d8;
     --chart-2: #ff6369;
     --chart-3: #47f97f;
     --chart-4: #38bdf8;
     --chart-5: #f59e0b;
 
-    /* No escuro a sombra preta pode ser mais forte (o fundo já é quase
-       preto, então "mais escuro ainda" não lê como sujeira) e o glow verde
-       salta muito mais contra ele — é onde o efeito aparece de verdade. */
-    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 20px rgba(61, 247, 136, 0.16);
-    --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.5), 0 0 40px rgba(61, 247, 136, 0.3);
+    /* No escuro a sombra preta pode ser mais forte (o fundo já é preto,
+       então "mais escuro ainda" não lê como sujeira) e o glow verde salta
+       muito mais contra ele — é onde o efeito aparece de verdade. */
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(71, 249, 127, 0.16);
+    --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.55), 0 0 40px rgba(71, 249, 127, 0.3);
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #06110d;
-  --foreground: #f2fbf7;
+  --background: #050505;
+  --foreground: #f5f5f5;
 
-  --card: #0f1f19;
-  --card-foreground: #f2fbf7;
+  --card: #101010;
+  --card-foreground: #f5f5f5;
 
-  --popover: #0f1f19;
-  --popover-foreground: #f2fbf7;
+  --popover: #101010;
+  --popover-foreground: #f5f5f5;
 
-  --primary: #13c092;
-  --primary-foreground: #0b0f0d;
+  --primary: #47f97f;
+  --primary-foreground: #0a0a0a;
 
-  --secondary: #16241f;
-  --secondary-foreground: #f2fbf7;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f5f5f5;
 
-  --muted: #16241f;
-  --muted-foreground: #93a8a0;
+  --muted: #1a1a1a;
+  --muted-foreground: #9a9a9a;
 
-  --accent: #16241f;
+  --accent: #1a1a1a;
   --accent-foreground: #47f97f;
 
   --destructive: #c2183d;
   --destructive-foreground: #ffffff;
 
   --success: #47f97f;
-  --success-foreground: #0b0f0d;
+  --success-foreground: #0a0a0a;
 
-  --border: rgba(61, 247, 136, 0.18);
-  --input: rgba(61, 247, 136, 0.22);
-  --ring: #3df788;
+  --border: rgba(71, 249, 127, 0.16);
+  --input: rgba(71, 249, 127, 0.2);
+  --ring: #47f97f;
 
-  --brand: #13c092;
+  --brand: #47f97f;
 
-  /* No escuro o fundo já é quase preto, então o painel desce mais um degrau. */
-  --pane: #030805;
-  --pane-foreground: #f2fbf7;
-  --pane-muted: #93a8a0;
+  /* Preto puro no painel — um degrau abaixo do fundo já quase preto. */
+  --pane: #000000;
+  --pane-foreground: #f5f5f5;
+  --pane-muted: #9a9a9a;
 
   --aura-hero: radial-gradient(
     120% 90% at 50% -20%,
-    rgba(61, 247, 136, 0.38) 0%,
-    rgba(19, 192, 146, 0.14) 45%,
+    rgba(71, 249, 127, 0.32) 0%,
+    rgba(71, 249, 127, 0.1) 45%,
     transparent 72%
   );
   --aura-linha: rgba(255, 255, 255, 0.07);
 
-  /* Degraus próprios para a superfície #0f1f19, checados manualmente
+  /* Degraus próprios para a superfície #101010, checados manualmente
      contra WCAG AA (ver comentário no topo do arquivo). */
-  --chart-1: #13c092;
+  --chart-1: #d4d4d8;
   --chart-2: #ff6369;
   --chart-3: #47f97f;
   --chart-4: #38bdf8;
   --chart-5: #f59e0b;
 
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 20px rgba(61, 247, 136, 0.16);
-  --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.5), 0 0 40px rgba(61, 247, 136, 0.3);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(71, 249, 127, 0.16);
+  --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.55), 0 0 40px rgba(71, 249, 127, 0.3);
 }
 
 @theme inline {

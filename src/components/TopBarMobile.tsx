@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { LogOut } from "lucide-react";
+import { MdLogout } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -16,7 +16,7 @@ export function TopBarMobile({ aoSair }: { aoSair: () => void }) {
       <div className="flex items-center gap-1">
         <ThemeToggle />
         <Button variant="ghost" size="sm" onClick={aoSair} aria-label="Sair">
-          <LogOut />
+          <MdLogout />
         </Button>
       </div>
     </header>

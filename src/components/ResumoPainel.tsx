@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type PointerEvent, type ReactNode } from "react";
-import { Download, TrendingDown, TrendingUp } from "lucide-react";
+import { MdDownload, MdTrendingDown, MdTrendingUp } from "react-icons/md";
 import { toast } from "sonner";
 import { motion } from "motion/react";
 import {
@@ -202,7 +202,7 @@ function IndicadorVariacao({ variacao }: { variacao: Variacao }) {
   if (variacao.direcao === "novo") {
     return <span className="text-[11px] text-muted-foreground">novo este mês</span>;
   }
-  const Icone = variacao.direcao === "alta" ? TrendingUp : TrendingDown;
+  const Icone = variacao.direcao === "alta" ? MdTrendingUp : MdTrendingDown;
   return (
     <span className="text-muted-foreground inline-flex items-center gap-0.5 text-[11px]">
       <Icone className="size-3" />
@@ -745,7 +745,7 @@ export function ResumoPainel({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" disabled={exportando}>
-              <Download />
+              <MdDownload />
               {exportando ? "Exportando..." : "Exportar"}
             </Button>
           </DropdownMenuTrigger>

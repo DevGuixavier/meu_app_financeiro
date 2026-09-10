@@ -1,14 +1,14 @@
-import { ArrowDownLeft, ArrowUpRight, BarChart3, Wallet } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { MdAccountBalanceWallet, MdBarChart, MdCallMade, MdCallReceived } from "react-icons/md";
+import type { IconType } from "react-icons";
 import { motion } from "motion/react";
 import type { Aba } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const ABAS: { valor: Aba; rotulo: string; Icone: LucideIcon }[] = [
-  { valor: "despesa", rotulo: "Gastos", Icone: Wallet },
-  { valor: "a_pagar", rotulo: "A pagar", Icone: ArrowUpRight },
-  { valor: "a_receber", rotulo: "A receber", Icone: ArrowDownLeft },
-  { valor: "resumo", rotulo: "Resumo", Icone: BarChart3 },
+const ABAS: { valor: Aba; rotulo: string; Icone: IconType }[] = [
+  { valor: "despesa", rotulo: "Gastos", Icone: MdAccountBalanceWallet },
+  { valor: "a_pagar", rotulo: "A pagar", Icone: MdCallMade },
+  { valor: "a_receber", rotulo: "A receber", Icone: MdCallReceived },
+  { valor: "resumo", rotulo: "Resumo", Icone: MdBarChart },
 ];
 
 export function TabBar({
@@ -41,7 +41,7 @@ export function TabBar({
                 className="bg-accent absolute inset-0 -z-10 rounded-xl"
               />
             )}
-            <Icone className={cn("size-5", ativo && "stroke-[2.4]")} />
+            <Icone className="size-5" />
             <span className={cn("text-[10px] tracking-wide", ativo && "font-semibold")}>
               {rotulo}
             </span>
