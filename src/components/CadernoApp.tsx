@@ -29,15 +29,15 @@ const ResumoPainel = dynamic(
 );
 
 // Ciclo fixo: cada categoria nova pega a próxima cor, sem repetir enquanto
-// houver opção — é o que dá o selo colorido por categoria (Pierre, Mobills)
-// em vez do cinza neutro que "cor: null" produzia até aqui.
+// houver opção — é o que dá o selo colorido por categoria. Paleta alinhada
+// aos --chart-* atuais (violeta como primária, não mais azul-shadcn).
 const PALETA_CATEGORIA = [
-  "#2563eb",
-  "#dc2626",
+  "#5b34e8",
+  "#c2183d",
   "#047857",
-  "#7c3aed",
+  "#0369a1",
   "#b45309",
-  "#db2777",
+  "#be185d",
   "#0891b2",
   "#65a30d",
 ];
