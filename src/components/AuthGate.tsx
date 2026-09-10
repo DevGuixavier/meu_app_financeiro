@@ -17,6 +17,12 @@ export function AuthGate({ children }: { children: (session: Session) => ReactNo
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     const { data: subscription } = supabase.auth.onAuthStateChange((_evento, novaSessao) => {
       setSession(novaSessao);
+      if (novaSessao === null) {
+        setEmail("");
+        setCodigo("");
+        setEnviado(false);
+        setErro(null);
+      }
     });
     return () => subscription.subscription.unsubscribe();
   }, [supabase]);
