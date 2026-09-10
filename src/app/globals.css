@@ -58,8 +58,13 @@
 
 }
 
+/* Três estados possíveis: sem escolha explícita (segue o sistema via
+   media query, guardado por :not([data-theme="light"]) pra uma escolha
+   clara de "claro" vencer um sistema escuro), e dois blocos [data-theme]
+   pra quando a pessoa mexe no alternador — script inline no <head>
+   resolve o valor antes da primeira pintura, sem flash. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --background: #0f172a;
     --foreground: #f8fafc;
 
@@ -91,19 +96,61 @@
     --input: rgba(248, 250, 252, 0.14);
     --ring: #3b82f6;
 
-    /* No escuro o fundo já é navy, então o painel desce um degrau. */
     --pane: #0a1122;
     --pane-foreground: #f8fafc;
     --pane-muted: #94a3b8;
 
-    /* Degraus próprios para a superfície #192134, revalidados. */
     --chart-1: #3b82f6;
     --chart-2: #ef4444;
     --chart-3: #059669;
     --chart-4: #a78bfa;
     --chart-5: #f59e0b;
-
   }
+}
+
+:root[data-theme="dark"] {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+
+  --card: #192134;
+  --card-foreground: #f8fafc;
+
+  --popover: #192134;
+  --popover-foreground: #f8fafc;
+
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+
+  --accent: #1e293b;
+  --accent-foreground: #60a5fa;
+
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+
+  --success: #059669;
+  --success-foreground: #ffffff;
+
+  --border: rgba(248, 250, 252, 0.1);
+  --input: rgba(248, 250, 252, 0.14);
+  --ring: #3b82f6;
+
+  /* No escuro o fundo já é navy, então o painel desce um degrau. */
+  --pane: #0a1122;
+  --pane-foreground: #f8fafc;
+  --pane-muted: #94a3b8;
+
+  /* Degraus próprios para a superfície #192134, revalidados. */
+  --chart-1: #3b82f6;
+  --chart-2: #ef4444;
+  --chart-3: #059669;
+  --chart-4: #a78bfa;
+  --chart-5: #f59e0b;
 }
 
 @theme inline {

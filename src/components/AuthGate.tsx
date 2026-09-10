@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatarMoeda } from "@/lib/moeda";
@@ -70,7 +71,9 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
   }
 
   return (
-    <main className="grid flex-1 lg:grid-cols-[minmax(0,1fr)_1.1fr]">
+    <main className="relative grid flex-1 lg:grid-cols-[minmax(0,1fr)_1.1fr]">
+      <ThemeToggle className="absolute top-4 right-4 z-10" />
+
       {/* Coluna do formulário: alinhada à esquerda e ancorada no topo em vez
           de um cartão centralizado — o olho começa no canto onde vai digitar. */}
       <div className="flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-16">
