@@ -28,7 +28,7 @@ export function Header({
 }) {
   return (
     <header className="px-4 pt-6 pb-2">
-      <div className="border shadow-[var(--sombra-cartao)] rounded-[22px] bg-card px-4 py-4">
+      <div className="border rounded-lg bg-card px-4 py-4">
         <div className="flex items-center justify-between">
           <button
             type="button"

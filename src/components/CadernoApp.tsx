@@ -156,10 +156,12 @@ export function CadernoApp({ session }: { session: Session }) {
             />
 
             <ul
-              className={`flex flex-1 flex-col gap-2 px-4 py-4 transition-opacity md:px-0 ${carregando ? "opacity-50" : ""}`}
+              className={`bg-card divide-border mx-4 flex flex-1 flex-col divide-y overflow-hidden rounded-lg border transition-opacity md:mx-0 ${carregando ? "opacity-50" : ""}`}
             >
               {!carregando && transacoes.length === 0 && (
-                <li className="py-10 text-center text-sm text-muted-foreground">{mensagemVazio[abaAtiva]}</li>
+                <li className="text-muted-foreground py-12 text-center text-sm">
+                  {mensagemVazio[abaAtiva]}
+                </li>
               )}
               {transacoes.map((transacao) => (
                 <TransacaoItem key={transacao.id} transacao={transacao} aoAlternarStatus={alternarStatus} />
