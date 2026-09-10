@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence } from "motion/react";
 import type { SupabaseClient, Session } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
@@ -13,7 +14,19 @@ import { TabBar } from "@/components/TabBar";
 import { Sidebar } from "@/components/Sidebar";
 import { TransacaoItem } from "@/components/TransacaoItem";
 import { NovoLancamentoSheet } from "@/components/NovoLancamentoSheet";
-import { ResumoPainel } from "@/components/ResumoPainel";
+
+// Carregado só quando a aba Resumo abre: é o único lugar que usa recharts,
+// e a maioria das visitas fica nas abas de lançamento — sem isso, o peso
+// dos gráficos entraria no bundle inicial de todo mundo.
+const ResumoPainel = dynamic(
+  () => import("@/components/ResumoPainel").then((modulo) => modulo.ResumoPainel),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex-1 px-4 py-6 text-sm text-muted-foreground">Carregando resumo...</div>
+    ),
+  },
+);
 
 // Ciclo fixo: cada categoria nova pega a próxima cor, sem repetir enquanto
 // houver opção — é o que dá o selo colorido por categoria (Pierre, Mobills)
