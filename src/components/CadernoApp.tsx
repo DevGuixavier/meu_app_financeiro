@@ -157,6 +157,7 @@ export function CadernoApp({ session }: { session: Session }) {
             categorias={categorias}
             aoCriarPessoa={criarPessoa}
             aoCriarCategoria={criarCategoria}
+            aoSair={() => supabase.auth.signOut()}
           />
         ) : (
           <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col md:mx-0 md:max-w-xl">

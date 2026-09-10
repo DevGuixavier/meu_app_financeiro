@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type PointerEvent, type ReactNode } from "react";
-import { Download } from "lucide-react";
+import { Download, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -468,12 +468,14 @@ export function ResumoPainel({
   categorias,
   aoCriarPessoa,
   aoCriarCategoria,
+  aoSair,
 }: {
   supabase: SupabaseClient;
   pessoas: Pessoa[];
   categorias: Categoria[];
   aoCriarPessoa: (nome: string) => Promise<Pessoa>;
   aoCriarCategoria: (nome: string) => Promise<Categoria>;
+  aoSair: () => void;
 }) {
   const [dados, setDados] = useState<DadosResumo | null>(null);
   const [serieAtiva, setSerieAtiva] = useState<TipoTransacao>("despesa");
@@ -614,6 +616,13 @@ export function ResumoPainel({
       <Painel titulo="Atividade recente">
         <FeedRecentes recentes={dados.recentes} />
       </Painel>
+
+      {/* Só no mobile: no desktop "Sair" já mora na Sidebar. É a única
+          rota pra deslogar no celular — TabBar não tem esse item. */}
+      <Button variant="ghost" size="sm" onClick={aoSair} className="self-start md:hidden">
+        <LogOut />
+        Sair
+      </Button>
     </div>
   );
 }
