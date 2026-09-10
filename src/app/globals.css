@@ -41,6 +41,12 @@
   --input: #e2e8f0;
   --ring: #2563eb;
 
+  /* Painel de marca do login: escuro nos dois temas de propósito — é o
+     contraste entre os dois lados que faz o split screen se ler. */
+  --pane: #0f172a;
+  --pane-foreground: #f8fafc;
+  --pane-muted: #94a3b8;
+
   /* Marcas de gráfico — validadas por scripts/validate_palette.js contra a
      superfície do card (faixa de luminosidade, chroma, separação CVD, piso
      de visão normal e contraste). Não trocar sem revalidar. */
@@ -50,7 +56,6 @@
   --chart-4: #7c3aed;
   --chart-5: #b45309;
 
-  --sombra-cartao: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -86,6 +91,11 @@
     --input: rgba(248, 250, 252, 0.14);
     --ring: #3b82f6;
 
+    /* No escuro o fundo já é navy, então o painel desce um degrau. */
+    --pane: #0a1122;
+    --pane-foreground: #f8fafc;
+    --pane-muted: #94a3b8;
+
     /* Degraus próprios para a superfície #192134, revalidados. */
     --chart-1: #3b82f6;
     --chart-2: #ef4444;
@@ -93,7 +103,6 @@
     --chart-4: #a78bfa;
     --chart-5: #f59e0b;
 
-    --sombra-cartao: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 }
 
@@ -124,6 +133,9 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-pane: var(--pane);
+  --color-pane-foreground: var(--pane-foreground);
+  --color-pane-muted: var(--pane-muted);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

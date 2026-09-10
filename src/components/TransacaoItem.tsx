@@ -33,18 +33,18 @@ export function TransacaoItem({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18 }}
-      className="bg-card flex items-center gap-3 rounded-xl border px-3.5 py-3.5 shadow-[var(--sombra-cartao)]"
+      className="hover:bg-accent/40 flex items-center gap-3 px-4 py-3 transition-colors"
     >
       {/* O selo só mostra número quando existe parcelamento — num lançamento
           avulso, um "1" ali sugeriria uma parcela que não existe. */}
       <span
-        className="bg-accent text-accent-foreground flex size-10 shrink-0 items-center justify-center rounded-lg font-mono text-sm font-semibold"
+        className="text-muted-foreground bg-muted flex size-8 shrink-0 items-center justify-center rounded-md font-mono text-xs font-semibold"
         aria-hidden
       >
         {transacao.parcela_total ? (
           numeroParcela
         ) : (
-          <span className="bg-accent-foreground size-1.5 rounded-full" />
+          <span className="bg-muted-foreground/50 size-1.5 rounded-full" />
         )}
       </span>
 
