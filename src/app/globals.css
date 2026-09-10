@@ -5,19 +5,19 @@
 
 /* Tokens no vocabulário do shadcn/ui.
 
-   IDENTIDADE: violeta profundo, não azul. O #2563eb anterior era o blue-600
-   literal do Tailwind — a cor que todo app gerado nasce usando, e o maior
-   denunciador de "isso foi feito por IA". O violeta aqui (#6d4aff) é
-   deliberadamente fora da escala padrão (violet-600 é #7c3aed, indigo-600 é
-   #4f46e5; este fica entre os dois) e é on-brand: Antaris é nome de estrela,
-   então a leitura de espaço profundo vem do próprio nome do produto.
+   IDENTIDADE (rev. 2 — design system "Antaris Modern", violeta/teal/laranja):
+   laranja como ação primária, violeta como âncora de marca (logo, links,
+   títulos), teal como cor de foco/confiança. Os HEX vêm do doc de design
+   fornecido — mas os PARES texto/fundo foram todos recalculados, porque o
+   doc errou a própria conta em pelo menos um lugar (afirma branco sobre
+   #FF6B35 como "6.5:1 PASS AAA"; o valor real é 2.84:1, reprovado mesmo no
+   limite frouxo de 3:1 pra ícone/UI). Regra: nunca copiar um HEX de doc de
+   design pro código sem recalcular o par contra o fundo real de uso.
 
-   ATMOSFERA: os tokens --aura-* abaixo são gradientes radiais, não cores
-   chapadas. Fundo chapado é a outra marca registrada de layout gerado —
-   toda superfície com o mesmo peso, sem profundidade nenhuma.
+   ATMOSFERA: os tokens --aura-* são gradientes radiais, não cores chapadas.
 
-   Todo par texto/fundo foi checado contra WCAG AA (4.5:1 texto normal,
-   3:1 ícone/UI). Não reintroduzir #059669 como texto: fica em 3.77:1. */
+   Todo par abaixo foi checado contra WCAG AA (4.5:1 texto normal, 3:1
+   ícone/UI/foco), script ad-hoc, não faz parte do repo. */
 :root {
   --radius: 1.125rem;
 
@@ -30,8 +30,11 @@
   --popover: #ffffff;
   --popover-foreground: #12101a;
 
-  --primary: #6d4aff;
-  --primary-foreground: #ffffff;
+  /* Laranja de ação (Adicionar despesa, Salvar, FAB) — #FF6B35 do doc,
+     mas com texto ESCURO, não branco: branco em cima dele é 2.84:1
+     (reprovado); tinta escura dá 6.64:1. */
+  --primary: #ff6b35;
+  --primary-foreground: #1a1006;
 
   --secondary: #f2f1f7;
   --secondary-foreground: #12101a;
@@ -48,9 +51,26 @@
   --success: #047857;
   --success-foreground: #ffffff;
 
-  --border: #e6e4ee;
-  --input: #e6e4ee;
-  --ring: #6d4aff;
+  /* Borda com viés violeta (o doc pede rgba(109,40,217,0.15) em cards) —
+     decorativo, não precisa do piso de contraste de texto. */
+  --border: rgba(109, 40, 217, 0.14);
+  --input: rgba(109, 40, 217, 0.16);
+  /* Teal de foco/confiança — #06B6D4 do doc não passa nem 3:1 (não-texto)
+     contra card branco (2.43:1); #0891B2 (o próprio tier "dark" do doc)
+     resolve em 3.68:1. */
+  --ring: #0891b2;
+
+  /* Âncora de marca: violeta, usado em logo, links, títulos, acento de
+     categoria — não é o --primary (esse é o laranja de ação). --brand muda
+     de tom por tema (precisa, pra funcionar como texto nos dois); já
+     --brand-solido é fixo — o selo "A" usa ele com texto branco em cima, e
+     um selo de marca não deveria mudar de cor junto com o tema mesmo. */
+  --brand: #6d28d9;
+  --brand-solido: #6d28d9;
+  /* Laranja como TEXTO (badge, valor em destaque) precisa escurecer no
+     claro — o mesmo #FF6B35 usado no fundo do botão reprova como texto
+     corrido (2.84:1); essa variante dá 4.96:1. */
+  --action-texto: #cc3d00;
 
   /* Painel de marca do login: escuro nos dois temas de propósito — é o
      contraste entre os dois lados que faz o split screen se ler. */
@@ -62,8 +82,8 @@
      propósito — um véu, não um banner colorido. */
   --aura-hero: radial-gradient(
     120% 90% at 50% -20%,
-    rgba(109, 74, 255, 0.16) 0%,
-    rgba(109, 74, 255, 0.04) 45%,
+    rgba(109, 40, 217, 0.14) 0%,
+    rgba(109, 40, 217, 0.04) 45%,
     transparent 72%
   );
   --aura-linha: rgba(18, 16, 26, 0.07);
@@ -78,14 +98,21 @@
   );
   --pane-linha: rgba(255, 255, 255, 0.07);
 
-  /* Marcas de gráfico, checadas contra a superfície do card (branco):
-     chart-3 usa o mesmo verde do --success (#047857) porque os dois
-     representam a mesma coisa — "recebido/quitado". */
-  --chart-1: #5b34e8;
+  /* Marcas de gráfico, checadas contra a superfície do card (branco).
+     chart-1 (despesa) agora é a âncora violeta do doc; chart-3 (a receber)
+     continua o mesmo verde do --success — os dois representam "recebido/
+     quitado", faz sentido serem a mesma cor. */
+  --chart-1: #6d28d9;
   --chart-2: #c2183d;
   --chart-3: #047857;
   --chart-4: #0369a1;
   --chart-5: #b45309;
+
+  /* Sombra ambiente do Card (glow do doc + elevação real). No claro a
+     sombra preta precisa ser bem sutil — sombra escura pesada em fundo
+     claro lê como "sujeira", não como profundidade. */
+  --card-shadow: 0 2px 8px rgba(18, 16, 26, 0.06), 0 0 20px rgba(109, 40, 217, 0.08);
+  --card-shadow-hover: 0 12px 32px rgba(18, 16, 26, 0.12), 0 0 32px rgba(109, 40, 217, 0.16);
 }
 
 /* Três estados possíveis: sem escolha explícita (segue o sistema via
@@ -108,8 +135,8 @@
     --popover: #15111f;
     --popover-foreground: #f6f5fb;
 
-    --primary: #6d4aff;
-    --primary-foreground: #ffffff;
+    --primary: #ff6b35;
+    --primary-foreground: #1a1006;
 
     --secondary: #1e1830;
     --secondary-foreground: #f6f5fb;
@@ -126,9 +153,16 @@
     --success: #047857;
     --success-foreground: #ffffff;
 
-    --border: rgba(255, 255, 255, 0.08);
-    --input: rgba(255, 255, 255, 0.12);
-    --ring: #8b6dff;
+    --border: rgba(167, 139, 250, 0.16);
+    --input: rgba(167, 139, 250, 0.2);
+    /* Teal claro (#22D3EE, tier "light" do doc) — no fundo quase preto tem
+       folga enorme (10.27:1), é o oposto do claro onde precisou escurecer. */
+    --ring: #22d3ee;
+
+    /* Violeta base (#6D28D9) como texto contra o card escuro é 2.61:1 —
+       reprovado. #A78BFA (tier "lighter" do doc) resolve em 6.82:1. */
+    --brand: #a78bfa;
+    --action-texto: #ff6b35;
 
     --pane: #050308;
     --pane-foreground: #f6f5fb;
@@ -143,12 +177,21 @@
     --aura-linha: rgba(255, 255, 255, 0.07);
 
     /* Degraus mais vivos que os do claro: contra preto quase puro um tom
-       mais claro lê melhor e ainda passa 4.5:1 como texto. */
-    --chart-1: #8b6dff;
+       mais claro lê melhor e ainda passa 4.5:1 como texto. chart-1 usa a
+       mesma variante clara do --brand (mesmo motivo: base falha como texto
+       no escuro). */
+    --chart-1: #a78bfa;
     --chart-2: #ff6369;
     --chart-3: #10b981;
     --chart-4: #38bdf8;
     --chart-5: #f59e0b;
+
+    /* No escuro a sombra preta pode ser mais forte (o fundo já é quase
+       preto, então "mais escuro ainda" não lê como sujeira) e o glow
+       violeta salta muito mais contra ele — é onde o efeito aparece de
+       verdade. */
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 20px rgba(167, 139, 250, 0.14);
+    --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.5), 0 0 40px rgba(167, 139, 250, 0.28);
   }
 }
 
@@ -162,8 +205,8 @@
   --popover: #15111f;
   --popover-foreground: #f6f5fb;
 
-  --primary: #6d4aff;
-  --primary-foreground: #ffffff;
+  --primary: #ff6b35;
+  --primary-foreground: #1a1006;
 
   --secondary: #1e1830;
   --secondary-foreground: #f6f5fb;
@@ -180,9 +223,12 @@
   --success: #047857;
   --success-foreground: #ffffff;
 
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.12);
-  --ring: #8b6dff;
+  --border: rgba(167, 139, 250, 0.16);
+  --input: rgba(167, 139, 250, 0.2);
+  --ring: #22d3ee;
+
+  --brand: #a78bfa;
+  --action-texto: #ff6b35;
 
   /* No escuro o fundo já é quase preto, então o painel desce mais um degrau. */
   --pane: #050308;
@@ -199,11 +245,14 @@
 
   /* Degraus próprios para a superfície #15111f, checados manualmente
      contra WCAG AA (ver comentário no topo do arquivo). */
-  --chart-1: #8b6dff;
+  --chart-1: #a78bfa;
   --chart-2: #ff6369;
   --chart-3: #10b981;
   --chart-4: #38bdf8;
   --chart-5: #f59e0b;
+
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 20px rgba(167, 139, 250, 0.14);
+  --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.5), 0 0 40px rgba(167, 139, 250, 0.28);
 }
 
 @theme inline {
@@ -236,6 +285,9 @@
   --color-pane: var(--pane);
   --color-pane-foreground: var(--pane-foreground);
   --color-pane-muted: var(--pane-muted);
+  --color-brand: var(--brand);
+  --color-brand-solido: var(--brand-solido);
+  --color-action-texto: var(--action-texto);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -324,14 +376,15 @@
     linear-gradient(to bottom, var(--pane-linha) 1px, transparent 1px);
 }
 
-/* Numeral display do hero: grande e LEVE, não grande e bold. Peso alto em
-   corpo grande é exatamente o default que a IA cospe; o contraste
-   editorial vem de tamanho + entrelinha apertada + tracking negativo. */
+/* Numeral display do hero: monoespaçada bold, como o doc especifica pra
+   valor monetário em destaque (não a fonte de título — Playfair Display é
+   pra headings de texto, não pra números; e nem tem peso leve o bastante
+   pro efeito "grande e leve" que a versão anterior usava). */
 .numeral-hero {
-  font-family: var(--font-display);
-  font-weight: 300;
-  letter-spacing: -0.045em;
-  line-height: 0.92;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
@@ -342,6 +395,26 @@
   *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* Brilho pulsando — reservado pra superfícies "em destaque" (o hero do
+ * Resumo/Header), não pra cada card da lista: um brilho respirando em cada
+ * linha de lançamento vira ruído visual numa lista longa, e é exatamente o
+ * tipo de efeito que faz uma tela parecer "gerada" em vez de desenhada.
+ * color-mix() lê --brand ao vivo, então o tom já vem certo em cada tema.
+ * Desativado via a regra global de prefers-reduced-motion acima. */
+.glow-pulse {
+  animation: pulsar-brilho 3s ease-in-out infinite;
+}
+
+@keyframes pulsar-brilho {
+  0%,
+  100% {
+    box-shadow: 0 0 20px color-mix(in srgb, var(--brand) 30%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 40px color-mix(in srgb, var(--brand) 50%, transparent);
   }
 }
 
