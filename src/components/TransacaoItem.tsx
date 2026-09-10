@@ -62,7 +62,15 @@ export function TransacaoItem({
             {quitado ? "Quitado" : "A vencer"}
           </Badge>
         </div>
-        <p className="text-muted-foreground mt-0.5 truncate text-xs">
+        <p className="text-muted-foreground mt-0.5 flex items-center gap-1.5 truncate text-xs">
+          {transacao.categoria && (
+            <span
+              className="size-1.5 shrink-0 rounded-full"
+              style={{ background: transacao.categoria.cor ?? "var(--muted-foreground)" }}
+              aria-hidden
+            />
+          )}
+          {transacao.categoria ? `${transacao.categoria.nome} · ` : ""}
           {transacao.pessoa ? `${transacao.pessoa.nome} · ` : ""}
           {transacao.parcela_total
             ? `parcela ${numeroParcela}/${transacao.parcela_total}`
@@ -70,7 +78,7 @@ export function TransacaoItem({
         </p>
         <p
           className={cn(
-            "numeros-tabulares mt-1 font-mono text-base",
+            "numeros-tabulares mt-1 font-mono text-[17px] font-semibold tracking-tight",
             quitado ? "text-muted-foreground" : COR_VALOR[transacao.tipo],
           )}
         >

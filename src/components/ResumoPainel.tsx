@@ -174,7 +174,7 @@ function AnelKpi({
   const cor = COR_SERIE[tipo];
 
   return (
-    <div className="border flex min-w-0 flex-col items-center gap-2 rounded-lg bg-card px-1.5 py-4 md:px-3">
+    <div className="border flex min-w-0 flex-col items-center gap-2 rounded-lg bg-card px-1.5 py-4 shadow-sm md:px-3">
       <div className="relative h-[68px] w-[68px]">
         <svg viewBox="0 0 68 68" className="h-full w-full -rotate-90">
           <circle

@@ -3,12 +3,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Tokens no vocabulário do shadcn/ui. A paleta vem do perfil
-   "Personal Finance Tracker": azul de confiança sobre branco no claro,
-   navy no escuro. O dark não é inversão do claro — são degraus escolhidos
-   para a superfície escura real. */
+/* Tokens no vocabulário do shadcn/ui. Azul de confiança como identidade de
+   marca nos dois temas; superfícies é que mudam de natureza — claro sobre
+   branco neutro, escuro em preto neutro (não navy) pra ler como produto
+   premium e não "SaaS corporativo". Todo par texto/fundo abaixo foi checado
+   contra WCAG AA (4.5:1 texto normal, 3:1 ícone/UI) — não reintroduzir
+   --success ou --chart-3 antigos (#059669) como texto: ficam em 3.77:1. */
 :root {
-  --radius: 0.75rem;
+  --radius: 1.125rem;
 
   --background: #f8fafc;
   --foreground: #0f172a;
@@ -34,7 +36,7 @@
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
 
-  --success: #059669;
+  --success: #047857;
   --success-foreground: #ffffff;
 
   --border: #e2e8f0;
@@ -47,12 +49,14 @@
   --pane-foreground: #f8fafc;
   --pane-muted: #94a3b8;
 
-  /* Marcas de gráfico — validadas por scripts/validate_palette.js contra a
-     superfície do card (faixa de luminosidade, chroma, separação CVD, piso
-     de visão normal e contraste). Não trocar sem revalidar. */
+  /* Marcas de gráfico, checadas contra a superfície do card (branco):
+     chart-3 usa o mesmo verde do --success (#047857) porque os dois
+     representam a mesma coisa — "recebido/quitado" — e o verde antigo
+     (#059669) falhava 4.5:1 como texto corrido (usado no valor de "a
+     receber"). Os demais têm folga confortável. */
   --chart-1: #2563eb;
   --chart-2: #dc2626;
-  --chart-3: #059669;
+  --chart-3: #047857;
   --chart-4: #7c3aed;
   --chart-5: #b45309;
 
@@ -63,92 +67,101 @@
    clara de "claro" vencer um sistema escuro), e dois blocos [data-theme]
    pra quando a pessoa mexe no alternador — script inline no <head>
    resolve o valor antes da primeira pintura, sem flash. */
+/* Escuro: preto neutro, não navy. #0f172a/#192134 (slate) tinha um viés
+   azul que competia com o próprio azul de marca — surge afundado em vez de
+   flutuar. Preto neutro (~zinco) deixa o azul, o verde e o âmbar saltarem
+   e é o que faz um app financeiro escuro ler como produto cuidado (tipo
+   Pierre) em vez de "dashboard corporativo com dark mode ligado". */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #0f172a;
+    --background: #0a0a0d;
     --foreground: #f8fafc;
 
-    --card: #192134;
+    --card: #16171b;
     --card-foreground: #f8fafc;
 
-    --popover: #192134;
+    --popover: #16171b;
     --popover-foreground: #f8fafc;
 
     --primary: #2563eb;
     --primary-foreground: #ffffff;
 
-    --secondary: #1e293b;
+    --secondary: #1e1f24;
     --secondary-foreground: #f8fafc;
 
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
+    --muted: #1e1f24;
+    --muted-foreground: #9a9ba3;
 
-    --accent: #1e293b;
+    --accent: #1e1f24;
     --accent-foreground: #60a5fa;
 
     --destructive: #dc2626;
     --destructive-foreground: #ffffff;
 
-    --success: #059669;
+    --success: #047857;
     --success-foreground: #ffffff;
 
-    --border: rgba(248, 250, 252, 0.1);
-    --input: rgba(248, 250, 252, 0.14);
+    --border: rgba(255, 255, 255, 0.08);
+    --input: rgba(255, 255, 255, 0.12);
     --ring: #3b82f6;
 
-    --pane: #0a1122;
+    --pane: #050506;
     --pane-foreground: #f8fafc;
     --pane-muted: #94a3b8;
 
+    /* Degraus mais vivos que os de --success/--chart-3 claro: contra o
+       preto quase puro, um verde mais claro lê melhor e ainda passa 4.5:1
+       como texto (7.06:1 contra o card). */
     --chart-1: #3b82f6;
-    --chart-2: #ef4444;
-    --chart-3: #059669;
+    --chart-2: #f87171;
+    --chart-3: #10b981;
     --chart-4: #a78bfa;
     --chart-5: #f59e0b;
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #0f172a;
+  --background: #0a0a0d;
   --foreground: #f8fafc;
 
-  --card: #192134;
+  --card: #16171b;
   --card-foreground: #f8fafc;
 
-  --popover: #192134;
+  --popover: #16171b;
   --popover-foreground: #f8fafc;
 
   --primary: #2563eb;
   --primary-foreground: #ffffff;
 
-  --secondary: #1e293b;
+  --secondary: #1e1f24;
   --secondary-foreground: #f8fafc;
 
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
+  --muted: #1e1f24;
+  --muted-foreground: #9a9ba3;
 
-  --accent: #1e293b;
+  --accent: #1e1f24;
   --accent-foreground: #60a5fa;
 
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
 
-  --success: #059669;
+  --success: #047857;
   --success-foreground: #ffffff;
 
-  --border: rgba(248, 250, 252, 0.1);
-  --input: rgba(248, 250, 252, 0.14);
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.12);
   --ring: #3b82f6;
 
-  /* No escuro o fundo já é navy, então o painel desce um degrau. */
-  --pane: #0a1122;
+  /* No escuro o fundo já é quase preto, então o painel desce mais um degrau. */
+  --pane: #050506;
   --pane-foreground: #f8fafc;
   --pane-muted: #94a3b8;
 
-  /* Degraus próprios para a superfície #192134, revalidados. */
+  /* Degraus próprios para a superfície #16171b, checados manualmente
+     contra WCAG AA (ver comentário no topo do arquivo). */
   --chart-1: #3b82f6;
-  --chart-2: #ef4444;
-  --chart-3: #059669;
+  --chart-2: #f87171;
+  --chart-3: #10b981;
   --chart-4: #a78bfa;
   --chart-5: #f59e0b;
 }
@@ -188,6 +201,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
 
   --font-display: var(--font-display);
   --font-body: var(--font-body);

@@ -79,7 +79,7 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
       <div className="flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-16">
         <div className="w-full max-w-[360px]">
           <div className="flex items-center gap-2.5">
-            <div className="bg-primary flex size-8 items-center justify-center rounded-md">
+            <div className="bg-primary flex size-8 items-center justify-center rounded-[9px]">
               <span className="text-primary-foreground font-display text-sm font-bold">A</span>
             </div>
             <span className="rotulo-hud text-foreground">Antaris</span>
