@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import Image from "next/image";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -79,9 +80,7 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
       <div className="aura flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-16">
         <div className="w-full max-w-[360px]">
           <div className="flex items-center gap-2.5">
-            <div className="bg-brand-solido flex size-8 items-center justify-center rounded-[9px]">
-              <span className="font-display text-sm font-bold text-white">A</span>
-            </div>
+            <Image src="/logo.png" alt="" width={32} height={32} className="size-8" priority />
             <span className="rotulo-hud text-foreground">Antaris</span>
           </div>
 
