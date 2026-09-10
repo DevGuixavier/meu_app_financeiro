@@ -65,11 +65,14 @@
      escurecer). */
   --brand: #568203;
 
-  /* Painel de marca do login: preto nos dois temas de propósito — é o
-     contraste entre os dois lados que faz o split screen se ler. */
-  --pane: #050505;
-  --pane-foreground: #f5f5f5;
-  --pane-muted: #9a9a9a;
+  /* Painel de marca do login: antes era preto fixo nos dois temas — no
+     claro isso batia de frente com a coluna do formulário (clara) e
+     quebrava a leitura da tela como uma coisa só. Agora acompanha o tema
+     como o resto da superfície: tingido do próprio verde da marca no
+     claro, preto no escuro (onde já funcionava). */
+  --pane: #f2f7e6;
+  --pane-foreground: #0a0a0a;
+  --pane-muted: #5c5c5c;
 
   /* Halo atmosférico do hero. No claro fica quase imperceptível de
      propósito — um véu, não um banner colorido. */
@@ -80,18 +83,6 @@
     transparent 72%
   );
   --aura-linha: rgba(10, 10, 10, 0.07);
-
-  /* Fixos (não viram com o tema): --pane é preto nos dois temas, então a
-     atmosfera dele usa sempre a versão "forte" — a variante clara
-     (#73ae04), que tem presença de verdade contra preto (o abacate base
-     é escuro demais pra "brilhar" ali). */
-  --pane-aura: radial-gradient(
-    120% 90% at 50% -20%,
-    rgba(115, 174, 4, 0.34) 0%,
-    rgba(115, 174, 4, 0.1) 45%,
-    transparent 72%
-  );
-  --pane-linha: rgba(255, 255, 255, 0.07);
 
   /* Marcas de gráfico. Numa identidade verde+preto+branco, deixar o verde
      valer só pra "dinheiro entrando" é mais legível do que ter dois verdes
@@ -351,17 +342,17 @@
   mask-image: radial-gradient(120% 100% at 50% 0%, #000 35%, transparent 85%);
 }
 
-/* Variantes fixas pro painel de marca do login (--pane é escuro nos dois
-   temas, então usa sempre a versão "forte" da atmosfera, não a que vira
-   com o tema). */
+/* Painel de marca do login: agora acompanha o tema como o resto da
+   superfície, então reaproveita a mesma atmosfera do hero em vez de uma
+   variante fixa própria. */
 .aura-pane::before {
-  background: var(--pane-aura);
+  background: var(--aura-hero);
 }
 
 .grade-tecnica-pane::after {
   background-image:
-    linear-gradient(to right, var(--pane-linha) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--pane-linha) 1px, transparent 1px);
+    linear-gradient(to right, var(--aura-linha) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--aura-linha) 1px, transparent 1px);
 }
 
 /* Numeral display do hero: monoespaçada bold, como o doc especifica pra
@@ -375,6 +366,37 @@
   line-height: 0.95;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
+}
+
+/* Entrada da tela de login: as duas colunas sobem e ganham opacidade ao
+   montar, com uma leve defasagem entre elas — o tipo de detalhe que separa
+   uma tela "pronta" de três divs empilhadas. As linhas do razão entram em
+   cascata por cima disso, cada uma com seu próprio atraso (setado inline
+   via --atraso-linha no componente). Tudo desativado pela regra global de
+   prefers-reduced-motion logo abaixo. */
+.entra {
+  animation: entrar-suave 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.entra-atraso {
+  animation: entrar-suave 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.12s;
+}
+
+.entra-linha {
+  animation: entrar-suave 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--atraso-linha, 0s);
+}
+
+@keyframes entrar-suave {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

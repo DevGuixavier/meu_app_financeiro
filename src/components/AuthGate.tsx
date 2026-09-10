@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -78,7 +78,7 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
       {/* Coluna do formulário: alinhada à esquerda e ancorada no topo em vez
           de um cartão centralizado — o olho começa no canto onde vai digitar. */}
       <div className="aura flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-16">
-        <div className="w-full max-w-[360px]">
+        <div className="entra w-full max-w-[360px]">
           <div className="flex items-center gap-2.5">
             <LogoAntaris className="size-8" />
             <span className="rotulo-hud text-foreground">Antaris</span>
@@ -178,8 +178,8 @@ function PainelVitrine() {
   };
 
   return (
-    <aside className="aura-pane grade-tecnica-pane bg-pane text-pane-foreground relative hidden items-center justify-center overflow-hidden p-16 lg:flex">
-      <div className="w-full max-w-[420px]">
+    <aside className="aura-pane grade-tecnica-pane bg-pane text-pane-foreground border-border relative hidden items-center justify-center overflow-hidden border-l p-16 lg:flex">
+      <div className="entra-atraso w-full max-w-[420px]">
         <p className="rotulo-hud text-pane-muted">Setembro · razão</p>
 
         <div className="mt-5 flex items-baseline gap-3">
@@ -188,8 +188,12 @@ function PainelVitrine() {
         </div>
 
         <div className="divide-border mt-9 divide-y overflow-hidden rounded-lg border bg-[var(--card)] text-[var(--card-foreground)]">
-          {linhas.map((linha) => (
-            <div key={linha.titulo} className="flex items-center gap-3 px-4 py-3">
+          {linhas.map((linha, indice) => (
+            <div
+              key={linha.titulo}
+              className="entra-linha hover:bg-foreground/[0.03] flex items-center gap-3 px-4 py-3 transition-colors"
+              style={{ "--atraso-linha": `${0.32 + indice * 0.07}s` } as CSSProperties}
+            >
               <span
                 aria-hidden
                 className="size-1.5 shrink-0 rounded-full"
