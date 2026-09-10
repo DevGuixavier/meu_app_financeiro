@@ -5,20 +5,19 @@
 
 /* Tokens no vocabulário do shadcn/ui.
 
-   IDENTIDADE (rev. 5): verde-abacate + preto + branco. Pedido explícito do
-   usuário: #568203. Substitui o fluorescente #47f97f da rev.4 — mesma
-   filosofia (um verde só carregando cor, preto e branco neutros de
-   verdade), tom mais maduro/orgânico em vez de neon.
+   IDENTIDADE (rev. 6): azul-petróleo + preto + branco. Troca o verde-abacate
+   da rev.5 — o nome e o tom bateram de frente com o Abacate Pay (fintech BR
+   que já é literalmente "abacate" + verde-lima), risco real de parecer
+   cópia. Petróleo também não esbarra nas outras marcas do setor (Nubank é
+   roxo, Itaú/Inter laranja, PicPay verde-água) e conversa com o nome
+   Antaris (estrela) — tom de noite, não de folha.
 
-   O abacate reprova em papéis onde o fluorescente passava de sobra: como
-   fundo de botão precisa de texto BRANCO, não preto (preto dá 4.33:1,
-   reprovado; branco dá 4.58:1) — o oposto do fluorescente, que era claro
-   demais pro branco e passava só com preto em cima. Como texto contra
-   card escuro (#101010) também reprova na base (4.16:1); entra uma
-   variante mais clara na mesma família de matiz (#73ae04, L+9pp no HSL,
-   7.05:1) — mesma lógica de sempre: dois tons do mesmo verde, um pro
-   claro e outro pro escuro, nunca o mesmo hex nos dois contextos de
-   texto. Script de contraste ad-hoc, não faz parte do repo. */
+   Mesma filosofia de sempre: uma cor só carregando marca, preto e branco
+   neutros de verdade. #0f5c6b como fundo de botão já passa AA com texto
+   branco de sobra (7.60:1, bem mais folga que o abacate tinha). Como texto
+   contra o card escuro (#101010) a base ainda reprova (2.50:1) — entra a
+   variante clara #1aa2bc (mesmo matiz, L+18pp no HSL, 6.29:1). Script de
+   contraste ad-hoc, não faz parte do repo. */
 :root {
   --radius: 1.125rem;
 
@@ -31,10 +30,10 @@
   --popover: #ffffff;
   --popover-foreground: #0a0a0a;
 
-  /* Verde-abacate como fundo de botão precisa de texto BRANCO: preto em
-     cima dele é 4.33:1 (reprovado), branco é 4.58:1. Mesmo valor nos dois
-     temas — é a cor da marca, não deveria mudar com o tema. */
-  --primary: #568203;
+  /* Petróleo como fundo de botão passa AA com texto branco tranquilo
+     (7.60:1). Mesmo valor nos dois temas — é a cor da marca, não deveria
+     mudar com o tema. */
+  --primary: #0f5c6b;
   --primary-foreground: #ffffff;
 
   --secondary: #f2f2f2;
@@ -43,34 +42,32 @@
   --muted: #f2f2f2;
   --muted-foreground: #5c5c5c;
 
-  --accent: #f2f7e6;
-  --accent-foreground: #568203;
+  --accent: #edf6f8;
+  --accent-foreground: #0f5c6b;
 
   --destructive: #c2183d;
   --destructive-foreground: #ffffff;
 
   /* Alinhado ao --chart-3 (mesmo conceito: "recebido/positivo"). */
-  --success: #568203;
+  --success: #0f5c6b;
   --success-foreground: #ffffff;
 
   --border: #e6e6e6;
   --input: #e0e0e0;
-  /* Anel de foco só precisa de 3:1 (não-texto) — o abacate já dá 4.58
+  /* Anel de foco só precisa de 3:1 (não-texto) — o petróleo já dá 7.60
      contra o card branco, folga de sobra. */
-  --ring: #568203;
+  --ring: #0f5c6b;
 
-  /* Verde como TEXTO (link, badge, acento) — o abacate funciona direto
-     contra card branco (4.58:1), sem precisar de variante separada aqui
-     (diferente do fluorescente da rev.4, que reprovava e precisava
-     escurecer). */
-  --brand: #568203;
+  /* Petróleo como TEXTO (link, badge, acento) — funciona direto contra
+     card branco (7.60:1), sem precisar de variante separada aqui. */
+  --brand: #0f5c6b;
 
   /* Painel de marca do login: antes era preto fixo nos dois temas — no
      claro isso batia de frente com a coluna do formulário (clara) e
      quebrava a leitura da tela como uma coisa só. Agora acompanha o tema
-     como o resto da superfície: tingido do próprio verde da marca no
+     como o resto da superfície: tingido do próprio azul da marca no
      claro, preto no escuro (onde já funcionava). */
-  --pane: #f2f7e6;
+  --pane: #edf6f8;
   --pane-foreground: #0a0a0a;
   --pane-muted: #5c5c5c;
 
@@ -78,27 +75,27 @@
      propósito — um véu, não um banner colorido. */
   --aura-hero: radial-gradient(
     120% 90% at 50% -20%,
-    rgba(86, 130, 3, 0.16) 0%,
-    rgba(86, 130, 3, 0.05) 45%,
+    rgba(15, 92, 107, 0.16) 0%,
+    rgba(15, 92, 107, 0.05) 45%,
     transparent 72%
   );
   --aura-linha: rgba(10, 10, 10, 0.07);
 
-  /* Marcas de gráfico. Numa identidade verde+preto+branco, deixar o verde
-     valer só pra "dinheiro entrando" é mais legível do que ter dois verdes
-     parecidos disputando: despesa (a série mais neutra) vira grafite,
-     a_pagar segue vermelho, a_receber fica com o verde. */
+  /* Marcas de gráfico. Numa identidade azul+preto+branco, deixar o azul
+     valer só pra "dinheiro entrando" é mais legível do que ter duas cores
+     parecidas disputando: despesa (a série mais neutra) vira grafite,
+     a_pagar segue vermelho, a_receber fica com o petróleo. */
   --chart-1: #3f3f46;
   --chart-2: #c2183d;
-  --chart-3: #568203;
+  --chart-3: #0f5c6b;
   --chart-4: #0369a1;
   --chart-5: #b45309;
 
   /* Sombra ambiente do Card (glow + elevação real). No claro a sombra
      preta precisa ser bem sutil — sombra escura pesada em fundo claro lê
      como "sujeira", não como profundidade. */
-  --card-shadow: 0 2px 8px rgba(10, 10, 10, 0.06), 0 0 20px rgba(86, 130, 3, 0.12);
-  --card-shadow-hover: 0 12px 32px rgba(10, 10, 10, 0.12), 0 0 32px rgba(86, 130, 3, 0.22);
+  --card-shadow: 0 2px 8px rgba(10, 10, 10, 0.06), 0 0 20px rgba(15, 92, 107, 0.12);
+  --card-shadow-hover: 0 12px 32px rgba(10, 10, 10, 0.12), 0 0 32px rgba(15, 92, 107, 0.22);
 }
 
 /* Três estados possíveis: sem escolha explícita (segue o sistema via
@@ -122,7 +119,7 @@
     --popover-foreground: #f5f5f5;
 
     /* Mesmo valor do claro — a cor da marca não muda com o tema. */
-    --primary: #568203;
+    --primary: #0f5c6b;
     --primary-foreground: #ffffff;
 
     --secondary: #1a1a1a;
@@ -132,22 +129,22 @@
     --muted-foreground: #9a9a9a;
 
     --accent: #1a1a1a;
-    --accent-foreground: #73ae04;
+    --accent-foreground: #1aa2bc;
 
     --destructive: #c2183d;
     --destructive-foreground: #ffffff;
 
-    /* Base #568203 reprova como texto contra o card escuro (#101010,
-       4.16:1) — entra a variante clara #73ae04 (mesmo matiz, L+9pp,
-       7.05:1). */
-    --success: #73ae04;
+    /* Base #0f5c6b reprova como texto contra o card escuro (#101010,
+       2.50:1) — entra a variante clara #1aa2bc (mesmo matiz, L+18pp,
+       6.29:1). */
+    --success: #1aa2bc;
     --success-foreground: #0a0a0a;
 
-    --border: rgba(115, 174, 4, 0.16);
-    --input: rgba(115, 174, 4, 0.2);
-    --ring: #73ae04;
+    --border: rgba(26, 162, 188, 0.16);
+    --input: rgba(26, 162, 188, 0.2);
+    --ring: #1aa2bc;
 
-    --brand: #73ae04;
+    --brand: #1aa2bc;
 
     --pane: #000000;
     --pane-foreground: #f5f5f5;
@@ -155,25 +152,25 @@
 
     --aura-hero: radial-gradient(
       120% 90% at 50% -20%,
-      rgba(115, 174, 4, 0.32) 0%,
-      rgba(115, 174, 4, 0.1) 45%,
+      rgba(26, 162, 188, 0.32) 0%,
+      rgba(26, 162, 188, 0.1) 45%,
       transparent 72%
     );
     --aura-linha: rgba(255, 255, 255, 0.07);
 
-    /* Mesma divisão do claro (verde só pra "entrando"), invertida pro
-       fundo preto: despesa em grafite claro, a_receber no verde-abacate. */
+    /* Mesma divisão do claro (azul só pra "entrando"), invertida pro
+       fundo preto: despesa em grafite claro, a_receber no petróleo. */
     --chart-1: #d4d4d8;
     --chart-2: #ff6369;
-    --chart-3: #73ae04;
+    --chart-3: #1aa2bc;
     --chart-4: #38bdf8;
     --chart-5: #f59e0b;
 
     /* No escuro a sombra preta pode ser mais forte (o fundo já é preto,
-       então "mais escuro ainda" não lê como sujeira) e o glow verde salta
+       então "mais escuro ainda" não lê como sujeira) e o glow azul salta
        muito mais contra ele — é onde o efeito aparece de verdade. */
-    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(115, 174, 4, 0.16);
-    --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.55), 0 0 40px rgba(115, 174, 4, 0.3);
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(26, 162, 188, 0.16);
+    --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.55), 0 0 40px rgba(26, 162, 188, 0.3);
   }
 }
 
@@ -187,7 +184,7 @@
   --popover: #101010;
   --popover-foreground: #f5f5f5;
 
-  --primary: #568203;
+  --primary: #0f5c6b;
   --primary-foreground: #ffffff;
 
   --secondary: #1a1a1a;
@@ -197,19 +194,19 @@
   --muted-foreground: #9a9a9a;
 
   --accent: #1a1a1a;
-  --accent-foreground: #73ae04;
+  --accent-foreground: #1aa2bc;
 
   --destructive: #c2183d;
   --destructive-foreground: #ffffff;
 
-  --success: #73ae04;
+  --success: #1aa2bc;
   --success-foreground: #0a0a0a;
 
-  --border: rgba(115, 174, 4, 0.16);
-  --input: rgba(115, 174, 4, 0.2);
-  --ring: #73ae04;
+  --border: rgba(26, 162, 188, 0.16);
+  --input: rgba(26, 162, 188, 0.2);
+  --ring: #1aa2bc;
 
-  --brand: #73ae04;
+  --brand: #1aa2bc;
 
   /* Preto puro no painel — um degrau abaixo do fundo já quase preto. */
   --pane: #000000;
@@ -218,8 +215,8 @@
 
   --aura-hero: radial-gradient(
     120% 90% at 50% -20%,
-    rgba(115, 174, 4, 0.32) 0%,
-    rgba(115, 174, 4, 0.1) 45%,
+    rgba(26, 162, 188, 0.32) 0%,
+    rgba(26, 162, 188, 0.1) 45%,
     transparent 72%
   );
   --aura-linha: rgba(255, 255, 255, 0.07);
@@ -228,12 +225,12 @@
      contra WCAG AA (ver comentário no topo do arquivo). */
   --chart-1: #d4d4d8;
   --chart-2: #ff6369;
-  --chart-3: #73ae04;
+  --chart-3: #1aa2bc;
   --chart-4: #38bdf8;
   --chart-5: #f59e0b;
 
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(115, 174, 4, 0.16);
-  --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.55), 0 0 40px rgba(115, 174, 4, 0.3);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(26, 162, 188, 0.16);
+  --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.55), 0 0 40px rgba(26, 162, 188, 0.3);
 }
 
 @theme inline {
