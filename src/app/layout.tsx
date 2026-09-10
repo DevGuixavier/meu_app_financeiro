@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Lexend, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
+import { Onest, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -19,14 +19,16 @@ const SCRIPT_TEMA = `
 })();
 `;
 
-// Lexend nos títulos: desenhada para legibilidade, dá autoridade sem peso
-// institucional. Source Sans 3 no corpo, humanista e neutra na leitura longa.
-// IBM Plex Mono só nos valores — dinheiro alinhado em coluna precisa de
-// largura fixa para os dígitos baterem entre linhas.
-const lexend = Lexend({
+// Onest nos títulos e nos numerais grandes: grotesco moderno com escala de
+// peso completa — o 300 é o que permite o numeral do hero ser grande e leve
+// em vez de grande e bold (bold gigante é o default que denuncia layout
+// gerado). Substituiu a Lexend, que virou fonte-carimbo de design de IA.
+// Source Sans 3 no corpo, humanista e neutra na leitura longa. IBM Plex
+// Mono só nos valores em coluna, onde os dígitos precisam bater entre linhas.
+const onest = Onest({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -53,8 +55,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F8FAFC" },
-    { media: "(prefers-color-scheme: dark)", color: "#0F172A" },
+    { media: "(prefers-color-scheme: light)", color: "#FAFAFC" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0711" },
   ],
 };
 
@@ -62,7 +64,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${lexend.variable} ${sourceSans.variable} ${plexMono.variable} h-full`}
+      className={`${onest.variable} ${sourceSans.variable} ${plexMono.variable} h-full`}
       // O script beforeInteractive muda data-theme neste elemento antes do
       // React hidratar — mismatch esperado e inofensivo, não um bug real.
       suppressHydrationWarning
