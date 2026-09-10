@@ -7,6 +7,13 @@ import type { Pessoa, TipoTransacao, Transacao } from "@/lib/types";
 import { agruparPorCategoria, agruparPorMesETipo, type GastoPorCategoria } from "@/lib/resumo";
 import { chaveMesAtual, deslocarMes, limitesDoMes, rotuloMesAbreviado } from "@/lib/mes";
 import { formatarMoeda } from "@/lib/moeda";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const QUANTIDADE_MESES_EVOLUCAO = 6;
 const QUANTIDADE_RECENTES = 6;
@@ -21,9 +28,9 @@ const ROTULO_TIPO: Record<TipoTransacao, string> = {
  * A terracota da UI fica perto demais do âmbar quando as duas viram marca
  * lado a lado, então a série "a pagar" usa um degrau mais escuro. */
 const COR_SERIE: Record<TipoTransacao, string> = {
-  despesa: "var(--color-serie-gastos)",
-  a_pagar: "var(--color-serie-pagar)",
-  a_receber: "var(--color-serie-receber)",
+  despesa: "var(--chart-1)",
+  a_pagar: "var(--chart-2)",
+  a_receber: "var(--chart-3)",
 };
 
 interface ProgressoTipo {
@@ -129,13 +136,13 @@ function Painel({
   children: ReactNode;
 }) {
   return (
-    <section className="borda-sutil rounded-[22px] bg-surface p-4">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="rotulo-hud text-muted">{titulo}</h2>
-        {acessorio}
-      </div>
-      {children}
-    </section>
+    <Card className="gap-4 py-5">
+      <CardHeader className="flex flex-row items-center justify-between gap-3">
+        <CardTitle className="rotulo-hud text-muted-foreground">{titulo}</CardTitle>
+        {acessorio && <CardAction>{acessorio}</CardAction>}
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
   );
 }
 
@@ -156,7 +163,7 @@ function AnelKpi({
   const cor = COR_SERIE[tipo];
 
   return (
-    <div className="borda-sutil flex min-w-0 flex-col items-center gap-2 rounded-[20px] bg-surface px-1.5 py-4 md:px-3">
+    <div className="border shadow-[var(--sombra-cartao)] flex min-w-0 flex-col items-center gap-2 rounded-[20px] bg-card px-1.5 py-4 md:px-3">
       <div className="relative h-[68px] w-[68px]">
         <svg viewBox="0 0 68 68" className="h-full w-full -rotate-90">
           <circle
@@ -181,12 +188,12 @@ function AnelKpi({
             style={{ stroke: cor }}
           />
         </svg>
-        <span className="numeros-tabulares absolute inset-0 flex items-center justify-center font-mono text-sm font-semibold text-ink">
+        <span className="numeros-tabulares absolute inset-0 flex items-center justify-center font-mono text-sm font-semibold text-foreground">
           {percentual}%
         </span>
       </div>
-      <p className="rotulo-hud w-full truncate text-center text-muted">{ROTULO_TIPO[tipo]}</p>
-      <p className="numeros-tabulares w-full truncate text-center font-mono text-[13px] text-ink md:text-sm">
+      <p className="rotulo-hud w-full truncate text-center text-muted-foreground">{ROTULO_TIPO[tipo]}</p>
+      <p className="numeros-tabulares w-full truncate text-center font-mono text-[13px] text-foreground md:text-sm">
         {formatarMoeda(valor)}
       </p>
     </div>
@@ -277,7 +284,7 @@ function GraficoTemporal({
               y1={tick.y}
               x2={LARGURA - MARGEM.direita}
               y2={tick.y}
-              stroke="var(--borda)"
+              stroke="var(--border)"
               strokeWidth="1"
               vectorEffect="non-scaling-stroke"
             />
@@ -285,7 +292,7 @@ function GraficoTemporal({
               x={MARGEM.esquerda - 10}
               y={tick.y + 4}
               textAnchor="end"
-              className="numeros-tabulares fill-[color:var(--color-muted)] font-mono text-[11px]"
+              className="numeros-tabulares fill-[color:var(--muted-foreground)] font-mono text-[11px]"
             >
               {Math.round(tick.valor / 1000) >= 1
                 ? `${Math.round(tick.valor / 100) / 10}k`
@@ -311,7 +318,7 @@ function GraficoTemporal({
             y1={MARGEM.topo}
             x2={ativo.x}
             y2={ALTURA - MARGEM.base}
-            stroke="var(--color-muted)"
+            stroke="var(--muted-foreground)"
             strokeWidth="1"
             vectorEffect="non-scaling-stroke"
           />
@@ -324,7 +331,7 @@ function GraficoTemporal({
             cy={ponto.y}
             r={indice === indiceAtivo || indice === pontos.length - 1 ? 5 : 0}
             style={{ fill: cor }}
-            stroke="var(--color-solido)"
+            stroke="var(--card)"
             strokeWidth="2"
             tabIndex={0}
             role="img"
@@ -338,7 +345,7 @@ function GraficoTemporal({
           x={ultimo.x}
           y={ultimo.y - 14}
           textAnchor="end"
-          className="numeros-tabulares fill-[color:var(--color-ink)] font-mono text-[12px] font-semibold"
+          className="numeros-tabulares fill-[color:var(--foreground)] font-mono text-[12px] font-semibold"
         >
           {formatarMoeda(ultimo.valor)}
         </text>
@@ -349,7 +356,7 @@ function GraficoTemporal({
             x={pontos[indice].x}
             y={ALTURA - 8}
             textAnchor="middle"
-            className="fill-[color:var(--color-muted)] text-[11px]"
+            className="fill-[color:var(--muted-foreground)] text-[11px]"
           >
             {rotuloMesAbreviado(chave)}
           </text>
@@ -358,14 +365,14 @@ function GraficoTemporal({
 
       {ativo && indiceAtivo !== null && (
         <div
-          className={`borda-sutil pointer-events-none absolute top-0 rounded-xl bg-solido px-3 py-2 ${
+          className={`border shadow-[var(--sombra-cartao)] pointer-events-none absolute top-0 rounded-xl bg-card px-3 py-2 ${
             indiceAtivo > pontos.length / 2 ? "left-0" : "right-0"
           }`}
         >
-          <p className="numeros-tabulares font-mono text-sm font-semibold text-ink">
+          <p className="numeros-tabulares font-mono text-sm font-semibold text-foreground">
             {formatarMoeda(ativo.valor)}
           </p>
-          <p className="text-[11px] text-muted">
+          <p className="text-[11px] text-muted-foreground">
             {ROTULO_TIPO[tipo]} · {rotuloMesAbreviado(mesesChaves[indiceAtivo])}
           </p>
         </div>
@@ -378,7 +385,7 @@ function ListaGastosPorCategoria({ dados }: { dados: GastoPorCategoria[] }) {
   const maiorValor = Math.max(...dados.map((item) => item.valor), 1);
 
   if (dados.length === 0) {
-    return <p className="py-6 text-center text-sm text-muted">Nenhum gasto neste mês ainda.</p>;
+    return <p className="py-6 text-center text-sm text-muted-foreground">Nenhum gasto neste mês ainda.</p>;
   }
 
   return (
@@ -386,19 +393,19 @@ function ListaGastosPorCategoria({ dados }: { dados: GastoPorCategoria[] }) {
       {dados.map((item) => (
         <li key={item.nome}>
           <div className="mb-1.5 flex items-baseline justify-between gap-2">
-            <span className="truncate text-sm text-ink">{item.nome}</span>
-            <span className="numeros-tabulares shrink-0 font-mono text-sm text-muted">
+            <span className="truncate text-sm text-foreground">{item.nome}</span>
+            <span className="numeros-tabulares shrink-0 font-mono text-sm text-muted-foreground">
               {formatarMoeda(item.valor)}
             </span>
           </div>
-          <div className="h-1.5 rounded-full bg-ink/8">
+          <div className="h-1.5 rounded-full bg-foreground/8">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${(item.valor / maiorValor) * 100}%` }}
               transition={{ type: "spring", stiffness: 80, damping: 20 }}
               className="h-1.5 rounded-full"
               style={{
-                background: "var(--color-serie-gastos)",
+                background: "var(--chart-1)",
                 
               }}
             />
@@ -411,11 +418,11 @@ function ListaGastosPorCategoria({ dados }: { dados: GastoPorCategoria[] }) {
 
 function FeedRecentes({ recentes }: { recentes: Transacao[] }) {
   if (recentes.length === 0) {
-    return <p className="py-6 text-center text-sm text-muted">Nenhum lançamento ainda.</p>;
+    return <p className="py-6 text-center text-sm text-muted-foreground">Nenhum lançamento ainda.</p>;
   }
 
   return (
-    <ul className="flex flex-col divide-y divide-[color:var(--borda)]">
+    <ul className="flex flex-col divide-y divide-[color:var(--border)]">
       {recentes.map((transacao) => (
         <li key={transacao.id} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
           <span
@@ -426,16 +433,16 @@ function FeedRecentes({ recentes }: { recentes: Transacao[] }) {
             }}
             aria-hidden
           />
-          <span className="numeros-tabulares shrink-0 font-mono text-[11px] text-muted">
+          <span className="numeros-tabulares shrink-0 font-mono text-[11px] text-muted-foreground">
             {transacao.data_vencimento.slice(8, 10)}/{transacao.data_vencimento.slice(5, 7)}
           </span>
-          <span className="min-w-0 flex-1 truncate text-sm text-ink">
+          <span className="min-w-0 flex-1 truncate text-sm text-foreground">
             {transacao.titulo}
             {transacao.pessoa ? (
-              <span className="text-muted"> · {transacao.pessoa.nome}</span>
+              <span className="text-muted-foreground"> · {transacao.pessoa.nome}</span>
             ) : null}
           </span>
-          <span className="numeros-tabulares shrink-0 font-mono text-sm text-muted">
+          <span className="numeros-tabulares shrink-0 font-mono text-sm text-muted-foreground">
             {formatarMoeda(transacao.valor)}
           </span>
         </li>
@@ -465,7 +472,7 @@ export function ResumoPainel({
   }, [supabase, pessoas]);
 
   if (!dados) {
-    return <div className="flex-1 px-4 py-6 text-sm text-muted">Carregando resumo...</div>;
+    return <div className="flex-1 px-4 py-6 text-sm text-muted-foreground">Carregando resumo...</div>;
   }
 
   return (
@@ -495,8 +502,8 @@ export function ResumoPainel({
                 onClick={() => setSerieAtiva(tipo)}
                 className={`rounded-full border px-2.5 py-1 text-[11px] whitespace-nowrap transition-colors ${
                   serieAtiva === tipo
-                    ? "border-accent/40 bg-accent/10 text-accent"
-                    : "border-[color:var(--borda)] text-muted hover:text-ink"
+                    ? "border-primary/40 bg-primary/10 text-primary"
+                    : "border-[color:var(--border)] text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {ROTULO_TIPO[tipo]}
@@ -519,15 +526,15 @@ export function ResumoPainel({
 
         <Painel titulo="Saldo por pessoa">
           {dados.saldoPorPessoa.length === 0 ? (
-            <p className="py-6 text-center text-sm text-muted">Nenhuma pendência com ninguém.</p>
+            <p className="py-6 text-center text-sm text-muted-foreground">Nenhuma pendência com ninguém.</p>
           ) : (
             <ul className="flex flex-col gap-3">
               {dados.saldoPorPessoa.map(({ pessoa, saldo }) => (
                 <li key={pessoa.id} className="flex items-center justify-between gap-3">
-                  <span className="truncate text-sm text-ink">{pessoa.nome}</span>
+                  <span className="truncate text-sm text-foreground">{pessoa.nome}</span>
                   <span
                     className={`numeros-tabulares shrink-0 font-mono text-sm ${
-                      saldo > 0 ? "text-accent" : "text-negative"
+                      saldo > 0 ? "text-primary" : "text-destructive"
                     }`}
                   >
                     {formatarMoeda(saldo)}

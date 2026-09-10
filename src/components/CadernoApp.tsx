@@ -159,7 +159,7 @@ export function CadernoApp({ session }: { session: Session }) {
               className={`flex flex-1 flex-col gap-2 px-4 py-4 transition-opacity md:px-0 ${carregando ? "opacity-50" : ""}`}
             >
               {!carregando && transacoes.length === 0 && (
-                <li className="py-10 text-center text-sm text-muted">{mensagemVazio[abaAtiva]}</li>
+                <li className="py-10 text-center text-sm text-muted-foreground">{mensagemVazio[abaAtiva]}</li>
               )}
               {transacoes.map((transacao) => (
                 <TransacaoItem key={transacao.id} transacao={transacao} aoAlternarStatus={alternarStatus} />
@@ -170,7 +170,7 @@ export function CadernoApp({ session }: { session: Session }) {
               type="button"
               onClick={() => setFormAberto(true)}
               aria-label="Novo lançamento"
-              className="fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-10 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-on-accent shadow-[0_8px_24px_rgba(37,99,235,0.38)] transition-transform active:scale-90 md:hidden"
+              className="fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-10 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-2xl text-primary-foreground shadow-[0_8px_24px_rgba(37,99,235,0.38)] transition-transform active:scale-90 md:hidden"
             >
               +
             </button>

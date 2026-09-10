@@ -1,23 +1,14 @@
+import { Check } from "lucide-react";
 import { motion } from "motion/react";
 import type { Transacao } from "@/lib/types";
 import { formatarMoeda } from "@/lib/moeda";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const COR_VALOR = {
-  despesa: "text-ink",
-  a_pagar: "text-negative",
-  a_receber: "text-accent",
-} as const;
-
-const COR_MARCADOR = {
-  despesa: "border-muted",
-  a_pagar: "border-negative",
-  a_receber: "border-accent",
-} as const;
-
-const COR_MARCADOR_PREENCHIDO = {
-  despesa: "border-muted bg-muted",
-  a_pagar: "border-negative bg-negative",
-  a_receber: "border-accent bg-accent",
+  despesa: "text-foreground",
+  a_pagar: "text-[var(--chart-2)]",
+  a_receber: "text-[var(--chart-3)]",
 } as const;
 
 const ROTULO_ACAO = {
@@ -25,23 +16,6 @@ const ROTULO_ACAO = {
   a_pagar: "Marcar como pago",
   a_receber: "Marcar como recebido",
 } as const;
-
-function Badge({ transacao }: { transacao: Transacao }) {
-  const quitado = transacao.status === "quitado";
-  const rotulo = quitado ? "Quitado" : "A vencer";
-  const cor = quitado
-    ? "border-accent/40 bg-accent/10 text-accent"
-    : "border-negative/40 bg-negative/10 text-negative";
-
-  return (
-    <span
-      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${cor}`}
-    >
-      <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden />
-      {rotulo}
-    </span>
-  );
-}
 
 export function TransacaoItem({
   transacao,
@@ -59,38 +33,46 @@ export function TransacaoItem({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18 }}
-      className="borda-sutil flex items-center gap-3 rounded-[20px] bg-surface px-3.5 py-3.5"
+      className="bg-card flex items-center gap-3 rounded-xl border px-3.5 py-3.5 shadow-[var(--sombra-cartao)]"
     >
-      {/* O badge só mostra número quando existe parcelamento — num lançamento
+      {/* O selo só mostra número quando existe parcelamento — num lançamento
           avulso, um "1" ali sugeriria uma parcela que não existe. */}
       <span
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-accent/25 bg-accent/10 font-mono text-sm font-semibold text-accent"
+        className="bg-accent text-accent-foreground flex size-10 shrink-0 items-center justify-center rounded-lg font-mono text-sm font-semibold"
         aria-hidden
       >
         {transacao.parcela_total ? (
           numeroParcela
         ) : (
-          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+          <span className="bg-accent-foreground size-1.5 rounded-full" />
         )}
       </span>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <p className={`truncate text-[15px] ${quitado ? "text-muted line-through" : "text-ink"}`}>
+          <p
+            className={cn(
+              "truncate text-[15px]",
+              quitado ? "text-muted-foreground line-through" : "text-foreground",
+            )}
+          >
             {transacao.titulo}
           </p>
-          <Badge transacao={transacao} />
+          <Badge variant={quitado ? "success" : "secondary"} className="shrink-0">
+            {quitado ? "Quitado" : "A vencer"}
+          </Badge>
         </div>
-        <p className="mt-0.5 truncate text-xs text-muted">
+        <p className="text-muted-foreground mt-0.5 truncate text-xs">
           {transacao.pessoa ? `${transacao.pessoa.nome} · ` : ""}
           {transacao.parcela_total
             ? `parcela ${numeroParcela}/${transacao.parcela_total}`
             : "parcela única"}
         </p>
         <p
-          className={`numeros-tabulares mt-1 font-mono text-base ${
-            quitado ? "text-muted" : COR_VALOR[transacao.tipo]
-          }`}
+          className={cn(
+            "numeros-tabulares mt-1 font-mono text-base",
+            quitado ? "text-muted-foreground" : COR_VALOR[transacao.tipo],
+          )}
         >
           {formatarMoeda(transacao.valor)}
         </p>
@@ -102,21 +84,14 @@ export function TransacaoItem({
         whileTap={{ scale: 0.85 }}
         aria-label={quitado ? "Marcar como pendente" : ROTULO_ACAO[transacao.tipo]}
         aria-pressed={quitado}
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 ${
-          quitado ? COR_MARCADOR_PREENCHIDO[transacao.tipo] : COR_MARCADOR[transacao.tipo]
-        }`}
-      >
-        {quitado && (
-          <motion.svg
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 500, damping: 25 }}
-            viewBox="0 0 12 12"
-            className="h-3.5 w-3.5 fill-none stroke-on-accent stroke-2"
-          >
-            <path d="M2 6l2.5 2.5L10 3" strokeLinecap="round" strokeLinejoin="round" />
-          </motion.svg>
+        className={cn(
+          "focus-visible:ring-ring/50 flex size-7 shrink-0 items-center justify-center rounded-full border-2 transition-colors outline-none focus-visible:ring-[3px]",
+          quitado
+            ? "border-[var(--chart-3)] bg-[var(--chart-3)] text-white"
+            : "border-muted-foreground/40 hover:border-primary",
         )}
+      >
+        {quitado && <Check className="size-4" strokeWidth={3} />}
       </motion.button>
     </motion.li>
   );

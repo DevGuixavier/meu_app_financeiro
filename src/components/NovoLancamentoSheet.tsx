@@ -1,10 +1,39 @@
 "use client";
 
-import { useMemo, useState, type FormEvent, type MouseEvent, type PointerEvent } from "react";
-import { motion, useDragControls } from "motion/react";
+import { useMemo, useState, type FormEvent } from "react";
+import { Plus } from "lucide-react";
 import type { Categoria, Pessoa, TipoTransacao } from "@/lib/types";
 import { dividirValor, type NovaTransacaoInput } from "@/lib/parcelamento";
 import { formatarMoeda } from "@/lib/moeda";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+
+const SEM_VINCULO = "nenhuma";
 
 export function NovoLancamentoSheet({
   tipo,
@@ -28,13 +57,14 @@ export function NovoLancamentoSheet({
   const [parcelado, setParcelado] = useState(false);
   const [parcelas, setParcelas] = useState("2");
   const [descricao, setDescricao] = useState("");
-  const [pessoaId, setPessoaId] = useState<string>("");
-  const [categoriaId, setCategoriaId] = useState<string>("");
+  const [pessoaId, setPessoaId] = useState(SEM_VINCULO);
+  const [categoriaId, setCategoriaId] = useState(SEM_VINCULO);
   const [novaPessoa, setNovaPessoa] = useState("");
   const [novaCategoria, setNovaCategoria] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
-  const dragControls = useDragControls();
+
+  const ehDesktop = useMediaQuery("(min-width: 768px)");
 
   const valor = Number(valorTexto.replace(",", "."));
   const numeroParcelas = Number(parcelas);
@@ -83,8 +113,8 @@ export function NovoLancamentoSheet({
         descricao: descricao.trim() || null,
         valorTotal: valor,
         dataVencimentoInicial: new Date().toISOString().slice(0, 10),
-        pessoaId: pessoaId ? Number(pessoaId) : null,
-        categoriaId: categoriaId ? Number(categoriaId) : null,
+        pessoaId: pessoaId !== SEM_VINCULO ? Number(pessoaId) : null,
+        categoriaId: categoriaId !== SEM_VINCULO ? Number(categoriaId) : null,
         parcelas: parcelado ? numeroParcelas : null,
       });
       aoFechar();
@@ -95,188 +125,192 @@ export function NovoLancamentoSheet({
     }
   }
 
-  const estiloCampo =
-    "borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted focus:border-accent/60 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.20)]";
+  const formulario = (
+    <form onSubmit={enviar} className="flex flex-col gap-5 px-5 pb-6 md:px-0 md:pb-0">
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="titulo">Título</Label>
+        <Input
+          id="titulo"
+          value={titulo}
+          onChange={(evento) => setTitulo(evento.target.value)}
+          placeholder="Ex.: Mercado, empréstimo pro João"
+        />
+      </div>
 
-  function fecharSeCliqueForaDoPainel(evento: MouseEvent<HTMLDivElement>) {
-    if (evento.target === evento.currentTarget) aoFechar();
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="valor">Valor total</Label>
+        <Input
+          id="valor"
+          inputMode="decimal"
+          value={valorTexto}
+          onChange={(evento) => setValorTexto(evento.target.value)}
+          placeholder="0,00"
+          className="numeros-tabulares font-mono"
+        />
+      </div>
+
+      <div className="flex items-center gap-2.5">
+        <Checkbox
+          id="parcelado"
+          checked={parcelado}
+          onCheckedChange={(marcado) => setParcelado(marcado === true)}
+        />
+        <Label htmlFor="parcelado" className="font-normal">
+          Parcelado
+        </Label>
+      </div>
+
+      {parcelado && (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="parcelas">Número de parcelas</Label>
+          <Input
+            id="parcelas"
+            type="number"
+            min={2}
+            value={parcelas}
+            onChange={(evento) => setParcelas(evento.target.value)}
+            className="numeros-tabulares font-mono"
+          />
+          {previaParcelas && (
+            <p className="numeros-tabulares text-primary font-mono text-sm">{previaParcelas}</p>
+          )}
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="descricao">
+          Descrição <span className="text-muted-foreground font-normal">(opcional)</span>
+        </Label>
+        <Textarea
+          id="descricao"
+          value={descricao}
+          onChange={(evento) => setDescricao(evento.target.value)}
+          rows={2}
+          placeholder="Contexto livre: eu paguei X, ele pagou Y..."
+        />
+      </div>
+
+      <CampoVinculo
+        rotulo="Pessoa"
+        valor={pessoaId}
+        aoMudar={setPessoaId}
+        opcoes={pessoas.map((pessoa) => ({ id: pessoa.id, nome: pessoa.nome }))}
+        novoTexto={novaPessoa}
+        aoMudarNovoTexto={setNovaPessoa}
+        aoAdicionar={confirmarNovaPessoa}
+        placeholderNovo="Nova pessoa"
+      />
+
+      <CampoVinculo
+        rotulo="Categoria"
+        valor={categoriaId}
+        aoMudar={setCategoriaId}
+        opcoes={categorias.map((categoria) => ({ id: categoria.id, nome: categoria.nome }))}
+        novoTexto={novaCategoria}
+        aoMudarNovoTexto={setNovaCategoria}
+        aoAdicionar={confirmarNovaCategoria}
+        placeholderNovo="Nova categoria"
+      />
+
+      {erro && (
+        <p role="alert" className="text-destructive text-sm">
+          {erro}
+        </p>
+      )}
+
+      <Button type="submit" size="lg" disabled={!formValido || salvando} className="mt-1">
+        {salvando ? "Salvando..." : "Salvar lançamento"}
+      </Button>
+    </form>
+  );
+
+  if (ehDesktop) {
+    return (
+      <Dialog open onOpenChange={(aberto) => !aberto && aoFechar()}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[440px]">
+          <DialogHeader>
+            <DialogTitle className="font-display">Novo lançamento</DialogTitle>
+            <DialogDescription>
+              Preencha os dados. Parcelamento divide o valor automaticamente.
+            </DialogDescription>
+          </DialogHeader>
+          {formulario}
+        </DialogContent>
+      </Dialog>
+    );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={fecharSeCliqueForaDoPainel}
-      className="fixed inset-0 z-20 flex items-end justify-center bg-black/60 md:items-center md:p-6"
-    >
-      <motion.div
-        drag="y"
-        dragControls={dragControls}
-        dragListener={false}
-        dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={{ top: 0, bottom: 0.6 }}
-        onDragEnd={(_evento, info) => {
-          if (info.offset.y > 120 || info.velocity.y > 600) aoFechar();
-        }}
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ type: "spring", stiffness: 420, damping: 42 }}
-        className="mx-auto flex max-h-[90vh] w-full max-w-[420px] flex-col overflow-y-auto rounded-t-[28px] bg-solido px-5 pb-8 pt-3 md:rounded-3xl md:border md:border-[color:var(--borda)] md:pt-5"
-      >
-        <div
-          onPointerDown={(evento: PointerEvent) => dragControls.start(evento)}
-          className="mb-2 flex touch-none justify-center py-1 md:hidden"
+    <Drawer open onOpenChange={(aberto) => !aberto && aoFechar()}>
+      <DrawerContent className="max-h-[92vh] overflow-y-auto">
+        <DrawerHeader>
+          <DrawerTitle className="font-display">Novo lançamento</DrawerTitle>
+          <DrawerDescription>
+            Preencha os dados. Parcelamento divide o valor automaticamente.
+          </DrawerDescription>
+        </DrawerHeader>
+        {formulario}
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
+function CampoVinculo({
+  rotulo,
+  valor,
+  aoMudar,
+  opcoes,
+  novoTexto,
+  aoMudarNovoTexto,
+  aoAdicionar,
+  placeholderNovo,
+}: {
+  rotulo: string;
+  valor: string;
+  aoMudar: (valor: string) => void;
+  opcoes: { id: number; nome: string }[];
+  novoTexto: string;
+  aoMudarNovoTexto: (valor: string) => void;
+  aoAdicionar: () => void;
+  placeholderNovo: string;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <Label>
+        {rotulo} <span className="text-muted-foreground font-normal">(opcional)</span>
+      </Label>
+      <Select value={valor} onValueChange={aoMudar}>
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={SEM_VINCULO}>Nenhuma</SelectItem>
+          {opcoes.map((opcao) => (
+            <SelectItem key={opcao.id} value={String(opcao.id)}>
+              {opcao.nome}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <div className="flex gap-2">
+        <Input
+          value={novoTexto}
+          onChange={(evento) => aoMudarNovoTexto(evento.target.value)}
+          placeholder={placeholderNovo}
+          className="h-9"
+        />
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={aoAdicionar}
+          disabled={!novoTexto.trim()}
+          className="h-9"
         >
-          <span className="h-1.5 w-10 rounded-full bg-ink/15" />
-        </div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-display text-xl font-semibold text-ink">Novo lançamento</h2>
-          <button
-            type="button"
-            onClick={aoFechar}
-            aria-label="Fechar"
-            className="borda-sutil flex h-8 w-8 items-center justify-center rounded-full bg-surface text-sm text-muted active:scale-90"
-          >
-            ✕
-          </button>
-        </div>
-
-        <form onSubmit={enviar} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1.5">
-            <span className="rotulo-hud text-muted">Título</span>
-            <input
-              value={titulo}
-              onChange={(evento) => setTitulo(evento.target.value)}
-              className={estiloCampo}
-              placeholder="Ex.: Mercado, empréstimo pro João"
-            />
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="rotulo-hud text-muted">Valor total</span>
-            <input
-              inputMode="decimal"
-              value={valorTexto}
-              onChange={(evento) => setValorTexto(evento.target.value)}
-              className={`${estiloCampo} numeros-tabulares font-mono`}
-              placeholder="0,00"
-            />
-          </label>
-
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={parcelado}
-              onChange={(evento) => setParcelado(evento.target.checked)}
-              className="h-4 w-4 accent-accent"
-            />
-            <span className="text-sm text-ink">Parcelado</span>
-          </label>
-
-          {parcelado && (
-            <label className="flex flex-col gap-1.5">
-              <span className="rotulo-hud text-muted">Número de parcelas</span>
-              <input
-                type="number"
-                min={2}
-                value={parcelas}
-                onChange={(evento) => setParcelas(evento.target.value)}
-                className={estiloCampo}
-              />
-              {previaParcelas && (
-                <span className="numeros-tabulares mt-1 font-mono text-sm text-accent">
-                  {previaParcelas}
-                </span>
-              )}
-            </label>
-          )}
-
-          <label className="flex flex-col gap-1.5">
-            <span className="rotulo-hud text-muted">Descrição (opcional)</span>
-            <textarea
-              value={descricao}
-              onChange={(evento) => setDescricao(evento.target.value)}
-              rows={2}
-              className={`${estiloCampo} resize-none`}
-              placeholder="Contexto livre: eu paguei X, ele pagou Y..."
-            />
-          </label>
-
-          <div className="flex flex-col gap-1.5">
-            <span className="rotulo-hud text-muted">Pessoa (opcional)</span>
-            <select
-              value={pessoaId}
-              onChange={(evento) => setPessoaId(evento.target.value)}
-              className={estiloCampo}
-            >
-              <option value="">Nenhuma</option>
-              {pessoas.map((pessoa) => (
-                <option key={pessoa.id} value={pessoa.id}>
-                  {pessoa.nome}
-                </option>
-              ))}
-            </select>
-            <div className="mt-1 flex gap-2">
-              <input
-                value={novaPessoa}
-                onChange={(evento) => setNovaPessoa(evento.target.value)}
-                placeholder="Nova pessoa"
-                className="borda-sutil flex-1 rounded-full bg-surface px-4 py-2 text-sm text-ink outline-none placeholder:text-muted"
-              />
-              <button
-                type="button"
-                onClick={confirmarNovaPessoa}
-                className="rounded-full px-3 text-sm font-medium text-accent transition-transform active:scale-90"
-              >
-                Adicionar
-              </button>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <span className="rotulo-hud text-muted">Categoria (opcional)</span>
-            <select
-              value={categoriaId}
-              onChange={(evento) => setCategoriaId(evento.target.value)}
-              className={estiloCampo}
-            >
-              <option value="">Nenhuma</option>
-              {categorias.map((categoria) => (
-                <option key={categoria.id} value={categoria.id}>
-                  {categoria.nome}
-                </option>
-              ))}
-            </select>
-            <div className="mt-1 flex gap-2">
-              <input
-                value={novaCategoria}
-                onChange={(evento) => setNovaCategoria(evento.target.value)}
-                placeholder="Nova categoria"
-                className="borda-sutil flex-1 rounded-full bg-surface px-4 py-2 text-sm text-ink outline-none placeholder:text-muted"
-              />
-              <button
-                type="button"
-                onClick={confirmarNovaCategoria}
-                className="rounded-full px-3 text-sm font-medium text-accent transition-transform active:scale-90"
-              >
-                Adicionar
-              </button>
-            </div>
-          </div>
-
-          {erro && <p className="text-sm text-negative">{erro}</p>}
-
-          <button
-            type="submit"
-            disabled={!formValido || salvando}
-            className="brilho-accent mt-2 rounded-full bg-accent py-3 text-base font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-40 disabled:shadow-none"
-          >
-            {salvando ? "Salvando..." : "Salvar"}
-          </button>
-        </form>
-      </motion.div>
-    </motion.div>
+          <Plus />
+          Adicionar
+        </Button>
+      </div>
+    </div>
   );
 }

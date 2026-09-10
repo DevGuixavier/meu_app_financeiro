@@ -3,6 +3,10 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function AuthGate({ children }: { children: (session: Session) => ReactNode }) {
   const [supabase] = useState(() => createClient());
@@ -66,61 +70,84 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
   }
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center px-6">
-      <div className="borda-sutil w-full max-w-xs rounded-[24px] bg-surface p-6">
-        <div className="brilho-accent flex h-11 w-11 items-center justify-center rounded-2xl bg-accent">
-          <span className="font-display text-xl font-bold text-on-accent">A</span>
-        </div>
-        <h1 className="mt-5 font-display text-3xl font-semibold text-ink">Antaris</h1>
-        <p className="mt-2 text-sm text-muted">
-          Controle de gastos e cobranças. Entre com seu email para continuar.
-        </p>
+    <main className="flex flex-1 flex-col items-center justify-center px-6 py-10">
+      <Card className="w-full max-w-sm gap-5">
+        <CardHeader>
+          <div className="bg-primary mb-1 flex size-11 items-center justify-center rounded-xl">
+            <span className="text-primary-foreground font-display text-xl font-bold">A</span>
+          </div>
+          <h1 data-slot="card-title" className="font-display text-3xl leading-none font-semibold">
+            Antaris
+          </h1>
+          <CardDescription>
+            Controle de gastos e cobranças. Entre com seu email para continuar.
+          </CardDescription>
+        </CardHeader>
 
-        {enviado ? (
-          <form onSubmit={confirmarCodigo} className="mt-8 flex flex-col gap-3">
-            <p className="text-sm text-muted">
-              Enviamos um código de acesso para {email}.
-            </p>
-            <input
-              type="text"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              required
-              placeholder="Código recebido por email"
-              value={codigo}
-              onChange={(evento) => setCodigo(evento.target.value)}
-              className="borda-sutil rounded-2xl bg-surface px-4 py-3 text-center text-lg tracking-[0.3em] text-ink outline-none placeholder:text-sm placeholder:tracking-normal placeholder:text-muted"
-            />
-            {erro && <p className="text-sm text-negative">{erro}</p>}
-            <button
-              type="submit"
-              disabled={enviando}
-              className="brilho-accent mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-60 disabled:shadow-none"
-            >
-              {enviando ? "Confirmando..." : "Confirmar código"}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={enviarCodigo} className="mt-8 flex flex-col gap-3">
-            <input
-              type="email"
-              required
-              placeholder="seu@email.com"
-              value={email}
-              onChange={(evento) => setEmail(evento.target.value)}
-              className="borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted"
-            />
-            {erro && <p className="text-sm text-negative">{erro}</p>}
-            <button
-              type="submit"
-              disabled={enviando}
-              className="brilho-accent mt-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-60 disabled:shadow-none"
-            >
-              {enviando ? "Enviando..." : "Enviar código de acesso"}
-            </button>
-          </form>
-        )}
-      </div>
+        <CardContent>
+          {enviado ? (
+            <form onSubmit={confirmarCodigo} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="codigo">Código de acesso</Label>
+                <Input
+                  id="codigo"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  autoFocus
+                  required
+                  placeholder="000000"
+                  value={codigo}
+                  onChange={(evento) => setCodigo(evento.target.value)}
+                  className="numeros-tabulares text-center font-mono text-lg tracking-[0.35em]"
+                />
+                <p className="text-muted-foreground text-sm">Enviamos para {email}.</p>
+              </div>
+              {erro && (
+                <p role="alert" className="text-destructive text-sm">
+                  {erro}
+                </p>
+              )}
+              <Button type="submit" size="lg" disabled={enviando}>
+                {enviando ? "Confirmando..." : "Confirmar código"}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setEnviado(false);
+                  setCodigo("");
+                  setErro(null);
+                }}
+              >
+                Usar outro email
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={enviarCodigo} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(evento) => setEmail(evento.target.value)}
+                />
+              </div>
+              {erro && (
+                <p role="alert" className="text-destructive text-sm">
+                  {erro}
+                </p>
+              )}
+              <Button type="submit" size="lg" disabled={enviando}>
+                {enviando ? "Enviando..." : "Enviar código de acesso"}
+              </Button>
+            </form>
+          )}
+        </CardContent>
+      </Card>
     </main>
   );
 }
