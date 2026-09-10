@@ -187,11 +187,11 @@ function PainelVitrine() {
           <span className="text-pane-muted text-sm">em aberto</span>
         </div>
 
-        {/* Antes usava --card (branco puro no claro) — pesado demais flutuando
-            sobre o painel: um retângulo branco brilhando contra o resto da
-            tela. --secondary é um degrau mais discreto (cinza neutro, não
-            branco), sem perder a separação visual das linhas do razão. */}
-        <div className="divide-border bg-secondary text-secondary-foreground mt-9 divide-y overflow-hidden rounded-lg border">
+        {/* Sem bloco de fundo próprio: um card (branco, depois cinza) sempre
+            lia como um recorte colado em cima do painel, não parte dele.
+            As linhas agora ficam direto na superfície do painel — só a
+            linha fina entre elas (divide-y) separa, sem caixa ao redor. */}
+        <div className="divide-border mt-9 divide-y">
           {linhas.map((linha, indice) => (
             <div
               key={linha.titulo}
