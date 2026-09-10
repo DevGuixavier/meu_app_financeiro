@@ -9,7 +9,7 @@ export function TopBarMobile({ aoSair }: { aoSair: () => void }) {
   return (
     <header className="bg-background/80 sticky top-0 z-10 flex items-center justify-between border-b px-4 py-3 backdrop-blur-xl md:hidden">
       <div className="flex items-center gap-2">
-        <div className="bg-primary flex size-7 items-center justify-center rounded-md">
+        <div className="bg-primary flex size-7 items-center justify-center rounded-[8px]">
           <span className="text-primary-foreground font-display text-xs font-bold">A</span>
         </div>
         <span className="rotulo-hud text-foreground">Antaris</span>

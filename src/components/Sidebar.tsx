@@ -26,7 +26,7 @@ export function Sidebar({
   return (
     <aside className="sticky top-8 hidden w-56 shrink-0 flex-col gap-7 md:flex">
       <div className="flex items-center gap-2.5">
-        <div className="bg-primary flex size-9 items-center justify-center rounded-xl">
+        <div className="bg-primary flex size-9 items-center justify-center rounded-[10px]">
           <span className="text-primary-foreground font-display text-base font-bold">A</span>
         </div>
         <span className="rotulo-hud text-foreground">Antaris</span>

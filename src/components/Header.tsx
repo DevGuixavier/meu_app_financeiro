@@ -28,7 +28,7 @@ export function Header({
 }) {
   return (
     <header className="px-4 pt-6 pb-2">
-      <div className="border rounded-lg bg-card px-4 py-4">
+      <div className="rounded-xl border bg-card px-4 py-4 shadow-sm">
         <div className="flex items-center justify-between">
           <button
             type="button"
@@ -53,7 +53,7 @@ export function Header({
           <div className="min-w-0">
             <p className="rotulo-hud text-muted-foreground">{ROTULO_POR_TIPO[tipoAtivo]}</p>
             <p
-              className={`numeros-tabulares mt-1.5 truncate font-mono text-[28px] leading-none font-semibold ${CORES_POR_TIPO[tipoAtivo]}`}
+              className={`numeros-tabulares mt-1.5 truncate font-mono text-[34px] leading-none font-bold tracking-tight ${CORES_POR_TIPO[tipoAtivo]}`}
             >
               {formatarMoeda(total)}
             </p>

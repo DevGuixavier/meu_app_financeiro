@@ -15,6 +15,20 @@ import { TransacaoItem } from "@/components/TransacaoItem";
 import { NovoLancamentoSheet } from "@/components/NovoLancamentoSheet";
 import { ResumoPainel } from "@/components/ResumoPainel";
 
+// Ciclo fixo: cada categoria nova pega a próxima cor, sem repetir enquanto
+// houver opção — é o que dá o selo colorido por categoria (Pierre, Mobills)
+// em vez do cinza neutro que "cor: null" produzia até aqui.
+const PALETA_CATEGORIA = [
+  "#2563eb",
+  "#dc2626",
+  "#047857",
+  "#7c3aed",
+  "#b45309",
+  "#db2777",
+  "#0891b2",
+  "#65a30d",
+];
+
 async function buscarTransacoes(
   supabase: SupabaseClient,
   tipo: TipoTransacao,
@@ -90,7 +104,7 @@ export function CadernoApp({ session }: { session: Session }) {
   async function criarCategoria(nome: string): Promise<Categoria> {
     const { data, error } = await supabase
       .from("categoria")
-      .insert({ nome, user_id: session.user.id })
+      .insert({ nome, user_id: session.user.id, cor: PALETA_CATEGORIA[categorias.length % PALETA_CATEGORIA.length] })
       .select("id, nome, cor")
       .single();
     if (error || !data) throw new Error(error?.message ?? "Não foi possível criar a categoria.");
@@ -173,7 +187,7 @@ export function CadernoApp({ session }: { session: Session }) {
             />
 
             <ul
-              className={`bg-card divide-border mx-4 flex flex-1 flex-col divide-y overflow-hidden rounded-lg border transition-opacity md:mx-0 ${carregando ? "opacity-50" : ""}`}
+              className={`bg-card divide-border mx-4 flex flex-1 flex-col divide-y overflow-hidden rounded-xl border shadow-sm transition-opacity md:mx-0 ${carregando ? "opacity-50" : ""}`}
             >
               {!carregando && transacoes.length === 0 && (
                 <li className="text-muted-foreground py-12 text-center text-sm">
