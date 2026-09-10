@@ -80,7 +80,14 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
       <div className="aura flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-16">
         <div className="w-full max-w-[360px]">
           <div className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="" width={32} height={32} className="size-8" priority />
+            <Image
+              src="/images/logo-antaris.png"
+              alt=""
+              width={32}
+              height={32}
+              className="size-8"
+              priority
+            />
             <span className="rotulo-hud text-foreground">Antaris</span>
           </div>
 

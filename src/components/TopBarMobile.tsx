@@ -10,7 +10,14 @@ export function TopBarMobile({ aoSair }: { aoSair: () => void }) {
   return (
     <header className="bg-background/80 sticky top-0 z-10 flex items-center justify-between border-b px-4 py-3 backdrop-blur-xl md:hidden">
       <div className="flex items-center gap-2">
-        <Image src="/logo.png" alt="" width={28} height={28} className="size-7" priority />
+        <Image
+          src="/images/logo-antaris.png"
+          alt=""
+          width={28}
+          height={28}
+          className="size-7"
+          priority
+        />
         <span className="rotulo-hud text-foreground">Antaris</span>
       </div>
       <div className="flex items-center gap-1">
