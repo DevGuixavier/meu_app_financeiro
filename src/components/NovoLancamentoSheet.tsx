@@ -96,7 +96,7 @@ export function NovoLancamentoSheet({
   }
 
   const estiloCampo =
-    "borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted focus:border-accent/60 focus:shadow-[0_0_0_2px_rgba(227,166,75,0.25)]";
+    "borda-sutil rounded-2xl bg-surface px-4 py-3 text-base text-ink outline-none placeholder:text-muted focus:border-accent/60 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.20)]";
 
   function fecharSeCliqueForaDoPainel(evento: MouseEvent<HTMLDivElement>) {
     if (evento.target === evento.currentTarget) aoFechar();

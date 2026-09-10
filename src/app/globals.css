@@ -1,27 +1,65 @@
 @import "tailwindcss";
 
+/* Sistema de cores: azul de confiança sobre branco, derivado do perfil
+   "Personal Finance Tracker". O dark não é uma inversão automática — são
+   degraus próprios, validados contra a superfície escura real (#192134). */
 :root {
+  color-scheme: light;
+
   /* base */
-  --color-bg: #faf6f3;
+  --color-bg: #f8fafc;
   --color-solido: #ffffff;
   --color-surface: #ffffff;
-  --color-ink: #26201a;
-  --color-muted: #8c8275;
+  --color-ink: #0f172a;
+  --color-muted: #475569;
 
-  /* semânticas da UI */
-  --color-accent: #e3a64b;
-  --color-negative: #d9694a;
-  --color-on-accent: #2b2013;
+  /* semânticas da UI.
+     --color-accent preenche botões (texto branco em cima, 5.17:1);
+     --color-accent-text é o azul quando ele é o texto/ícone sobre o fundo. */
+  --color-accent: #2563eb;
+  --color-accent-text: #1d4ed8;
+  --color-on-accent: #ffffff;
+  --color-negative: #dc2626;
+  --color-positive: #059669;
 
-  /* marcas de gráfico — degraus validados por scripts/validate_palette.js
-     (faixa de luminosidade, chroma, separação CVD e contraste em light).
-     A terracota da UI (#d9694a) fica perto demais do âmbar quando as duas
-     viram marca lado a lado, por isso a série usa um degrau mais escuro. */
-  --color-serie-gastos: #1e7a4f;
-  --color-serie-pagar: #c4472c;
-  --color-serie-receber: #e3a64b;
+  /* marcas de gráfico — validadas por scripts/validate_palette.js contra
+     a superfície do card (faixa de luminosidade, chroma, separação CVD,
+     piso de visão normal e contraste). Não trocar sem revalidar. */
+  --color-serie-gastos: #2563eb;
+  --color-serie-pagar: #dc2626;
+  --color-serie-receber: #059669;
 
-  --borda: rgba(38, 32, 26, 0.08);
+  --borda: #e2e8f0;
+  --sombra-cartao: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  --brilho: 0 6px 18px rgba(37, 99, 235, 0.28);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --color-bg: #0f172a;
+    --color-solido: #192134;
+    --color-surface: #192134;
+    --color-ink: #f8fafc;
+    --color-muted: #94a3b8;
+
+    --color-accent: #2563eb;
+    --color-accent-text: #60a5fa;
+    --color-on-accent: #ffffff;
+    --color-negative: #f87171;
+    --color-positive: #34d399;
+
+    --color-serie-gastos: #3b82f6;
+    --color-serie-pagar: #ef4444;
+    --color-serie-receber: #059669;
+
+    --borda: rgba(248, 250, 252, 0.1);
+    --sombra-cartao: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    /* Halo mais contido no escuro: no fundo navy o azul espalha muito e o
+       botão passa a parecer neon em vez de elemento de produto financeiro. */
+    --brilho: 0 4px 12px rgba(37, 99, 235, 0.22);
+  }
 }
 
 @theme inline {
@@ -31,12 +69,14 @@
   --color-ink: var(--color-ink);
   --color-muted: var(--color-muted);
   --color-accent: var(--color-accent);
-  --color-negative: var(--color-negative);
+  --color-accent-text: var(--color-accent-text);
   --color-on-accent: var(--color-on-accent);
+  --color-negative: var(--color-negative);
+  --color-positive: var(--color-positive);
   --color-serie-gastos: var(--color-serie-gastos);
   --color-serie-pagar: var(--color-serie-pagar);
   --color-serie-receber: var(--color-serie-receber);
-  --font-display: var(--font-body);
+  --font-display: var(--font-display);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
 }
@@ -45,12 +85,10 @@ body {
   background: var(--color-bg);
 }
 
-/* Cartão claro: hairline + sombra suave */
+/* Cartão: hairline + sombra suave */
 .borda-sutil {
   border: 1px solid var(--borda);
-  box-shadow:
-    0 1px 2px rgba(38, 32, 26, 0.03),
-    0 8px 20px rgba(38, 32, 26, 0.04);
+  box-shadow: var(--sombra-cartao);
 }
 
 .linha-divisoria {
@@ -67,7 +105,7 @@ body {
 }
 
 .brilho-accent {
-  box-shadow: 0 6px 18px rgba(227, 166, 75, 0.32);
+  box-shadow: var(--brilho);
 }
 
 .numeros-tabulares {
