@@ -278,6 +278,19 @@ function arredondarTeto(valor: number): number {
   return Math.ceil(valor / magnitude) * magnitude;
 }
 
+/** Rótulo compacto do eixo Y. `Math.round` sozinho colide quando o teto é
+ * pequeno (R$1 → ticks 0 / 0,5 / 1, e 0,5 arredondava pra 1 também — dois
+ * "1" empilhados no eixo). Abaixo de 10, mantém 2 casas decimais pra
+ * diferenciar; do resto pra cima, segue arredondando como antes. */
+function rotuloEixoY(valor: number): string {
+  if (valor === 0) return "0";
+  if (Math.round(valor / 1000) >= 1) return `${Math.round(valor / 100) / 10}k`;
+  if (valor < 10 && !Number.isInteger(valor)) {
+    return valor.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  return String(Math.round(valor));
+}
+
 /** Linha temporal com área em gradiente. Uma série por vez: o seletor troca a
  * série, então nunca há duas cores disputando leitura no mesmo plano. */
 function GraficoTemporal({
@@ -317,6 +330,13 @@ function GraficoTemporal({
   }));
   const ultimo = pontos[pontos.length - 1];
   const ativo = indiceAtivo === null ? null : pontos[indiceAtivo];
+
+  // Quando o último ponto está perto do teto do gráfico (comum: mês atual é
+  // o maior valor da série), o rótulo acima do ponto não cabe entre ele e a
+  // borda do SVG — o topo dos caracteres é cortado (sem overflow visível no
+  // SVG). Sem espaço, o rótulo desce pra baixo do ponto em vez de cortar.
+  const rotuloUltimoCabeEmCima = ultimo.y - 14 - 10 > MARGEM.topo;
+  const yRotuloUltimo = rotuloUltimoCabeEmCima ? ultimo.y - 14 : ultimo.y + 20;
 
   function aoMoverPonteiro(evento: PointerEvent<SVGSVGElement>) {
     const caixa = evento.currentTarget.getBoundingClientRect();
@@ -362,9 +382,7 @@ function GraficoTemporal({
               textAnchor="end"
               className="numeros-tabulares fill-[color:var(--muted-foreground)] font-mono text-[11px]"
             >
-              {Math.round(tick.valor / 1000) >= 1
-                ? `${Math.round(tick.valor / 100) / 10}k`
-                : Math.round(tick.valor)}
+              {rotuloEixoY(tick.valor)}
             </text>
           </g>
         ))}
@@ -411,7 +429,7 @@ function GraficoTemporal({
 
         <text
           x={ultimo.x}
-          y={ultimo.y - 14}
+          y={yRotuloUltimo}
           textAnchor="end"
           className="numeros-tabulares fill-[color:var(--foreground)] font-mono text-[12px] font-semibold"
         >
