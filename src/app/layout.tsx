@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, IBM_Plex_Mono } from "next/font/google";
-import localFont from "next/font/local";
+import { Bricolage_Grotesque, IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -34,28 +33,28 @@ const bricolageGrotesque = Bricolage_Grotesque({
   display: "swap",
 });
 
-// Scoutie Sans no corpo: pedida pelo usuário ("Scout Sans" — o nome exato no
-// Google Fonts é Scoutie Sans, da Help Scout). O próprio brief da fonte é
-// "legibilidade compacta de UI" — por isso foi pro corpo (--font-body), não
-// nos títulos, que continuam em Bricolage Grotesque.
-//
-// Hospedada localmente (next/font/local), não via next/font/google: essa
-// fonte entrou no catálogo do Google Fonts em jul/2026 e a versão do
-// Next.js deste projeto ainda não reconhece ("Unknown font" no build) —
-// o manifesto de fontes vem embutido no próprio Next, não é live. Arquivo
-// baixado do próprio repo oficial (github.com/google/fonts/ofl/scoutiesans),
-// licença OFL em src/fonts/ScoutieSans-OFL.txt. É fonte variável (200–800),
-// um arquivo só cobre a faixa de peso inteira.
-const scoutieSans = localFont({
-  src: "../fonts/ScoutieSans-Variable.ttf",
+// IBM Plex Sans no corpo: troca a Scoutie Sans (rev. anterior). Decidido
+// comparando as duas lado a lado num canvas com o dashboard real — Scoutie
+// Sans lia como "genérica demais" pro usuário, IBM Plex Sans deu a cara de
+// "banco tradicional" que ele queria, sem cair no Inter/Roboto batido.
+// Reforça também a família com o mono (mesmo desenhista, IBM), o tipo de
+// coerência de sistema que dá ar profissional/deliberado.
+const ibmPlexSans = IBM_Plex_Sans({
   variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
+// JetBrains Mono nos números: troca o IBM Plex Mono. O numeral gigante do
+// hero (.numeral-hero) e os valores tabulares são o elemento mais dominante
+// da tela — por isso a diferenciação da nova identidade entrou aqui, não no
+// --font-display (Bricolage Grotesque, que nem aparece nessa tela — só no
+// título do login e do formulário).
+const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "600", "700"],
   display: "swap",
 });
 
@@ -77,7 +76,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${bricolageGrotesque.variable} ${scoutieSans.variable} ${plexMono.variable} h-full`}
+      className={`${bricolageGrotesque.variable} ${ibmPlexSans.variable} ${jetbrainsMono.variable} h-full`}
       // O script beforeInteractive muda data-theme neste elemento antes do
       // React hidratar — mismatch esperado e inofensivo, não um bug real.
       suppressHydrationWarning
