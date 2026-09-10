@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ArrowDownLeft, ArrowUpRight, BarChart3, LogOut, Plus, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Aba } from "@/lib/types";
@@ -26,9 +27,7 @@ export function Sidebar({
   return (
     <aside className="sticky top-8 hidden w-56 shrink-0 flex-col gap-7 md:flex">
       <div className="flex items-center gap-2.5">
-        <div className="bg-brand-solido flex size-9 items-center justify-center rounded-[10px]">
-          <span className="font-display text-base font-bold text-white">A</span>
-        </div>
+        <Image src="/logo.png" alt="" width={36} height={36} className="size-9" priority />
         <span className="rotulo-hud text-foreground">Antaris</span>
       </div>
 

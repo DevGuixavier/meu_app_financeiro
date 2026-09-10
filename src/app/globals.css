@@ -5,19 +5,20 @@
 
 /* Tokens no vocabulário do shadcn/ui.
 
-   IDENTIDADE (rev. 2 — design system "Antaris Modern", violeta/teal/laranja):
-   laranja como ação primária, violeta como âncora de marca (logo, links,
-   títulos), teal como cor de foco/confiança. Os HEX vêm do doc de design
-   fornecido — mas os PARES texto/fundo foram todos recalculados, porque o
-   doc errou a própria conta em pelo menos um lugar (afirma branco sobre
-   #FF6B35 como "6.5:1 PASS AAA"; o valor real é 2.84:1, reprovado mesmo no
-   limite frouxo de 3:1 pra ícone/UI). Regra: nunca copiar um HEX de doc de
-   design pro código sem recalcular o par contra o fundo real de uso.
+   IDENTIDADE (rev. 3): a marca agora é a logo real que o usuário desenhou —
+   um "A" em degradê verde-esmeralda/teal com glow. As cores abaixo foram
+   extraídas por amostragem de pixel do arquivo da logo (não "no olho"),
+   script ad-hoc em /tmp, não faz parte do repo — dois pontos reais do
+   degradê: núcleo #13c092 (a cor mais presente) e ponta clara #3df788/
+   #47f97f (spring-green, nas extremidades do "A"). Isso substitui a rev.2
+   (laranja/violeta/teal) — não agradou visualmente, foi trocada de vez.
 
-   ATMOSFERA: os tokens --aura-* são gradientes radiais, não cores chapadas.
-
-   Todo par abaixo foi checado contra WCAG AA (4.5:1 texto normal, 3:1
-   ícone/UI/foco), script ad-hoc, não faz parte do repo. */
+   Mesma regra de sempre: um hex do design (aqui, da própria logo) não vai
+   direto pro código sem recalcular o par contra o fundo real de uso — o
+   verde-núcleo #13c092, por exemplo, reprova como texto contra card branco
+   (2.34:1) mas passa liso como fundo de botão com tinta escura em cima
+   (8.25:1). Todo par abaixo checado contra WCAG AA (4.5:1 texto normal,
+   3:1 ícone/UI/foco). */
 :root {
   --radius: 1.125rem;
 
@@ -30,60 +31,57 @@
   --popover: #ffffff;
   --popover-foreground: #12101a;
 
-  /* Laranja de ação (Adicionar despesa, Salvar, FAB) — #FF6B35 do doc,
-     mas com texto ESCURO, não branco: branco em cima dele é 2.84:1
-     (reprovado); tinta escura dá 6.64:1. */
-  --primary: #ff6b35;
-  --primary-foreground: #1a1006;
+  /* Verde-núcleo da logo como fundo de botão, com tinta escura em cima —
+     branco reprovaria (2.34:1); tinta escura dá 8.25:1. Mesmo valor nos
+     dois temas: é a cor da marca, não deveria mudar com o tema. */
+  --primary: #13c092;
+  --primary-foreground: #0b0f0d;
 
-  --secondary: #f2f1f7;
+  --secondary: #f1f5f3;
   --secondary-foreground: #12101a;
 
-  --muted: #f2f1f7;
-  --muted-foreground: #585370;
+  --muted: #f1f5f3;
+  --muted-foreground: #57615c;
 
-  --accent: #f1edff;
-  --accent-foreground: #5b34e8;
+  --accent: #e8faf3;
+  --accent-foreground: #05695f;
 
   --destructive: #c2183d;
   --destructive-foreground: #ffffff;
 
-  --success: #047857;
+  /* Alinhado ao --chart-3 (mesmo conceito: "recebido/positivo"). */
+  --success: #0f7a40;
   --success-foreground: #ffffff;
 
-  /* Borda com viés violeta (o doc pede rgba(109,40,217,0.15) em cards) —
-     decorativo, não precisa do piso de contraste de texto. */
-  --border: rgba(109, 40, 217, 0.14);
-  --input: rgba(109, 40, 217, 0.16);
-  /* Teal de foco/confiança — #06B6D4 do doc não passa nem 3:1 (não-texto)
-     contra card branco (2.43:1); #0891B2 (o próprio tier "dark" do doc)
-     resolve em 3.68:1. */
-  --ring: #0891b2;
+  --border: rgba(19, 192, 146, 0.16);
+  --input: rgba(19, 192, 146, 0.18);
+  /* Anel de foco: #0ca386 passa 3.18:1 (não-texto) contra card branco —
+     o núcleo puro #13c092 fica perto demais do fundo claro pra marcar bem
+     o contorno. */
+  --ring: #0ca386;
 
-  /* Âncora de marca: violeta, usado em logo, links, títulos, acento de
-     categoria — não é o --primary (esse é o laranja de ação). --brand muda
-     de tom por tema (precisa, pra funcionar como texto nos dois); já
-     --brand-solido é fixo — o selo "A" usa ele com texto branco em cima, e
-     um selo de marca não deveria mudar de cor junto com o tema mesmo. */
-  --brand: #6d28d9;
-  --brand-solido: #6d28d9;
-  /* Laranja como TEXTO (badge, valor em destaque) precisa escurecer no
-     claro — o mesmo #FF6B35 usado no fundo do botão reprova como texto
-     corrido (2.84:1); essa variante dá 4.96:1. */
-  --action-texto: #cc3d00;
+  /* Âncora de marca — texto, links, título, acento de categoria. Não é o
+     --primary (esse é fundo de botão): o núcleo da logo como TEXTO contra
+     card branco reprova (2.34:1); esta variante mais escura, tirada da
+     base do degradê da própria logo, dá 6.58:1. */
+  --brand: #05695f;
+  /* Fixo — não muda com o tema. Único fallback de cor sólida pro selo de
+     marca; o app usa a imagem da logo (public/logo.png) na maioria dos
+     lugares, mas isto cobre qualquer contexto que precise de um swatch. */
+  --brand-solido: #13c092;
 
   /* Painel de marca do login: escuro nos dois temas de propósito — é o
      contraste entre os dois lados que faz o split screen se ler. */
-  --pane: #0a0711;
-  --pane-foreground: #f6f5fb;
-  --pane-muted: #a09bb8;
+  --pane: #060b09;
+  --pane-foreground: #f2fbf7;
+  --pane-muted: #93a8a0;
 
   /* Halo atmosférico do hero. No claro fica quase imperceptível de
      propósito — um véu, não um banner colorido. */
   --aura-hero: radial-gradient(
     120% 90% at 50% -20%,
-    rgba(109, 40, 217, 0.14) 0%,
-    rgba(109, 40, 217, 0.04) 45%,
+    rgba(19, 192, 146, 0.14) 0%,
+    rgba(19, 192, 146, 0.04) 45%,
     transparent 72%
   );
   --aura-linha: rgba(18, 16, 26, 0.07);
@@ -92,27 +90,29 @@
      propósito, então a atmosfera dele usa sempre a versão "forte". */
   --pane-aura: radial-gradient(
     120% 90% at 50% -20%,
-    rgba(124, 92, 255, 0.42) 0%,
-    rgba(94, 58, 214, 0.14) 45%,
+    rgba(61, 247, 136, 0.4) 0%,
+    rgba(19, 192, 146, 0.14) 45%,
     transparent 72%
   );
   --pane-linha: rgba(255, 255, 255, 0.07);
 
   /* Marcas de gráfico, checadas contra a superfície do card (branco).
-     chart-1 (despesa) agora é a âncora violeta do doc; chart-3 (a receber)
-     continua o mesmo verde do --success — os dois representam "recebido/
-     quitado", faz sentido serem a mesma cor. */
-  --chart-1: #6d28d9;
+     chart-1 (despesa) usa a mesma variante escura do --brand — despesa é
+     a categoria mais "neutra/âncora". chart-3 (a receber) puxa pro lado
+     spring-green do degradê da logo (extremidade clara do "A"), pra não
+     ficar visualmente idêntico ao chart-1 num gráfico com as duas séries;
+     é o mesmo valor do --success (os dois são "recebido/positivo"). */
+  --chart-1: #05695f;
   --chart-2: #c2183d;
-  --chart-3: #047857;
+  --chart-3: #0f7a40;
   --chart-4: #0369a1;
   --chart-5: #b45309;
 
-  /* Sombra ambiente do Card (glow do doc + elevação real). No claro a
-     sombra preta precisa ser bem sutil — sombra escura pesada em fundo
-     claro lê como "sujeira", não como profundidade. */
-  --card-shadow: 0 2px 8px rgba(18, 16, 26, 0.06), 0 0 20px rgba(109, 40, 217, 0.08);
-  --card-shadow-hover: 0 12px 32px rgba(18, 16, 26, 0.12), 0 0 32px rgba(109, 40, 217, 0.16);
+  /* Sombra ambiente do Card (glow + elevação real). No claro a sombra
+     preta precisa ser bem sutil — sombra escura pesada em fundo claro lê
+     como "sujeira", não como profundidade. */
+  --card-shadow: 0 2px 8px rgba(18, 16, 26, 0.06), 0 0 20px rgba(19, 192, 146, 0.1);
+  --card-shadow-hover: 0 12px 32px rgba(18, 16, 26, 0.12), 0 0 32px rgba(19, 192, 146, 0.2);
 }
 
 /* Três estados possíveis: sem escolha explícita (segue o sistema via
@@ -120,139 +120,136 @@
    clara de "claro" vencer um sistema escuro), e dois blocos [data-theme]
    pra quando a pessoa mexe no alternador — script inline no <head>
    resolve o valor antes da primeira pintura, sem flash. */
-/* Escuro: preto com viés violeta (#0a0711), não preto neutro nem navy. O
-   viés é o que faz o halo do hero parecer luz saindo da própria superfície
-   em vez de um gradiente colado por cima. No escuro a atmosfera pode ser
-   bem mais forte que no claro — é onde o efeito realmente aparece. */
+/* Escuro: preto com viés verde-esmeralda (#06110d), não neutro nem
+   violeta. O viés é o que faz o halo do hero e o glow do card parecerem
+   luz saindo da própria superfície — mesma lógica de sempre, só que
+   acompanhando a cor real da logo agora. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #0a0711;
-    --foreground: #f6f5fb;
+    --background: #06110d;
+    --foreground: #f2fbf7;
 
-    --card: #15111f;
-    --card-foreground: #f6f5fb;
+    --card: #0f1f19;
+    --card-foreground: #f2fbf7;
 
-    --popover: #15111f;
-    --popover-foreground: #f6f5fb;
+    --popover: #0f1f19;
+    --popover-foreground: #f2fbf7;
 
-    --primary: #ff6b35;
-    --primary-foreground: #1a1006;
+    --primary: #13c092;
+    --primary-foreground: #0b0f0d;
 
-    --secondary: #1e1830;
-    --secondary-foreground: #f6f5fb;
+    --secondary: #16241f;
+    --secondary-foreground: #f2fbf7;
 
-    --muted: #1e1830;
-    --muted-foreground: #a09bb8;
+    --muted: #16241f;
+    --muted-foreground: #93a8a0;
 
-    --accent: #1e1830;
-    --accent-foreground: #b9a5ff;
+    --accent: #16241f;
+    --accent-foreground: #47f97f;
 
     --destructive: #c2183d;
     --destructive-foreground: #ffffff;
 
-    --success: #047857;
-    --success-foreground: #ffffff;
+    --success: #47f97f;
+    --success-foreground: #0b0f0d;
 
-    --border: rgba(167, 139, 250, 0.16);
-    --input: rgba(167, 139, 250, 0.2);
-    /* Teal claro (#22D3EE, tier "light" do doc) — no fundo quase preto tem
-       folga enorme (10.27:1), é o oposto do claro onde precisou escurecer. */
-    --ring: #22d3ee;
+    --border: rgba(61, 247, 136, 0.18);
+    --input: rgba(61, 247, 136, 0.22);
+    /* Mint claro — no fundo quase preto tem folga enorme (12:1), o oposto
+       do claro onde precisou escurecer pra não sumir no branco. */
+    --ring: #3df788;
 
-    /* Violeta base (#6D28D9) como texto contra o card escuro é 2.61:1 —
-       reprovado. #A78BFA (tier "lighter" do doc) resolve em 6.82:1. */
-    --brand: #a78bfa;
-    --action-texto: #ff6b35;
+    /* Núcleo da logo (#13c092) como texto contra o card escuro é 7.3:1 —
+       ao contrário do claro, aqui o valor "puro" já funciona bem, sem
+       precisar de variante separada. */
+    --brand: #13c092;
 
-    --pane: #050308;
-    --pane-foreground: #f6f5fb;
-    --pane-muted: #a09bb8;
+    --pane: #030805;
+    --pane-foreground: #f2fbf7;
+    --pane-muted: #93a8a0;
 
     --aura-hero: radial-gradient(
       120% 90% at 50% -20%,
-      rgba(124, 92, 255, 0.42) 0%,
-      rgba(94, 58, 214, 0.14) 45%,
+      rgba(61, 247, 136, 0.38) 0%,
+      rgba(19, 192, 146, 0.14) 45%,
       transparent 72%
     );
     --aura-linha: rgba(255, 255, 255, 0.07);
 
     /* Degraus mais vivos que os do claro: contra preto quase puro um tom
-       mais claro lê melhor e ainda passa 4.5:1 como texto. chart-1 usa a
-       mesma variante clara do --brand (mesmo motivo: base falha como texto
-       no escuro). */
-    --chart-1: #a78bfa;
+       mais claro lê melhor. chart-3 vai pro spring-green mais aberto —
+       mesma lógica do claro, só que já é o extremo vivo do degradê. */
+    --chart-1: #13c092;
     --chart-2: #ff6369;
-    --chart-3: #10b981;
+    --chart-3: #47f97f;
     --chart-4: #38bdf8;
     --chart-5: #f59e0b;
 
     /* No escuro a sombra preta pode ser mais forte (o fundo já é quase
-       preto, então "mais escuro ainda" não lê como sujeira) e o glow
-       violeta salta muito mais contra ele — é onde o efeito aparece de
-       verdade. */
-    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 20px rgba(167, 139, 250, 0.14);
-    --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.5), 0 0 40px rgba(167, 139, 250, 0.28);
+       preto, então "mais escuro ainda" não lê como sujeira) e o glow verde
+       salta muito mais contra ele — é onde o efeito aparece de verdade. */
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 20px rgba(61, 247, 136, 0.16);
+    --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.5), 0 0 40px rgba(61, 247, 136, 0.3);
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #0a0711;
-  --foreground: #f6f5fb;
+  --background: #06110d;
+  --foreground: #f2fbf7;
 
-  --card: #15111f;
-  --card-foreground: #f6f5fb;
+  --card: #0f1f19;
+  --card-foreground: #f2fbf7;
 
-  --popover: #15111f;
-  --popover-foreground: #f6f5fb;
+  --popover: #0f1f19;
+  --popover-foreground: #f2fbf7;
 
-  --primary: #ff6b35;
-  --primary-foreground: #1a1006;
+  --primary: #13c092;
+  --primary-foreground: #0b0f0d;
 
-  --secondary: #1e1830;
-  --secondary-foreground: #f6f5fb;
+  --secondary: #16241f;
+  --secondary-foreground: #f2fbf7;
 
-  --muted: #1e1830;
-  --muted-foreground: #a09bb8;
+  --muted: #16241f;
+  --muted-foreground: #93a8a0;
 
-  --accent: #1e1830;
-  --accent-foreground: #b9a5ff;
+  --accent: #16241f;
+  --accent-foreground: #47f97f;
 
   --destructive: #c2183d;
   --destructive-foreground: #ffffff;
 
-  --success: #047857;
-  --success-foreground: #ffffff;
+  --success: #47f97f;
+  --success-foreground: #0b0f0d;
 
-  --border: rgba(167, 139, 250, 0.16);
-  --input: rgba(167, 139, 250, 0.2);
-  --ring: #22d3ee;
+  --border: rgba(61, 247, 136, 0.18);
+  --input: rgba(61, 247, 136, 0.22);
+  --ring: #3df788;
 
-  --brand: #a78bfa;
-  --action-texto: #ff6b35;
+  --brand: #13c092;
 
   /* No escuro o fundo já é quase preto, então o painel desce mais um degrau. */
-  --pane: #050308;
-  --pane-foreground: #f6f5fb;
-  --pane-muted: #a09bb8;
+  --pane: #030805;
+  --pane-foreground: #f2fbf7;
+  --pane-muted: #93a8a0;
 
   --aura-hero: radial-gradient(
     120% 90% at 50% -20%,
-    rgba(124, 92, 255, 0.42) 0%,
-    rgba(94, 58, 214, 0.14) 45%,
+    rgba(61, 247, 136, 0.38) 0%,
+    rgba(19, 192, 146, 0.14) 45%,
     transparent 72%
   );
   --aura-linha: rgba(255, 255, 255, 0.07);
 
-  /* Degraus próprios para a superfície #15111f, checados manualmente
+  /* Degraus próprios para a superfície #0f1f19, checados manualmente
      contra WCAG AA (ver comentário no topo do arquivo). */
-  --chart-1: #a78bfa;
+  --chart-1: #13c092;
   --chart-2: #ff6369;
-  --chart-3: #10b981;
+  --chart-3: #47f97f;
   --chart-4: #38bdf8;
   --chart-5: #f59e0b;
 
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 20px rgba(167, 139, 250, 0.14);
-  --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.5), 0 0 40px rgba(167, 139, 250, 0.28);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 20px rgba(61, 247, 136, 0.16);
+  --card-shadow-hover: 0 16px 44px rgba(0, 0, 0, 0.5), 0 0 40px rgba(61, 247, 136, 0.3);
 }
 
 @theme inline {
@@ -287,7 +284,6 @@
   --color-pane-muted: var(--pane-muted);
   --color-brand: var(--brand);
   --color-brand-solido: var(--brand-solido);
-  --color-action-texto: var(--action-texto);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
