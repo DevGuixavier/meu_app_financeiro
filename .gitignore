@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code — isolated worktrees for background subagents (transient)
+.claude/worktrees/
