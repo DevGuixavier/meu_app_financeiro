@@ -104,10 +104,11 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
                   autoComplete="one-time-code"
                   autoFocus
                   required
-                  placeholder="000000"
+                  maxLength={8}
+                  placeholder="00000000"
                   value={codigo}
                   onChange={(evento) => setCodigo(evento.target.value)}
-                  className="numeros-tabulares h-12 text-center font-mono text-lg tracking-[0.35em]"
+                  className="numeros-tabulares h-12 text-center font-mono text-lg tracking-[0.25em]"
                 />
               </div>
               {erro && (
