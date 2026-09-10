@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Lexend, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 // Lexend nos títulos: desenhada para legibilidade, dá autoridade sem peso
@@ -47,8 +48,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className={`${lexend.variable} ${sourceSans.variable} ${plexMono.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col bg-bg text-ink font-body antialiased">
+      <body className="min-h-full flex flex-col bg-background text-foreground font-body antialiased">
         {children}
+        <Toaster />
       </body>
     </html>
   );

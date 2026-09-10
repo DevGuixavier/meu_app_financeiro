@@ -1,48 +1,14 @@
-import type { ReactElement } from "react";
+import { ArrowDownLeft, ArrowUpRight, BarChart3, Wallet } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { motion } from "motion/react";
 import type { Aba } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
-function IconGastos({ ativo }: { ativo: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
-      <rect x="3.5" y="6.5" width="17" height="13" rx="3" stroke="currentColor" />
-      <path d="M3.5 10.5h17" stroke="currentColor" strokeLinecap="round" />
-      <path d="M7 6.5V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.5" stroke="currentColor" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconAPagar({ ativo }: { ativo: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
-      <path d="M12 8v8M9 12.5l3 3.2 3-3.2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function IconAReceber({ ativo }: { ativo: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" />
-      <path d="M12 16V8M9 11.5l3-3.2 3 3.2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function IconResumo({ ativo }: { ativo: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" strokeWidth={ativo ? 2 : 1.6} className="h-6 w-6">
-      <path d="M4 20V13M11 20V4M18 20v-7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-const ABAS: { valor: Aba; rotulo: string; Icone: (props: { ativo: boolean }) => ReactElement }[] = [
-  { valor: "despesa", rotulo: "Gastos", Icone: IconGastos },
-  { valor: "a_pagar", rotulo: "A pagar", Icone: IconAPagar },
-  { valor: "a_receber", rotulo: "A receber", Icone: IconAReceber },
-  { valor: "resumo", rotulo: "Resumo", Icone: IconResumo },
+const ABAS: { valor: Aba; rotulo: string; Icone: LucideIcon }[] = [
+  { valor: "despesa", rotulo: "Gastos", Icone: Wallet },
+  { valor: "a_pagar", rotulo: "A pagar", Icone: ArrowUpRight },
+  { valor: "a_receber", rotulo: "A receber", Icone: ArrowDownLeft },
+  { valor: "resumo", rotulo: "Resumo", Icone: BarChart3 },
 ];
 
 export function TabBar({
@@ -53,7 +19,7 @@ export function TabBar({
   aoSelecionar: (aba: Aba) => void;
 }) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-[420px] justify-around border-t border-[color:var(--borda)] bg-bg/75 pb-[calc(env(safe-area-inset-bottom)+0.375rem)] pt-1.5 backdrop-blur-xl md:hidden">
+    <nav className="bg-background/80 fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-[420px] justify-around border-t pt-1.5 pb-[calc(env(safe-area-inset-bottom)+0.375rem)] backdrop-blur-xl md:hidden">
       {ABAS.map(({ valor, rotulo, Icone }) => {
         const ativo = abaAtiva === valor;
         return (
@@ -62,19 +28,21 @@ export function TabBar({
             type="button"
             onClick={() => aoSelecionar(valor)}
             whileTap={{ scale: 0.88 }}
-            className={`relative flex flex-col items-center gap-0.5 px-3 py-1 ${
-              ativo ? "text-accent" : "text-muted"
-            }`}
+            aria-current={ativo ? "page" : undefined}
+            className={cn(
+              "focus-visible:ring-ring/50 relative flex flex-col items-center gap-0.5 rounded-xl px-3 py-1 outline-none focus-visible:ring-[3px]",
+              ativo ? "text-primary" : "text-muted-foreground",
+            )}
           >
             {ativo && (
               <motion.div
                 layoutId="indicador-aba"
                 transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                className="absolute inset-0 -z-10 rounded-2xl border border-accent/30 bg-accent/10 shadow-[0_2px_8px_rgba(37,99,235,0.22)]"
+                className="bg-accent absolute inset-0 -z-10 rounded-xl"
               />
             )}
-            <Icone ativo={ativo} />
-            <span className={`text-[10px] tracking-wide ${ativo ? "font-semibold" : ""}`}>
+            <Icone className={cn("size-5", ativo && "stroke-[2.4]")} />
+            <span className={cn("text-[10px] tracking-wide", ativo && "font-semibold")}>
               {rotulo}
             </span>
           </motion.button>

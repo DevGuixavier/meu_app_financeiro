@@ -2,9 +2,9 @@ import { rotuloMes } from "@/lib/mes";
 import { formatarMoeda } from "@/lib/moeda";
 
 const CORES_POR_TIPO = {
-  despesa: "text-ink",
-  a_pagar: "text-negative",
-  a_receber: "text-accent",
+  despesa: "text-foreground",
+  a_pagar: "text-destructive",
+  a_receber: "text-primary",
 } as const;
 
 const ROTULO_POR_TIPO = {
@@ -28,22 +28,22 @@ export function Header({
 }) {
   return (
     <header className="px-4 pt-6 pb-2">
-      <div className="borda-sutil rounded-[22px] bg-surface px-4 py-4">
+      <div className="border shadow-[var(--sombra-cartao)] rounded-[22px] bg-card px-4 py-4">
         <div className="flex items-center justify-between">
           <button
             type="button"
             onClick={() => aoNavegar(-1)}
             aria-label="Mês anterior"
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--borda)] text-lg text-muted transition-transform active:scale-90"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--border)] text-lg text-muted-foreground transition-transform active:scale-90"
           >
             ‹
           </button>
-          <span className="rotulo-hud text-muted">{rotuloMes(chaveMes)}</span>
+          <span className="rotulo-hud text-muted-foreground">{rotuloMes(chaveMes)}</span>
           <button
             type="button"
             onClick={() => aoNavegar(1)}
             aria-label="Próximo mês"
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--borda)] text-lg text-muted transition-transform active:scale-90"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--border)] text-lg text-muted-foreground transition-transform active:scale-90"
           >
             ›
           </button>
@@ -51,14 +51,14 @@ export function Header({
 
         <div className="mt-4 flex items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="rotulo-hud text-muted">{ROTULO_POR_TIPO[tipoAtivo]}</p>
+            <p className="rotulo-hud text-muted-foreground">{ROTULO_POR_TIPO[tipoAtivo]}</p>
             <p
               className={`numeros-tabulares mt-1.5 truncate font-mono text-[28px] leading-none font-semibold ${CORES_POR_TIPO[tipoAtivo]}`}
             >
               {formatarMoeda(total)}
             </p>
           </div>
-          <p className="shrink-0 text-xs text-muted">
+          <p className="shrink-0 text-xs text-muted-foreground">
             {quantidade} {quantidade === 1 ? "lançamento" : "lançamentos"}
           </p>
         </div>

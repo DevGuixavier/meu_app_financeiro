@@ -1,101 +1,150 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-/* Sistema de cores: azul de confiança sobre branco, derivado do perfil
-   "Personal Finance Tracker". O dark não é uma inversão automática — são
-   degraus próprios, validados contra a superfície escura real (#192134). */
+@custom-variant dark (&:is(.dark *));
+
+/* Tokens no vocabulário do shadcn/ui. A paleta vem do perfil
+   "Personal Finance Tracker": azul de confiança sobre branco no claro,
+   navy no escuro. O dark não é inversão do claro — são degraus escolhidos
+   para a superfície escura real. */
 :root {
-  color-scheme: light;
+  --radius: 0.75rem;
 
-  /* base */
-  --color-bg: #f8fafc;
-  --color-solido: #ffffff;
-  --color-surface: #ffffff;
-  --color-ink: #0f172a;
-  --color-muted: #475569;
+  --background: #f8fafc;
+  --foreground: #0f172a;
 
-  /* semânticas da UI.
-     --color-accent preenche botões (texto branco em cima, 5.17:1);
-     --color-accent-text é o azul quando ele é o texto/ícone sobre o fundo. */
-  --color-accent: #2563eb;
-  --color-accent-text: #1d4ed8;
-  --color-on-accent: #ffffff;
-  --color-negative: #dc2626;
-  --color-positive: #059669;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
 
-  /* marcas de gráfico — validadas por scripts/validate_palette.js contra
-     a superfície do card (faixa de luminosidade, chroma, separação CVD,
-     piso de visão normal e contraste). Não trocar sem revalidar. */
-  --color-serie-gastos: #2563eb;
-  --color-serie-pagar: #dc2626;
-  --color-serie-receber: #059669;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
 
-  --borda: #e2e8f0;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
+
+  --accent: #eff6ff;
+  --accent-foreground: #1d4ed8;
+
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+
+  --success: #059669;
+  --success-foreground: #ffffff;
+
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2563eb;
+
+  /* Marcas de gráfico — validadas por scripts/validate_palette.js contra a
+     superfície do card (faixa de luminosidade, chroma, separação CVD, piso
+     de visão normal e contraste). Não trocar sem revalidar. */
+  --chart-1: #2563eb;
+  --chart-2: #dc2626;
+  --chart-3: #059669;
+  --chart-4: #7c3aed;
+  --chart-5: #b45309;
+
   --sombra-cartao: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
-  --brilho: 0 6px 18px rgba(37, 99, 235, 0.28);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    color-scheme: dark;
+    --background: #0f172a;
+    --foreground: #f8fafc;
 
-    --color-bg: #0f172a;
-    --color-solido: #192134;
-    --color-surface: #192134;
-    --color-ink: #f8fafc;
-    --color-muted: #94a3b8;
+    --card: #192134;
+    --card-foreground: #f8fafc;
 
-    --color-accent: #2563eb;
-    --color-accent-text: #60a5fa;
-    --color-on-accent: #ffffff;
-    --color-negative: #f87171;
-    --color-positive: #34d399;
+    --popover: #192134;
+    --popover-foreground: #f8fafc;
 
-    --color-serie-gastos: #3b82f6;
-    --color-serie-pagar: #ef4444;
-    --color-serie-receber: #059669;
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
 
-    --borda: rgba(248, 250, 252, 0.1);
+    --secondary: #1e293b;
+    --secondary-foreground: #f8fafc;
+
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+
+    --accent: #1e293b;
+    --accent-foreground: #60a5fa;
+
+    --destructive: #dc2626;
+    --destructive-foreground: #ffffff;
+
+    --success: #059669;
+    --success-foreground: #ffffff;
+
+    --border: rgba(248, 250, 252, 0.1);
+    --input: rgba(248, 250, 252, 0.14);
+    --ring: #3b82f6;
+
+    /* Degraus próprios para a superfície #192134, revalidados. */
+    --chart-1: #3b82f6;
+    --chart-2: #ef4444;
+    --chart-3: #059669;
+    --chart-4: #a78bfa;
+    --chart-5: #f59e0b;
+
     --sombra-cartao: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
-    /* Halo mais contido no escuro: no fundo navy o azul espalha muito e o
-       botão passa a parecer neon em vez de elemento de produto financeiro. */
-    --brilho: 0 4px 12px rgba(37, 99, 235, 0.22);
   }
 }
 
 @theme inline {
-  --color-bg: var(--color-bg);
-  --color-solido: var(--color-solido);
-  --color-surface: var(--color-surface);
-  --color-ink: var(--color-ink);
-  --color-muted: var(--color-muted);
-  --color-accent: var(--color-accent);
-  --color-accent-text: var(--color-accent-text);
-  --color-on-accent: var(--color-on-accent);
-  --color-negative: var(--color-negative);
-  --color-positive: var(--color-positive);
-  --color-serie-gastos: var(--color-serie-gastos);
-  --color-serie-pagar: var(--color-serie-pagar);
-  --color-serie-receber: var(--color-serie-receber);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
   --font-display: var(--font-display);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
 }
 
-body {
-  background: var(--color-bg);
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
-/* Cartão: hairline + sombra suave */
-.borda-sutil {
-  border: 1px solid var(--borda);
-  box-shadow: var(--sombra-cartao);
-}
-
-.linha-divisoria {
-  border-bottom: 1px solid var(--borda);
-}
-
-/* Micro-rótulo em caixa alta com tracking */
+/* Micro-rótulo em caixa alta — usado nos cabeçalhos de seção */
 .rotulo-hud {
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -104,10 +153,7 @@ body {
   line-height: 1.1;
 }
 
-.brilho-accent {
-  box-shadow: var(--brilho);
-}
-
+/* Dinheiro em coluna precisa de dígito de largura fixa para alinhar */
 .numeros-tabulares {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
