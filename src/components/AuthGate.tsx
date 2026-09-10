@@ -76,7 +76,7 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
 
       {/* Coluna do formulário: alinhada à esquerda e ancorada no topo em vez
           de um cartão centralizado — o olho começa no canto onde vai digitar. */}
-      <div className="flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-16">
+      <div className="aura flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-16">
         <div className="w-full max-w-[360px]">
           <div className="flex items-center gap-2.5">
             <div className="bg-primary flex size-8 items-center justify-center rounded-[9px]">
@@ -178,14 +178,12 @@ function PainelVitrine() {
   };
 
   return (
-    <aside className="bg-pane text-pane-foreground relative hidden items-center justify-center overflow-hidden p-16 lg:flex">
+    <aside className="aura-pane grade-tecnica-pane bg-pane text-pane-foreground relative hidden items-center justify-center overflow-hidden p-16 lg:flex">
       <div className="w-full max-w-[420px]">
         <p className="rotulo-hud text-pane-muted">Setembro · razão</p>
 
         <div className="mt-5 flex items-baseline gap-3">
-          <span className="numeros-tabulares font-display text-[2.75rem] leading-none font-semibold tracking-[-0.03em]">
-            {formatarMoeda(2097.3)}
-          </span>
+          <span className="numeral-hero text-[3.25rem]">{formatarMoeda(2097.3)}</span>
           <span className="text-pane-muted text-sm">em aberto</span>
         </div>
 

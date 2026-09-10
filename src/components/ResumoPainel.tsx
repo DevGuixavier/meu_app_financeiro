@@ -230,7 +230,7 @@ function AnelKpi({
   const cor = COR_SERIE[tipo];
 
   return (
-    <div className="border flex min-w-0 flex-col items-center gap-2 rounded-lg bg-card px-1.5 py-4 shadow-sm md:px-3">
+    <div className="flex min-w-0 flex-col items-center gap-2 px-1.5 py-5 md:px-3">
       <div className="relative h-[68px] w-[68px]">
         <svg viewBox="0 0 68 68" className="h-full w-full -rotate-90">
           <circle
@@ -738,7 +738,11 @@ export function ResumoPainel({
         </DropdownMenu>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      {/* Uma superfície só, dividida por hairlines — não três cards iguais
+          lado a lado. Três caixas idênticas com o mesmo raio, borda e sombra
+          é ritmo de máquina; o divisor interno dá o mesmo agrupamento sem o
+          serrilhado visual. */}
+      <div className="bg-card divide-border grid grid-cols-3 divide-x overflow-hidden rounded-xl border shadow-sm">
         <AnelKpi
           tipo="despesa"
           valor={dados.totalGastosMes}

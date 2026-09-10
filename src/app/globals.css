@@ -3,63 +3,89 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Tokens no vocabulário do shadcn/ui. Azul de confiança como identidade de
-   marca nos dois temas; superfícies é que mudam de natureza — claro sobre
-   branco neutro, escuro em preto neutro (não navy) pra ler como produto
-   premium e não "SaaS corporativo". Todo par texto/fundo abaixo foi checado
-   contra WCAG AA (4.5:1 texto normal, 3:1 ícone/UI) — não reintroduzir
-   --success ou --chart-3 antigos (#059669) como texto: ficam em 3.77:1. */
+/* Tokens no vocabulário do shadcn/ui.
+
+   IDENTIDADE: violeta profundo, não azul. O #2563eb anterior era o blue-600
+   literal do Tailwind — a cor que todo app gerado nasce usando, e o maior
+   denunciador de "isso foi feito por IA". O violeta aqui (#6d4aff) é
+   deliberadamente fora da escala padrão (violet-600 é #7c3aed, indigo-600 é
+   #4f46e5; este fica entre os dois) e é on-brand: Antaris é nome de estrela,
+   então a leitura de espaço profundo vem do próprio nome do produto.
+
+   ATMOSFERA: os tokens --aura-* abaixo são gradientes radiais, não cores
+   chapadas. Fundo chapado é a outra marca registrada de layout gerado —
+   toda superfície com o mesmo peso, sem profundidade nenhuma.
+
+   Todo par texto/fundo foi checado contra WCAG AA (4.5:1 texto normal,
+   3:1 ícone/UI). Não reintroduzir #059669 como texto: fica em 3.77:1. */
 :root {
   --radius: 1.125rem;
 
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #fafafc;
+  --foreground: #12101a;
 
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #12101a;
 
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
+  --popover-foreground: #12101a;
 
-  --primary: #2563eb;
+  --primary: #6d4aff;
   --primary-foreground: #ffffff;
 
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
+  --secondary: #f2f1f7;
+  --secondary-foreground: #12101a;
 
-  --muted: #f1f5f9;
-  --muted-foreground: #475569;
+  --muted: #f2f1f7;
+  --muted-foreground: #585370;
 
-  --accent: #eff6ff;
-  --accent-foreground: #1d4ed8;
+  --accent: #f1edff;
+  --accent-foreground: #5b34e8;
 
-  --destructive: #dc2626;
+  --destructive: #c2183d;
   --destructive-foreground: #ffffff;
 
   --success: #047857;
   --success-foreground: #ffffff;
 
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #2563eb;
+  --border: #e6e4ee;
+  --input: #e6e4ee;
+  --ring: #6d4aff;
 
   /* Painel de marca do login: escuro nos dois temas de propósito — é o
      contraste entre os dois lados que faz o split screen se ler. */
-  --pane: #0f172a;
-  --pane-foreground: #f8fafc;
-  --pane-muted: #94a3b8;
+  --pane: #0a0711;
+  --pane-foreground: #f6f5fb;
+  --pane-muted: #a09bb8;
+
+  /* Halo atmosférico do hero. No claro fica quase imperceptível de
+     propósito — um véu, não um banner colorido. */
+  --aura-hero: radial-gradient(
+    120% 90% at 50% -20%,
+    rgba(109, 74, 255, 0.16) 0%,
+    rgba(109, 74, 255, 0.04) 45%,
+    transparent 72%
+  );
+  --aura-linha: rgba(18, 16, 26, 0.07);
+
+  /* Fixos (não viram com o tema): --pane é escuro nos dois temas de
+     propósito, então a atmosfera dele usa sempre a versão "forte". */
+  --pane-aura: radial-gradient(
+    120% 90% at 50% -20%,
+    rgba(124, 92, 255, 0.42) 0%,
+    rgba(94, 58, 214, 0.14) 45%,
+    transparent 72%
+  );
+  --pane-linha: rgba(255, 255, 255, 0.07);
 
   /* Marcas de gráfico, checadas contra a superfície do card (branco):
      chart-3 usa o mesmo verde do --success (#047857) porque os dois
-     representam a mesma coisa — "recebido/quitado" — e o verde antigo
-     (#059669) falhava 4.5:1 como texto corrido (usado no valor de "a
-     receber"). Os demais têm folga confortável. */
-  --chart-1: #2563eb;
-  --chart-2: #dc2626;
+     representam a mesma coisa — "recebido/quitado". */
+  --chart-1: #5b34e8;
+  --chart-2: #c2183d;
   --chart-3: #047857;
-  --chart-4: #7c3aed;
+  --chart-4: #0369a1;
   --chart-5: #b45309;
-
 }
 
 /* Três estados possíveis: sem escolha explícita (segue o sistema via
@@ -67,35 +93,34 @@
    clara de "claro" vencer um sistema escuro), e dois blocos [data-theme]
    pra quando a pessoa mexe no alternador — script inline no <head>
    resolve o valor antes da primeira pintura, sem flash. */
-/* Escuro: preto neutro, não navy. #0f172a/#192134 (slate) tinha um viés
-   azul que competia com o próprio azul de marca — surge afundado em vez de
-   flutuar. Preto neutro (~zinco) deixa o azul, o verde e o âmbar saltarem
-   e é o que faz um app financeiro escuro ler como produto cuidado (tipo
-   Pierre) em vez de "dashboard corporativo com dark mode ligado". */
+/* Escuro: preto com viés violeta (#0a0711), não preto neutro nem navy. O
+   viés é o que faz o halo do hero parecer luz saindo da própria superfície
+   em vez de um gradiente colado por cima. No escuro a atmosfera pode ser
+   bem mais forte que no claro — é onde o efeito realmente aparece. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #0a0a0d;
-    --foreground: #f8fafc;
+    --background: #0a0711;
+    --foreground: #f6f5fb;
 
-    --card: #16171b;
-    --card-foreground: #f8fafc;
+    --card: #15111f;
+    --card-foreground: #f6f5fb;
 
-    --popover: #16171b;
-    --popover-foreground: #f8fafc;
+    --popover: #15111f;
+    --popover-foreground: #f6f5fb;
 
-    --primary: #2563eb;
+    --primary: #6d4aff;
     --primary-foreground: #ffffff;
 
-    --secondary: #1e1f24;
-    --secondary-foreground: #f8fafc;
+    --secondary: #1e1830;
+    --secondary-foreground: #f6f5fb;
 
-    --muted: #1e1f24;
-    --muted-foreground: #9a9ba3;
+    --muted: #1e1830;
+    --muted-foreground: #a09bb8;
 
-    --accent: #1e1f24;
-    --accent-foreground: #60a5fa;
+    --accent: #1e1830;
+    --accent-foreground: #b9a5ff;
 
-    --destructive: #dc2626;
+    --destructive: #c2183d;
     --destructive-foreground: #ffffff;
 
     --success: #047857;
@@ -103,46 +128,53 @@
 
     --border: rgba(255, 255, 255, 0.08);
     --input: rgba(255, 255, 255, 0.12);
-    --ring: #3b82f6;
+    --ring: #8b6dff;
 
-    --pane: #050506;
-    --pane-foreground: #f8fafc;
-    --pane-muted: #94a3b8;
+    --pane: #050308;
+    --pane-foreground: #f6f5fb;
+    --pane-muted: #a09bb8;
 
-    /* Degraus mais vivos que os de --success/--chart-3 claro: contra o
-       preto quase puro, um verde mais claro lê melhor e ainda passa 4.5:1
-       como texto (7.06:1 contra o card). */
-    --chart-1: #3b82f6;
-    --chart-2: #f87171;
+    --aura-hero: radial-gradient(
+      120% 90% at 50% -20%,
+      rgba(124, 92, 255, 0.42) 0%,
+      rgba(94, 58, 214, 0.14) 45%,
+      transparent 72%
+    );
+    --aura-linha: rgba(255, 255, 255, 0.07);
+
+    /* Degraus mais vivos que os do claro: contra preto quase puro um tom
+       mais claro lê melhor e ainda passa 4.5:1 como texto. */
+    --chart-1: #8b6dff;
+    --chart-2: #ff6369;
     --chart-3: #10b981;
-    --chart-4: #a78bfa;
+    --chart-4: #38bdf8;
     --chart-5: #f59e0b;
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #0a0a0d;
-  --foreground: #f8fafc;
+  --background: #0a0711;
+  --foreground: #f6f5fb;
 
-  --card: #16171b;
-  --card-foreground: #f8fafc;
+  --card: #15111f;
+  --card-foreground: #f6f5fb;
 
-  --popover: #16171b;
-  --popover-foreground: #f8fafc;
+  --popover: #15111f;
+  --popover-foreground: #f6f5fb;
 
-  --primary: #2563eb;
+  --primary: #6d4aff;
   --primary-foreground: #ffffff;
 
-  --secondary: #1e1f24;
-  --secondary-foreground: #f8fafc;
+  --secondary: #1e1830;
+  --secondary-foreground: #f6f5fb;
 
-  --muted: #1e1f24;
-  --muted-foreground: #9a9ba3;
+  --muted: #1e1830;
+  --muted-foreground: #a09bb8;
 
-  --accent: #1e1f24;
-  --accent-foreground: #60a5fa;
+  --accent: #1e1830;
+  --accent-foreground: #b9a5ff;
 
-  --destructive: #dc2626;
+  --destructive: #c2183d;
   --destructive-foreground: #ffffff;
 
   --success: #047857;
@@ -150,19 +182,27 @@
 
   --border: rgba(255, 255, 255, 0.08);
   --input: rgba(255, 255, 255, 0.12);
-  --ring: #3b82f6;
+  --ring: #8b6dff;
 
   /* No escuro o fundo já é quase preto, então o painel desce mais um degrau. */
-  --pane: #050506;
-  --pane-foreground: #f8fafc;
-  --pane-muted: #94a3b8;
+  --pane: #050308;
+  --pane-foreground: #f6f5fb;
+  --pane-muted: #a09bb8;
 
-  /* Degraus próprios para a superfície #16171b, checados manualmente
+  --aura-hero: radial-gradient(
+    120% 90% at 50% -20%,
+    rgba(124, 92, 255, 0.42) 0%,
+    rgba(94, 58, 214, 0.14) 45%,
+    transparent 72%
+  );
+  --aura-linha: rgba(255, 255, 255, 0.07);
+
+  /* Degraus próprios para a superfície #15111f, checados manualmente
      contra WCAG AA (ver comentário no topo do arquivo). */
-  --chart-1: #3b82f6;
-  --chart-2: #f87171;
+  --chart-1: #8b6dff;
+  --chart-2: #ff6369;
   --chart-3: #10b981;
-  --chart-4: #a78bfa;
+  --chart-4: #38bdf8;
   --chart-5: #f59e0b;
 }
 
@@ -228,6 +268,70 @@
 
 /* Dinheiro em coluna precisa de dígito de largura fixa para alinhar */
 .numeros-tabulares {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Halo do hero: luz difusa saindo do topo da seção. Sem isso a tela é uma
+   pilha de retângulos chapados de peso igual — o sintoma nº1 de layout
+   gerado. Vai em ::before pra não competir com o conteúdo. */
+.aura {
+  position: relative;
+  isolation: isolate;
+}
+
+.aura::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--aura-hero);
+  pointer-events: none;
+}
+
+/* Grade técnica: hairlines de 88px. Junto com as marcas "+" do componente,
+   é o que sinaliza "existe um sistema por trás disto" — a diferença entre
+   uma composição desenhada e três divs empilhadas. */
+.grade-tecnica {
+  position: relative;
+  isolation: isolate;
+}
+
+.grade-tecnica::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--aura-linha) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--aura-linha) 1px, transparent 1px);
+  background-size: 88px 88px;
+  /* Esmaece nas bordas pra grade não terminar num corte seco */
+  mask-image: radial-gradient(120% 100% at 50% 0%, #000 35%, transparent 85%);
+}
+
+/* Variantes fixas pro painel de marca do login (--pane é escuro nos dois
+   temas, então usa sempre a versão "forte" da atmosfera, não a que vira
+   com o tema). */
+.aura-pane::before {
+  background: var(--pane-aura);
+}
+
+.grade-tecnica-pane::after {
+  background-image:
+    linear-gradient(to right, var(--pane-linha) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--pane-linha) 1px, transparent 1px);
+}
+
+/* Numeral display do hero: grande e LEVE, não grande e bold. Peso alto em
+   corpo grande é exatamente o default que a IA cospe; o contraste
+   editorial vem de tamanho + entrelinha apertada + tracking negativo. */
+.numeral-hero {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }

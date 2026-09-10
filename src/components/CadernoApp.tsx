@@ -29,29 +29,15 @@ const ResumoPainel = dynamic(
 );
 
 // Ciclo fixo: cada categoria nova pega a próxima cor, sem repetir enquanto
-// houver opção — é o que dá o selo colorido por categoria (Pierre, Mobills)
-// em vez do cinza neutro que "cor: null" produzia até aqui.
+// houver opção — é o que dá o selo colorido por categoria. Paleta alinhada
+// aos --chart-* atuais (violeta como primária, não mais azul-shadcn).
 const PALETA_CATEGORIA = [
-  "#2563eb",
-  "#dc2626",
+  "#5b34e8",
+  "#c2183d",
   "#047857",
-  "#7c3aed",
+  "#0369a1",
   "#b45309",
-  "#db2777",
-  "#0891b2",
-  "#65a30d",
-];
-
-// Ciclo fixo: cada categoria nova pega a próxima cor, sem repetir enquanto
-// houver opção — é o que dá o selo colorido por categoria (Pierre, Mobills)
-// em vez do cinza neutro que "cor: null" produzia até aqui.
-const PALETA_CATEGORIA = [
-  "#2563eb",
-  "#dc2626",
-  "#047857",
-  "#7c3aed",
-  "#b45309",
-  "#db2777",
+  "#be185d",
   "#0891b2",
   "#65a30d",
 ];
@@ -230,7 +216,7 @@ export function CadernoApp({ session }: { session: Session }) {
               type="button"
               onClick={() => setFormAberto(true)}
               aria-label="Novo lançamento"
-              className="fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-10 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-2xl text-primary-foreground shadow-[0_8px_24px_rgba(37,99,235,0.38)] transition-transform active:scale-90 md:hidden"
+              className="fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-10 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-2xl text-primary-foreground shadow-[0_8px_28px_rgba(109,74,255,0.45)] transition-transform active:scale-90 md:hidden"
             >
               +
             </button>
