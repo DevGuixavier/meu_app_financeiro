@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Onest, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
+import { Playfair_Display, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -19,16 +19,16 @@ const SCRIPT_TEMA = `
 })();
 `;
 
-// Onest nos títulos e nos numerais grandes: grotesco moderno com escala de
-// peso completa — o 300 é o que permite o numeral do hero ser grande e leve
-// em vez de grande e bold (bold gigante é o default que denuncia layout
-// gerado). Substituiu a Lexend, que virou fonte-carimbo de design de IA.
-// Source Sans 3 no corpo, humanista e neutra na leitura longa. IBM Plex
-// Mono só nos valores em coluna, onde os dígitos precisam bater entre linhas.
-const onest = Onest({
+// Playfair Display nos títulos — serifada, elegante, é o par tipográfico do
+// design system que estamos seguindo (doc "Antaris Modern"). O numeral
+// gigante do hero NÃO usa essa fonte: o doc especifica valor monetário em
+// monoespaçada bold (Fira Code/JetBrains Mono), não na fonte de título — e
+// Playfair nem tem peso 300, que o numeral usava antes. Ver .numeral-hero
+// em globals.css, que já usa --font-mono por causa disso.
+const playfairDisplay = Playfair_Display({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${onest.variable} ${sourceSans.variable} ${plexMono.variable} h-full`}
+      className={`${playfairDisplay.variable} ${sourceSans.variable} ${plexMono.variable} h-full`}
       // O script beforeInteractive muda data-theme neste elemento antes do
       // React hidratar — mismatch esperado e inofensivo, não um bug real.
       suppressHydrationWarning

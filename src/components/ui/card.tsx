@@ -7,7 +7,11 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        // Glow ambiente fixo (não pulsante — isso é reservado pra .glow-pulse
+        // nas superfícies em destaque) + lift no hover, como os cards do doc.
+        // --card-shadow-* vêm de globals.css, valores próprios por tema (o
+        // projeto não usa a variante `dark:` do Tailwind, só data-theme).
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-md border py-6 shadow-[var(--card-shadow)] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-1 hover:shadow-[var(--card-shadow-hover)]",
         className,
       )}
       {...props}

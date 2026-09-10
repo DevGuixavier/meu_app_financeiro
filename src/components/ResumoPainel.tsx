@@ -759,8 +759,9 @@ export function ResumoPainel({
       {/* Uma superfície só, dividida por hairlines — não três cards iguais
           lado a lado. Três caixas idênticas com o mesmo raio, borda e sombra
           é ritmo de máquina; o divisor interno dá o mesmo agrupamento sem o
-          serrilhado visual. */}
-      <div className="bg-card divide-border grid grid-cols-3 divide-x overflow-hidden rounded-xl border shadow-sm">
+          serrilhado visual. glow-pulse aqui e só aqui: é o resumo do mês —
+          a única superfície "em destaque" de verdade nesta tela. */}
+      <div className="bg-card divide-border glow-pulse grid grid-cols-3 divide-x overflow-hidden rounded-xl border shadow-sm">
         <AnelKpi
           tipo="despesa"
           valor={dados.totalGastosMes}

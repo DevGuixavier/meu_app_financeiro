@@ -5,15 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none transition-[color,box-shadow] overflow-hidden",
+  // Pill translúcida (bg em 15% de opacidade + texto na cor cheia), como o
+  // doc especifica — não preenchimento sólido. O texto usa os tokens
+  // --action-texto/--chart-2/--chart-3, não --primary/--destructive/--success
+  // crus: esses últimos são afinados pra fundo sólido + texto branco em cima,
+  // e reprovam contraste quando usados como texto corrido contra o card no
+  // escuro (--destructive 3.09:1, --success 3.38:1 — abaixo de 4.5:1). Os
+  // tokens de chart já resolvem isso, com variante clara própria por tema.
+  "inline-flex items-center justify-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-semibold tracking-wide w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none transition-[color,box-shadow] overflow-hidden",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary text-primary-foreground",
-        secondary: "border-transparent bg-secondary text-secondary-foreground",
-        destructive: "border-transparent bg-destructive text-destructive-foreground",
-        outline: "text-foreground",
-        success: "border-transparent bg-success text-success-foreground",
+        default: "bg-primary/15 text-action-texto",
+        secondary: "bg-secondary text-secondary-foreground",
+        destructive: "bg-destructive/15 text-[var(--chart-2)]",
+        outline: "border-border text-foreground",
+        success: "bg-success/15 text-[var(--chart-3)]",
       },
     },
     defaultVariants: {
