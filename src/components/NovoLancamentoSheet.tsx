@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import type { Categoria, Pessoa, TipoTransacao } from "@/lib/types";
 import { dividirValor, type NovaTransacaoInput } from "@/lib/parcelamento";
 import { formatarMoeda } from "@/lib/moeda";
+import { chaveMesAtual } from "@/lib/mes";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -37,6 +38,7 @@ const SEM_VINCULO = "nenhuma";
 
 export function NovoLancamentoSheet({
   tipo,
+  chaveMes,
   pessoas,
   categorias,
   aoFechar,
@@ -45,6 +47,7 @@ export function NovoLancamentoSheet({
   aoCriarCategoria,
 }: {
   tipo: TipoTransacao;
+  chaveMes: string;
   pessoas: Pessoa[];
   categorias: Categoria[];
   aoFechar: () => void;
@@ -63,6 +66,8 @@ export function NovoLancamentoSheet({
   const [novaCategoria, setNovaCategoria] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [criandoPessoa, setCriandoPessoa] = useState(false);
+  const [criandoCategoria, setCriandoCategoria] = useState(false);
 
   const ehDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -86,19 +91,33 @@ export function NovoLancamentoSheet({
   }, [parcelado, valorValido, valor, numeroParcelas]);
 
   async function confirmarNovaPessoa() {
-    if (!novaPessoa.trim()) return;
-    const pessoa = await aoCriarPessoa(novaPessoa.trim());
-    pessoas.push(pessoa);
-    setPessoaId(String(pessoa.id));
-    setNovaPessoa("");
+    if (!novaPessoa.trim() || criandoPessoa) return;
+    setCriandoPessoa(true);
+    setErro(null);
+    try {
+      const pessoa = await aoCriarPessoa(novaPessoa.trim());
+      setPessoaId(String(pessoa.id));
+      setNovaPessoa("");
+    } catch (excecao) {
+      setErro(excecao instanceof Error ? excecao.message : "Não foi possível criar a pessoa.");
+    } finally {
+      setCriandoPessoa(false);
+    }
   }
 
   async function confirmarNovaCategoria() {
-    if (!novaCategoria.trim()) return;
-    const categoria = await aoCriarCategoria(novaCategoria.trim());
-    categorias.push(categoria);
-    setCategoriaId(String(categoria.id));
-    setNovaCategoria("");
+    if (!novaCategoria.trim() || criandoCategoria) return;
+    setCriandoCategoria(true);
+    setErro(null);
+    try {
+      const categoria = await aoCriarCategoria(novaCategoria.trim());
+      setCategoriaId(String(categoria.id));
+      setNovaCategoria("");
+    } catch (excecao) {
+      setErro(excecao instanceof Error ? excecao.message : "Não foi possível criar a categoria.");
+    } finally {
+      setCriandoCategoria(false);
+    }
   }
 
   async function enviar(evento: FormEvent) {
@@ -112,7 +131,12 @@ export function NovoLancamentoSheet({
         titulo: titulo.trim(),
         descricao: descricao.trim() || null,
         valorTotal: valor,
-        dataVencimentoInicial: new Date().toISOString().slice(0, 10),
+        // Se o mês visto é o mês real de hoje, mantém o dia exato de hoje;
+        // se a pessoa navegou pra outro mês (ex.: lançando algo futuro),
+        // ancora no dia 1 daquele mês — sem isso o lançamento sempre nascia
+        // "hoje" e sumia da lista quando salvo enquanto se via outro mês.
+        dataVencimentoInicial:
+          chaveMes === chaveMesAtual() ? new Date().toISOString().slice(0, 10) : `${chaveMes}-01`,
         pessoaId: pessoaId !== SEM_VINCULO ? Number(pessoaId) : null,
         categoriaId: categoriaId !== SEM_VINCULO ? Number(categoriaId) : null,
         parcelas: parcelado ? numeroParcelas : null,
@@ -126,7 +150,12 @@ export function NovoLancamentoSheet({
   }
 
   const formulario = (
-    <form onSubmit={enviar} className="flex flex-col gap-5 px-5 pb-6 md:px-0 md:pb-0">
+    // Corpo rolável separado do rodapé de propósito: um formulário longo
+    // (parcelado + pessoa/categoria abertos) passa da dobra em qualquer
+    // aparelho, e se o botão "Salvar" estiver dentro da área que rola ele
+    // fica inacessível. Fixo fora do scroll, ele nunca some.
+    <form onSubmit={enviar} className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-5 pb-4 md:px-0">
       <div className="flex flex-col gap-2">
         <Label htmlFor="titulo">Título</Label>
         <Input
@@ -198,6 +227,7 @@ export function NovoLancamentoSheet({
         novoTexto={novaPessoa}
         aoMudarNovoTexto={setNovaPessoa}
         aoAdicionar={confirmarNovaPessoa}
+        adicionando={criandoPessoa}
         placeholderNovo="Nova pessoa"
       />
 
@@ -209,25 +239,28 @@ export function NovoLancamentoSheet({
         novoTexto={novaCategoria}
         aoMudarNovoTexto={setNovaCategoria}
         aoAdicionar={confirmarNovaCategoria}
+        adicionando={criandoCategoria}
         placeholderNovo="Nova categoria"
       />
+      </div>
 
-      {erro && (
-        <p role="alert" className="text-destructive text-sm">
-          {erro}
-        </p>
-      )}
-
-      <Button type="submit" size="lg" disabled={!formValido || salvando} className="mt-1">
-        {salvando ? "Salvando..." : "Salvar lançamento"}
-      </Button>
+      <div className="shrink-0 border-t px-5 py-4 md:px-0 md:pt-4">
+        {erro && (
+          <p role="alert" className="text-destructive mb-2 text-sm">
+            {erro}
+          </p>
+        )}
+        <Button type="submit" size="lg" disabled={!formValido || salvando} className="w-full">
+          {salvando ? "Salvando..." : "Salvar lançamento"}
+        </Button>
+      </div>
     </form>
   );
 
   if (ehDesktop) {
     return (
       <Dialog open onOpenChange={(aberto) => !aberto && aoFechar()}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[440px]">
+        <DialogContent className="flex max-h-[90vh] flex-col overflow-hidden sm:max-w-[440px]">
           <DialogHeader>
             <DialogTitle className="font-display">Novo lançamento</DialogTitle>
             <DialogDescription>
@@ -242,7 +275,7 @@ export function NovoLancamentoSheet({
 
   return (
     <Drawer open onOpenChange={(aberto) => !aberto && aoFechar()}>
-      <DrawerContent className="max-h-[92vh] overflow-y-auto">
+      <DrawerContent className="max-h-[92vh] overflow-hidden">
         <DrawerHeader>
           <DrawerTitle className="font-display">Novo lançamento</DrawerTitle>
           <DrawerDescription>
@@ -263,6 +296,7 @@ function CampoVinculo({
   novoTexto,
   aoMudarNovoTexto,
   aoAdicionar,
+  adicionando,
   placeholderNovo,
 }: {
   rotulo: string;
@@ -272,6 +306,7 @@ function CampoVinculo({
   novoTexto: string;
   aoMudarNovoTexto: (valor: string) => void;
   aoAdicionar: () => void;
+  adicionando: boolean;
   placeholderNovo: string;
 }) {
   return (
@@ -304,11 +339,11 @@ function CampoVinculo({
           variant="outline"
           size="sm"
           onClick={aoAdicionar}
-          disabled={!novoTexto.trim()}
+          disabled={!novoTexto.trim() || adicionando}
           className="h-9"
         >
           <Plus />
-          Adicionar
+          {adicionando ? "Adicionando..." : "Adicionar"}
         </Button>
       </div>
     </div>

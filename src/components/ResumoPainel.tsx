@@ -5,7 +5,7 @@ import { Download } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Pessoa, TipoTransacao, Transacao } from "@/lib/types";
+import type { Categoria, Pessoa, TipoTransacao, Transacao } from "@/lib/types";
 import { agruparPorCategoria, agruparPorMesETipo, type GastoPorCategoria } from "@/lib/resumo";
 import { chaveMesAtual, deslocarMes, limitesDoMes, rotuloMesAbreviado } from "@/lib/mes";
 import { formatarMoeda } from "@/lib/moeda";
@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { buscarTodasTransacoes, exportarCsv, exportarXlsx } from "@/lib/exportacao";
+import { ImportarLancamentos } from "@/components/ImportarLancamentos";
 
 const QUANTIDADE_MESES_EVOLUCAO = 6;
 const QUANTIDADE_RECENTES = 6;
@@ -464,9 +465,15 @@ function FeedRecentes({ recentes }: { recentes: Transacao[] }) {
 export function ResumoPainel({
   supabase,
   pessoas,
+  categorias,
+  aoCriarPessoa,
+  aoCriarCategoria,
 }: {
   supabase: SupabaseClient;
   pessoas: Pessoa[];
+  categorias: Categoria[];
+  aoCriarPessoa: (nome: string) => Promise<Pessoa>;
+  aoCriarCategoria: (nome: string) => Promise<Categoria>;
 }) {
   const [dados, setDados] = useState<DadosResumo | null>(null);
   const [serieAtiva, setSerieAtiva] = useState<TipoTransacao>("despesa");
@@ -502,13 +509,25 @@ export function ResumoPainel({
     };
   }, [supabase, pessoas]);
 
+  async function recarregar() {
+    setDados(await buscarDadosResumo(supabase, pessoas));
+  }
+
   if (!dados) {
     return <div className="flex-1 px-4 py-6 text-sm text-muted-foreground">Carregando resumo...</div>;
   }
 
   return (
     <div className="flex flex-1 flex-col gap-4 px-4 py-4 md:px-6">
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <ImportarLancamentos
+          supabase={supabase}
+          pessoas={pessoas}
+          categorias={categorias}
+          aoCriarPessoa={aoCriarPessoa}
+          aoCriarCategoria={aoCriarCategoria}
+          aoConcluir={recarregar}
+        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" disabled={exportando}>
