@@ -1,8 +1,8 @@
-import Image from "next/image";
 import { MdAccountBalanceWallet, MdBarChart, MdCallMade, MdCallReceived, MdLogout, MdAdd } from "react-icons/md";
 import type { IconType } from "react-icons";
 import type { Aba } from "@/lib/types";
 import { Button } from "@/components/ui/button";
+import { LogoAntaris } from "@/components/LogoAntaris";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 
@@ -27,14 +27,7 @@ export function Sidebar({
   return (
     <aside className="sticky top-8 hidden w-56 shrink-0 flex-col gap-7 md:flex">
       <div className="flex items-center gap-2.5">
-        <Image
-          src="/images/logo-antaris.png"
-          alt=""
-          width={36}
-          height={36}
-          className="size-9"
-          priority
-        />
+        <LogoAntaris className="size-9" />
         <span className="rotulo-hud text-foreground">Antaris</span>
       </div>
 
