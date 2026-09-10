@@ -1,9 +1,22 @@
 "use client";
 
 import { useEffect, useMemo, useState, type PointerEvent, type ReactNode } from "react";
-import { Download } from "lucide-react";
+import { Download, TrendingDown, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Categoria, Pessoa, TipoTransacao, Transacao } from "@/lib/types";
 import { agruparPorCategoria, agruparPorMesETipo, type GastoPorCategoria } from "@/lib/resumo";
@@ -77,7 +90,7 @@ async function buscarDadosResumo(supabase: SupabaseClient, pessoas: Pessoa[]): P
     await Promise.all([
       supabase
         .from("transacao")
-        .select("valor, categoria:categoria_id(nome)")
+        .select("valor, categoria:categoria_id(nome, cor)")
         .eq("tipo", "despesa")
         .gte("data_vencimento", inicio)
         .lt("data_vencimento", fimExclusivo),
@@ -128,7 +141,9 @@ async function buscarDadosResumo(supabase: SupabaseClient, pessoas: Pessoa[]): P
     totalAReceberPendente: somar(aReceberPendente.data),
     progresso,
     gastosPorCategoria: agruparPorCategoria(
-      (gastosMes.data as { valor: number; categoria: { nome: string } | null }[] | null) ?? [],
+      (gastosMes.data as
+        | { valor: number; categoria: { nome: string; cor: string | null } | null }[]
+        | null) ?? [],
     ),
     evolucao: agruparPorMesETipo(linhasEvolucao, mesesChaves),
     mesesChaves,
@@ -157,15 +172,56 @@ function Painel({
   );
 }
 
+/** [atual, anterior] a partir de uma série de 6 meses onde o último é o mês corrente. */
+function ultimosDoisMeses(serie: number[]): [number, number] {
+  return [serie[serie.length - 1] ?? 0, serie[serie.length - 2] ?? 0];
+}
+
+interface Variacao {
+  percentual: number | null;
+  direcao: "alta" | "queda" | "estavel" | "novo";
+}
+
+/** Compara o volume lançado (soma independente de status) desse mês contra o
+ * anterior — os dois vêm da mesma série (`evolucao`), então funciona igual
+ * pros três tipos, mesmo "a pagar"/"a receber" mostrando saldo pendente (não
+ * volume) como valor principal do card. */
+function calcularVariacao(atual: number, anterior: number): Variacao {
+  if (anterior <= 0) {
+    return atual > 0 ? { percentual: null, direcao: "novo" } : { percentual: null, direcao: "estavel" };
+  }
+  const percentual = Math.round(((atual - anterior) / anterior) * 100);
+  if (percentual === 0) return { percentual: 0, direcao: "estavel" };
+  return { percentual, direcao: percentual > 0 ? "alta" : "queda" };
+}
+
+function IndicadorVariacao({ variacao }: { variacao: Variacao }) {
+  if (variacao.direcao === "estavel") {
+    return <span className="text-[11px] text-muted-foreground">= vs mês passado</span>;
+  }
+  if (variacao.direcao === "novo") {
+    return <span className="text-[11px] text-muted-foreground">novo este mês</span>;
+  }
+  const Icone = variacao.direcao === "alta" ? TrendingUp : TrendingDown;
+  return (
+    <span className="text-muted-foreground inline-flex items-center gap-0.5 text-[11px]">
+      <Icone className="size-3" />
+      {Math.abs(variacao.percentual ?? 0)}% vs mês passado
+    </span>
+  );
+}
+
 /** KPI com anel de progresso: quanto do mês já foi quitado naquele tipo. */
 function AnelKpi({
   tipo,
   valor,
   progresso,
+  variacao,
 }: {
   tipo: TipoTransacao;
   valor: number;
   progresso: ProgressoTipo;
+  variacao: Variacao;
 }) {
   const raio = 26;
   const circunferencia = 2 * Math.PI * raio;
@@ -207,6 +263,7 @@ function AnelKpi({
       <p className="numeros-tabulares w-full truncate text-center font-mono text-[13px] text-foreground md:text-sm">
         {formatarMoeda(valor)}
       </p>
+      <IndicadorVariacao variacao={variacao} />
     </div>
   );
 }
@@ -392,38 +449,177 @@ function GraficoTemporal({
   );
 }
 
-function ListaGastosPorCategoria({ dados }: { dados: GastoPorCategoria[] }) {
-  const maiorValor = Math.max(...dados.map((item) => item.valor), 1);
+/** Categoria sem `cor` própria (legado, criada antes do rodízio automático
+ * de cores em CadernoApp) cai num cinza neutro — nunca falha silenciosa. */
+const COR_CATEGORIA_FALLBACK = "var(--muted-foreground)";
+
+function TooltipCard({ children }: { children: ReactNode }) {
+  return (
+    <div className="border bg-card rounded-lg px-3 py-2 text-sm shadow-lg">{children}</div>
+  );
+}
+
+function TooltipDonut({
+  active,
+  payload,
+  total,
+}: {
+  active?: boolean;
+  payload?: { name?: string; value?: number; payload?: GastoPorCategoria }[];
+  total: number;
+}) {
+  if (!active || !payload?.length) return null;
+  const item = payload[0];
+  const valor = item.value ?? 0;
+  return (
+    <TooltipCard>
+      <p className="text-foreground font-medium">{item.name}</p>
+      <p className="numeros-tabulares text-muted-foreground font-mono">
+        {formatarMoeda(valor)} · {total > 0 ? Math.round((valor / total) * 100) : 0}%
+      </p>
+    </TooltipCard>
+  );
+}
+
+function DonutCategorias({ dados }: { dados: GastoPorCategoria[] }) {
+  const total = dados.reduce((soma, item) => soma + item.valor, 0);
 
   if (dados.length === 0) {
     return <p className="py-6 text-center text-sm text-muted-foreground">Nenhum gasto neste mês ainda.</p>;
   }
 
   return (
-    <ul className="flex flex-col gap-3">
-      {dados.map((item) => (
-        <li key={item.nome}>
-          <div className="mb-1.5 flex items-baseline justify-between gap-2">
-            <span className="truncate text-sm text-foreground">{item.nome}</span>
-            <span className="numeros-tabulares shrink-0 font-mono text-sm text-muted-foreground">
-              {formatarMoeda(item.valor)}
-            </span>
-          </div>
-          <div className="h-1.5 rounded-full bg-foreground/8">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${(item.valor / maiorValor) * 100}%` }}
-              transition={{ type: "spring", stiffness: 80, damping: 20 }}
-              className="h-1.5 rounded-full"
-              style={{
-                background: "var(--chart-1)",
-                
-              }}
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+      <div className="mx-auto h-[168px] w-[168px] shrink-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={dados}
+              dataKey="valor"
+              nameKey="nome"
+              innerRadius="62%"
+              outerRadius="100%"
+              paddingAngle={2}
+              stroke="var(--card)"
+              strokeWidth={2}
+              isAnimationActive
+            >
+              {dados.map((item) => (
+                <Cell key={item.nome} fill={item.cor ?? COR_CATEGORIA_FALLBACK} />
+              ))}
+            </Pie>
+            <Tooltip content={<TooltipDonut total={total} />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <ul className="flex min-w-0 flex-1 flex-col gap-2.5">
+        {dados.map((item) => (
+          <li key={item.nome} className="flex items-center gap-2">
+            <span
+              className="size-2 shrink-0 rounded-full"
+              style={{ background: item.cor ?? COR_CATEGORIA_FALLBACK }}
+              aria-hidden
             />
-          </div>
-        </li>
+            <span className="min-w-0 flex-1 truncate text-sm text-foreground">{item.nome}</span>
+            <span className="numeros-tabulares shrink-0 font-mono text-xs text-muted-foreground">
+              {total > 0 ? Math.round((item.valor / total) * 100) : 0}%
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function TooltipComparativo({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: { dataKey?: string; value?: number; color?: string }[];
+  label?: string;
+}) {
+  if (!active || !payload?.length) return null;
+  return (
+    <TooltipCard>
+      <p className="text-muted-foreground mb-1 text-xs">{label}</p>
+      {payload.map((entrada) => (
+        <p
+          key={entrada.dataKey}
+          className="numeros-tabulares font-mono font-semibold"
+          style={{ color: entrada.color }}
+        >
+          {ROTULO_TIPO[entrada.dataKey as TipoTransacao]}: {formatarMoeda(entrada.value ?? 0)}
+        </p>
       ))}
-    </ul>
+    </TooltipCard>
+  );
+}
+
+/** Volume lançado por tipo (independente de status), lado a lado, nos
+ * últimos 6 meses — mesma série de `evolucao`, só que os três tipos juntos
+ * em vez de um de cada vez como no GraficoTemporal. */
+function BarComparativoTipos({
+  evolucao,
+  mesesChaves,
+}: {
+  evolucao: Record<TipoTransacao, number[]>;
+  mesesChaves: string[];
+}) {
+  const dadosGrafico = mesesChaves.map((chave, indice) => ({
+    mes: rotuloMesAbreviado(chave),
+    despesa: evolucao.despesa[indice],
+    a_pagar: evolucao.a_pagar[indice],
+    a_receber: evolucao.a_receber[indice],
+  }));
+
+  return (
+    <div className="h-[220px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={dadosGrafico} barGap={3} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+          <XAxis
+            dataKey="mes"
+            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+            axisLine={{ stroke: "var(--border)" }}
+            tickLine={false}
+          />
+          <YAxis
+            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+            axisLine={false}
+            tickLine={false}
+            width={44}
+            tickFormatter={(valor: number) =>
+              Math.round(valor / 1000) >= 1 ? `${Math.round(valor / 100) / 10}k` : String(Math.round(valor))
+            }
+          />
+          <Tooltip content={<TooltipComparativo />} cursor={{ fill: "var(--accent)" }} />
+          {/* content customizado: o Recharts reordena o payload automático
+              (parece alfabético pelo dataKey) e a legenda saía fora da
+              ordem das barras — aqui fica sempre despesa/a_pagar/a_receber. */}
+          <Legend
+            content={() => (
+              <ul className="mt-2 flex justify-center gap-4">
+                {(["despesa", "a_pagar", "a_receber"] as TipoTransacao[]).map((tipo) => (
+                  <li key={tipo} className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                    <span
+                      className="size-2 shrink-0 rounded-full"
+                      style={{ background: COR_SERIE[tipo] }}
+                      aria-hidden
+                    />
+                    {ROTULO_TIPO[tipo]}
+                  </li>
+                ))}
+              </ul>
+            )}
+          />
+          <Bar dataKey="despesa" fill="var(--chart-1)" radius={[3, 3, 0, 0]} maxBarSize={18} />
+          <Bar dataKey="a_pagar" fill="var(--chart-2)" radius={[3, 3, 0, 0]} maxBarSize={18} />
+          <Bar dataKey="a_receber" fill="var(--chart-3)" radius={[3, 3, 0, 0]} maxBarSize={18} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -543,16 +739,23 @@ export function ResumoPainel({
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <AnelKpi tipo="despesa" valor={dados.totalGastosMes} progresso={dados.progresso.despesa} />
+        <AnelKpi
+          tipo="despesa"
+          valor={dados.totalGastosMes}
+          progresso={dados.progresso.despesa}
+          variacao={calcularVariacao(...ultimosDoisMeses(dados.evolucao.despesa))}
+        />
         <AnelKpi
           tipo="a_pagar"
           valor={dados.totalAPagarPendente}
           progresso={dados.progresso.a_pagar}
+          variacao={calcularVariacao(...ultimosDoisMeses(dados.evolucao.a_pagar))}
         />
         <AnelKpi
           tipo="a_receber"
           valor={dados.totalAReceberPendente}
           progresso={dados.progresso.a_receber}
+          variacao={calcularVariacao(...ultimosDoisMeses(dados.evolucao.a_receber))}
         />
       </div>
 
@@ -584,9 +787,13 @@ export function ResumoPainel({
         />
       </Painel>
 
+      <Painel titulo={`Comparativo por tipo · últimos ${QUANTIDADE_MESES_EVOLUCAO} meses`}>
+        <BarComparativoTipos evolucao={dados.evolucao} mesesChaves={dados.mesesChaves} />
+      </Painel>
+
       <div className="grid gap-4 md:grid-cols-2">
         <Painel titulo="Gastos por categoria">
-          <ListaGastosPorCategoria dados={dados.gastosPorCategoria} />
+          <DonutCategorias dados={dados.gastosPorCategoria} />
         </Painel>
 
         <Painel titulo="Saldo por pessoa">
