@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore, type MouseEvent } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -37,10 +37,25 @@ export function ThemeToggle({ className }: { className?: string }) {
   // aviso de hydration — o ícone corrige sozinho no frame seguinte.
   const tema = useSyncExternalStore(assinar, obterTema, () => "light" as Tema);
 
-  const alternar = useCallback(() => {
+  const alternar = useCallback((evento: MouseEvent<HTMLButtonElement>) => {
     const novo: Tema = obterTema() === "dark" ? "light" : "dark";
-    localStorage.setItem("tema", novo);
-    document.documentElement.setAttribute("data-theme", novo);
+    const aplicar = () => {
+      localStorage.setItem("tema", novo);
+      document.documentElement.setAttribute("data-theme", novo);
+    };
+
+    const reduzMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduzMovimento || !document.startViewTransition) {
+      aplicar();
+      return;
+    }
+
+    // Centro da revelação circular = ponto clicado, em porcentagem da tela
+    // (o clip-path do keyframe em globals.css lê essas variáveis).
+    const { clientX, clientY } = evento;
+    document.documentElement.style.setProperty("--tema-x", `${(clientX / window.innerWidth) * 100}%`);
+    document.documentElement.style.setProperty("--tema-y", `${(clientY / window.innerHeight) * 100}%`);
+    document.startViewTransition(aplicar);
   }, []);
 
   return (
@@ -51,7 +66,22 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label={tema === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
       className={className}
     >
-      {tema === "dark" ? <Sun /> : <Moon />}
+      <span className="relative flex size-4 items-center justify-center [&_svg]:absolute [&_svg]:size-4 [&_svg]:transition-all [&_svg]:duration-300">
+        <Sun
+          className={
+            tema === "dark"
+              ? "scale-100 rotate-0 opacity-100"
+              : "scale-50 -rotate-90 opacity-0"
+          }
+        />
+        <Moon
+          className={
+            tema === "dark"
+              ? "scale-50 rotate-90 opacity-0"
+              : "scale-100 rotate-0 opacity-100"
+          }
+        />
+      </span>
     </Button>
   );
 }

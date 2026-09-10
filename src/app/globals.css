@@ -226,3 +226,38 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Troca de tema: revelação circular saindo do botão clicado, via View
+   Transitions API. --tema-x/--tema-y (setados em ThemeToggle no clique)
+   marcam o centro; o raio cobre o canto mais distante da tela. Sem suporte
+   (Firefox, Safari < 18) o navegador ignora tudo isto e a troca de
+   data-theme já é instantânea — sem salto visual, só sem a revelação. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: reveal-tema 480ms ease-in-out;
+}
+
+@keyframes reveal-tema {
+  from {
+    clip-path: circle(0% at var(--tema-x, 50%) var(--tema-y, 50%));
+  }
+  to {
+    clip-path: circle(150% at var(--tema-x, 50%) var(--tema-y, 50%));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
