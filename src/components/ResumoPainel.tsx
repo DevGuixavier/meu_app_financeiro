@@ -230,7 +230,17 @@ function AnelKpi({
   const cor = COR_SERIE[tipo];
 
   return (
-    <div className="flex min-w-0 flex-col items-center gap-2 px-1.5 py-5 md:px-3">
+    <div className="relative isolate flex min-w-0 flex-col items-center gap-2 overflow-hidden px-1.5 py-5 md:px-3">
+      {/* Blob desfocado no canto, na cor do próprio tipo — mesmo princípio do
+          --aura-hero (halo atmosférico), só que localizado por célula em vez
+          de cobrir a seção inteira. Dá profundidade sem virar três cards
+          separados (ver comentário acima do card: um card dividido por
+          propósito, não três caixas idênticas). */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -top-8 -right-8 -z-10 size-24 rounded-full blur-2xl"
+        style={{ background: cor, opacity: 0.22 }}
+      />
       <div className="relative h-[68px] w-[68px]">
         <svg viewBox="0 0 68 68" className="h-full w-full -rotate-90">
           <circle
@@ -785,16 +795,16 @@ export function ResumoPainel({
       <Painel
         titulo={`${ROTULO_TIPO[serieAtiva]} · últimos ${QUANTIDADE_MESES_EVOLUCAO} meses`}
         acessorio={
-          <div className="flex gap-1">
+          <div className="flex gap-1.5">
             {(Object.keys(ROTULO_TIPO) as TipoTransacao[]).map((tipo) => (
               <button
                 key={tipo}
                 type="button"
                 onClick={() => setSerieAtiva(tipo)}
-                className={`rounded-full border px-2.5 py-1 text-[11px] whitespace-nowrap transition-colors ${
+                className={`rounded-full px-3 py-1 text-[11px] font-medium whitespace-nowrap transition-colors ${
                   serieAtiva === tipo
-                    ? "border-primary/40 bg-primary/10 text-primary"
-                    : "border-[color:var(--border)] text-muted-foreground hover:text-foreground"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {ROTULO_TIPO[tipo]}
