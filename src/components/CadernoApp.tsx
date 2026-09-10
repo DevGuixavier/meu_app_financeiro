@@ -8,6 +8,7 @@ import type { Aba, Categoria, Pessoa, Transacao, TipoTransacao } from "@/lib/typ
 import { chaveMesAtual, deslocarMes, limitesDoMes } from "@/lib/mes";
 import { gerarLancamentos, type NovaTransacaoInput } from "@/lib/parcelamento";
 import { Header } from "@/components/Header";
+import { TopBarMobile } from "@/components/TopBarMobile";
 import { TabBar } from "@/components/TabBar";
 import { Sidebar } from "@/components/Sidebar";
 import { TransacaoItem } from "@/components/TransacaoItem";
@@ -141,7 +142,10 @@ export function CadernoApp({ session }: { session: Session }) {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col pb-32 md:max-w-5xl md:flex-row md:items-start md:gap-10 md:px-6 md:py-10 md:pb-10">
+    <div className="flex w-full flex-1 flex-col">
+      <TopBarMobile aoSair={() => supabase.auth.signOut()} />
+
+      <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col pb-32 md:max-w-5xl md:flex-row md:items-start md:gap-10 md:px-6 md:py-10 md:pb-10">
       <Sidebar
         abaAtiva={abaAtiva}
         aoSelecionar={setAbaAtiva}
@@ -157,7 +161,6 @@ export function CadernoApp({ session }: { session: Session }) {
             categorias={categorias}
             aoCriarPessoa={criarPessoa}
             aoCriarCategoria={criarCategoria}
-            aoSair={() => supabase.auth.signOut()}
           />
         ) : (
           <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col md:mx-0 md:max-w-xl">
@@ -211,6 +214,7 @@ export function CadernoApp({ session }: { session: Session }) {
       </div>
 
       <TabBar abaAtiva={abaAtiva} aoSelecionar={setAbaAtiva} />
+      </div>
     </div>
   );
 }
