@@ -1,16 +1,16 @@
 import Image from "next/image";
-import { ArrowDownLeft, ArrowUpRight, BarChart3, LogOut, Plus, Wallet } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { MdAccountBalanceWallet, MdBarChart, MdCallMade, MdCallReceived, MdLogout, MdAdd } from "react-icons/md";
+import type { IconType } from "react-icons";
 import type { Aba } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 
-const ITENS: { valor: Aba; rotulo: string; Icone: LucideIcon }[] = [
-  { valor: "despesa", rotulo: "Gastos", Icone: Wallet },
-  { valor: "a_pagar", rotulo: "A pagar", Icone: ArrowUpRight },
-  { valor: "a_receber", rotulo: "A receber", Icone: ArrowDownLeft },
-  { valor: "resumo", rotulo: "Resumo", Icone: BarChart3 },
+const ITENS: { valor: Aba; rotulo: string; Icone: IconType }[] = [
+  { valor: "despesa", rotulo: "Gastos", Icone: MdAccountBalanceWallet },
+  { valor: "a_pagar", rotulo: "A pagar", Icone: MdCallMade },
+  { valor: "a_receber", rotulo: "A receber", Icone: MdCallReceived },
+  { valor: "resumo", rotulo: "Resumo", Icone: MdBarChart },
 ];
 
 export function Sidebar({
@@ -32,7 +32,7 @@ export function Sidebar({
       </div>
 
       <Button onClick={aoNovoLancamento} disabled={abaAtiva === "resumo"}>
-        <Plus />
+        <MdAdd />
         Novo lançamento
       </Button>
 
@@ -61,7 +61,7 @@ export function Sidebar({
 
       <div className="mt-auto flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={aoSair} className="self-start">
-          <LogOut />
+          <MdLogout />
           Sair
         </Button>
         <ThemeToggle />

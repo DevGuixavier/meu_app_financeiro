@@ -12,8 +12,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // A borda existe por acessibilidade, não por estética: o verde neon
+        // sobre fundo branco fica em 1.39:1 de luminância, então a silhueta
+        // do botão sumiria pra quem enxerga pouco (o texto preto em cima é
+        // legível, mas o contorno do controle não). Esse verde escurecido
+        // (55% do primary sobre preto) dá 3.91:1 contra o fundo claro, acima
+        // do piso de 3:1 pra elemento de interface — WCAG 1.4.11.
         default:
-          "bg-primary text-primary-foreground shadow-sm shadow-primary/25 hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/35 active:translate-y-0 active:scale-[0.98]",
+          "border border-[color-mix(in_srgb,var(--primary)_55%,#0a0a0a)] bg-primary text-primary-foreground shadow-sm shadow-primary/25 hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/35 active:translate-y-0 active:scale-[0.98]",
         destructive:
           "bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90 hover:-translate-y-0.5 focus-visible:ring-destructive/20",
         outline:

@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { rotuloMes } from "@/lib/mes";
 import { formatarMoeda } from "@/lib/moeda";
 import { cn } from "@/lib/utils";
@@ -66,7 +66,7 @@ export function Header({
             aria-label="Mês anterior"
             className="text-muted-foreground hover:text-foreground -ml-1.5 flex size-7 items-center justify-center rounded-full transition-colors active:scale-90 [&_svg]:size-4"
           >
-            <ChevronLeft />
+            <MdChevronLeft />
           </button>
           <span className="rotulo-hud text-muted-foreground">{rotuloMes(chaveMes)}</span>
           <button
@@ -75,7 +75,7 @@ export function Header({
             aria-label="Próximo mês"
             className="text-muted-foreground hover:text-foreground flex size-7 items-center justify-center rounded-full transition-colors active:scale-90 [&_svg]:size-4"
           >
-            <ChevronRight />
+            <MdChevronRight />
           </button>
         </div>
 

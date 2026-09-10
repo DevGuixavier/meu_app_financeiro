@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Upload } from "lucide-react";
+import { MdUpload } from "react-icons/md";
 import { toast } from "sonner";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Categoria, Pessoa } from "@/lib/types";
@@ -146,7 +146,7 @@ export function ImportarLancamentos({
         onChange={selecionarArquivo}
       />
       <Button variant="outline" size="sm" onClick={() => inputRef.current?.click()}>
-        <Upload />
+        <MdUpload />
         Importar
       </Button>
 

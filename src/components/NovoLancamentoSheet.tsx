@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import { Plus } from "lucide-react";
+import { MdAdd } from "react-icons/md";
 import type { Categoria, Pessoa, TipoTransacao } from "@/lib/types";
 import { dividirValor, type NovaTransacaoInput } from "@/lib/parcelamento";
 import { formatarMoeda } from "@/lib/moeda";
@@ -342,7 +342,7 @@ function CampoVinculo({
           disabled={!novoTexto.trim() || adicionando}
           className="h-9"
         >
-          <Plus />
+          <MdAdd />
           {adicionando ? "Adicionando..." : "Adicionar"}
         </Button>
       </div>

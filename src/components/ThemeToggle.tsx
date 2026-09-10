@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useSyncExternalStore, type MouseEvent } from "react";
-import { Moon, Sun } from "lucide-react";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 
 type Tema = "light" | "dark";
@@ -67,14 +67,14 @@ export function ThemeToggle({ className }: { className?: string }) {
       className={className}
     >
       <span className="relative flex size-4 items-center justify-center [&_svg]:absolute [&_svg]:size-4 [&_svg]:transition-all [&_svg]:duration-300">
-        <Sun
+        <MdLightMode
           className={
             tema === "dark"
               ? "scale-100 rotate-0 opacity-100"
               : "scale-50 -rotate-90 opacity-0"
           }
         />
-        <Moon
+        <MdDarkMode
           className={
             tema === "dark"
               ? "scale-50 rotate-90 opacity-0"
