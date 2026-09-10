@@ -78,7 +78,12 @@ export function CadernoApp({ session }: { session: Session }) {
       .select("id, nome, telefone")
       .single();
     if (error || !data) throw new Error(error?.message ?? "Não foi possível criar a pessoa.");
-    return data as Pessoa;
+    const pessoa = data as Pessoa;
+    // Imutável de propósito: mutar o array com .push() não dispara re-render
+    // nem o useEffect do ResumoPainel (que depende da referência de `pessoas`),
+    // e a pessoa nova ficava invisível no saldo até recarregar a página.
+    setPessoas((atual) => [...atual, pessoa]);
+    return pessoa;
   }
 
   async function criarCategoria(nome: string): Promise<Categoria> {
@@ -88,7 +93,9 @@ export function CadernoApp({ session }: { session: Session }) {
       .select("id, nome, cor")
       .single();
     if (error || !data) throw new Error(error?.message ?? "Não foi possível criar a categoria.");
-    return data as Categoria;
+    const categoria = data as Categoria;
+    setCategorias((atual) => [...atual, categoria]);
+    return categoria;
   }
 
   async function salvarLancamento(input: NovaTransacaoInput) {
@@ -144,7 +151,13 @@ export function CadernoApp({ session }: { session: Session }) {
 
       <div className="flex w-full flex-1 flex-col md:min-w-0">
         {abaAtiva === "resumo" ? (
-          <ResumoPainel supabase={supabase} pessoas={pessoas} />
+          <ResumoPainel
+            supabase={supabase}
+            pessoas={pessoas}
+            categorias={categorias}
+            aoCriarPessoa={criarPessoa}
+            aoCriarCategoria={criarCategoria}
+          />
         ) : (
           <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col md:mx-0 md:max-w-xl">
             <Header
@@ -182,6 +195,7 @@ export function CadernoApp({ session }: { session: Session }) {
                 <NovoLancamentoSheet
                   key="novo-lancamento"
                   tipo={abaAtiva}
+                  chaveMes={chaveMes}
                   pessoas={pessoas}
                   categorias={categorias}
                   aoFechar={() => setFormAberto(false)}
