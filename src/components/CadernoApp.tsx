@@ -29,8 +29,10 @@ const ResumoPainel = dynamic(
 );
 
 // Ciclo fixo: cada categoria nova pega a próxima cor, sem repetir enquanto
-// houver opção — é o que dá o selo colorido por categoria. Paleta alinhada
-// aos --chart-* atuais (violeta como primária, não mais azul-shadcn).
+// houver opção — é o que dá o selo colorido por categoria. Paleta própria,
+// independente da cor de marca (--primary/--brand mudou várias vezes desde
+// que isso foi escrito) — categorias precisam de vários matizes distintos
+// entre si, não de seguir a marca.
 const PALETA_CATEGORIA = [
   "#5b34e8",
   "#c2183d",
@@ -216,7 +218,10 @@ export function CadernoApp({ session }: { session: Session }) {
               type="button"
               onClick={() => setFormAberto(true)}
               aria-label="Novo lançamento"
-              className="fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-10 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-2xl text-primary-foreground shadow-[0_8px_28px_rgba(71,249,127,0.45)] transition-transform active:scale-90 md:hidden"
+              // Sombra na cor da marca via color-mix (lê --primary ao vivo) —
+              // antes era um rgba do verde-neon da rev.4, sobrevivendo a duas
+              // trocas de paleta (abacate, depois petróleo) sem acompanhar.
+              className="fixed right-5 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-10 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-2xl text-primary-foreground shadow-[0_8px_28px_color-mix(in_srgb,var(--primary)_45%,transparent)] transition-transform active:scale-90 md:hidden"
             >
               +
             </button>
