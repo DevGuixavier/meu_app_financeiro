@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -19,13 +19,14 @@ const SCRIPT_TEMA = `
 })();
 `;
 
-// Playfair Display nos títulos — serifada, elegante, é o par tipográfico do
-// design system que estamos seguindo (doc "Antaris Modern"). O numeral
-// gigante do hero NÃO usa essa fonte: o doc especifica valor monetário em
-// monoespaçada bold (Fira Code/JetBrains Mono), não na fonte de título — e
-// Playfair nem tem peso 300, que o numeral usava antes. Ver .numeral-hero
-// em globals.css, que já usa --font-mono por causa disso.
-const playfairDisplay = Playfair_Display({
+// Bricolage Grotesque nos títulos: geométrica, bem arredondada, peso
+// pesado — a mesma família de sensação da referência que o usuário mandou
+// (estilo Clash Display, que é da Fontshare e não está no Google Fonts;
+// essa é a alternativa mais próxima disponível via next/font/google, sem
+// precisar hospedar arquivo de fonte externo). Trocou a Playfair Display
+// (serifada), que não agradou. O numeral gigante do hero continua em
+// monoespaçada (--font-mono), não nesta — ver .numeral-hero em globals.css.
+const bricolageGrotesque = Bricolage_Grotesque({
   variable: "--font-display",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
@@ -64,7 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${playfairDisplay.variable} ${sourceSans.variable} ${plexMono.variable} h-full`}
+      className={`${bricolageGrotesque.variable} ${sourceSans.variable} ${plexMono.variable} h-full`}
       // O script beforeInteractive muda data-theme neste elemento antes do
       // React hidratar — mismatch esperado e inofensivo, não um bug real.
       suppressHydrationWarning
