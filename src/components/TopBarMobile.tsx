@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { MdLogout } from "react-icons/md";
 import { Button } from "@/components/ui/button";
+import { LogoAntaris } from "@/components/LogoAntaris";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 // Só mobile: no desktop a marca, o tema e o "Sair" já moram na Sidebar. Fica
@@ -10,7 +10,7 @@ export function TopBarMobile({ aoSair }: { aoSair: () => void }) {
   return (
     <header className="bg-background/80 sticky top-0 z-10 flex items-center justify-between border-b px-4 py-3 backdrop-blur-xl md:hidden">
       <div className="flex items-center gap-2">
-        <Image src="/logo.png" alt="" width={28} height={28} className="size-7" priority />
+        <LogoAntaris className="size-7" />
         <span className="rotulo-hud text-foreground">Antaris</span>
       </div>
       <div className="flex items-center gap-1">
