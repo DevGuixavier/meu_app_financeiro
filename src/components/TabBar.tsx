@@ -70,7 +70,7 @@ export function TabBar({
               <motion.div
                 layoutId="indicador-aba"
                 transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                className="absolute inset-0 -z-10 rounded-2xl border border-accent/30 bg-accent/10 shadow-[0_2px_8px_rgba(227,166,75,0.25)]"
+                className="absolute inset-0 -z-10 rounded-2xl border border-accent/30 bg-accent/10 shadow-[0_2px_8px_rgba(37,99,235,0.22)]"
               />
             )}
             <Icone ativo={ativo} />

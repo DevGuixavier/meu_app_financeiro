@@ -1,40 +1,52 @@
 import type { Metadata, Viewport } from "next";
-import { Public_Sans, Roboto_Mono } from "next/font/google";
+import { Lexend, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-// Public Sans (derivada da Libre Franklin) na interface. Ela não tem uma mono
-// irmã, então os valores usam Roboto Mono — mono neutra, sem personalidade
-// que brigue com o esqueleto gótico da Public Sans.
-const publicSans = Public_Sans({
+// Lexend nos títulos: desenhada para legibilidade, dá autoridade sem peso
+// institucional. Source Sans 3 no corpo, humanista e neutra na leitura longa.
+// IBM Plex Mono só nos valores — dinheiro alinhado em coluna precisa de
+// largura fixa para os dígitos baterem entre linhas.
+const lexend = Lexend({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+});
+
+const sourceSans = Source_Sans_3({
   variable: "--font-body",
   subsets: ["latin"],
-  // 600 incluído porque a UI usa font-semibold e o .rotulo-hud pede 600 —
-  // sem declarar, o navegador sintetiza o negrito e o traço fica sujo.
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const robotoMono = Roboto_Mono({
+const plexMono = IBM_Plex_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Saldo",
+  title: "Antaris",
   description: "Controle de gastos e cobranças.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#FAF6F3",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F8FAFC" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F172A" },
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${publicSans.variable} ${robotoMono.variable} h-full`}>
+    <html
+      lang="pt-BR"
+      className={`${lexend.variable} ${sourceSans.variable} ${plexMono.variable} h-full`}
+    >
       <body className="min-h-full flex flex-col bg-bg text-ink font-body antialiased">
         {children}
       </body>

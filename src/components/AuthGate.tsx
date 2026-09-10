@@ -49,7 +49,7 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
     setEnviado(true);
   }
 
-  // Verifica o código de 6 dígitos em vez de depender do link clicável do
+  // Verifica o código digitado em vez de depender do link clicável do
   // email — o link é reescrito e pré-acessado por scanners de segurança
   // (Gmail, Outlook), o que consome o token PKCE de uso único antes do
   // usuário clicar e derruba o login com "otp_expired".
@@ -69,9 +69,9 @@ function FormularioLogin({ supabase }: { supabase: SupabaseClient }) {
     <main className="flex flex-1 flex-col items-center justify-center px-6">
       <div className="borda-sutil w-full max-w-xs rounded-[24px] bg-surface p-6">
         <div className="brilho-accent flex h-11 w-11 items-center justify-center rounded-2xl bg-accent">
-          <span className="font-display text-xl font-bold text-on-accent">S</span>
+          <span className="font-display text-xl font-bold text-on-accent">A</span>
         </div>
-        <h1 className="mt-5 font-display text-3xl font-semibold text-ink">Saldo</h1>
+        <h1 className="mt-5 font-display text-3xl font-semibold text-ink">Antaris</h1>
         <p className="mt-2 text-sm text-muted">
           Controle de gastos e cobranças. Entre com seu email para continuar.
         </p>
