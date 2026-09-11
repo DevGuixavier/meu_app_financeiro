@@ -20,9 +20,11 @@ const ROTULO_ACAO = {
 export function TransacaoItem({
   transacao,
   aoAlternarStatus,
+  aoEditar,
 }: {
   transacao: Transacao;
   aoAlternarStatus: (transacao: Transacao) => void;
+  aoEditar: (transacao: Transacao) => void;
 }) {
   const quitado = transacao.status === "quitado";
   const numeroParcela = transacao.parcela_atual ?? 1;
@@ -33,7 +35,8 @@ export function TransacaoItem({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18 }}
-      className="hover:bg-accent/40 flex items-center gap-3 px-4 py-3 transition-colors"
+      onClick={() => aoEditar(transacao)}
+      className="hover:bg-accent/40 flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors"
     >
       {/* O selo só mostra número quando existe parcelamento — num lançamento
           avulso, um "1" ali sugeriria uma parcela que não existe. */}
@@ -88,7 +91,12 @@ export function TransacaoItem({
 
       <motion.button
         type="button"
-        onClick={() => aoAlternarStatus(transacao)}
+        onClick={(evento) => {
+          // Sem isso, clicar no botão de status também dispararia o onClick
+          // do <li> por baixo e abriria a edição por cima do toggle.
+          evento.stopPropagation();
+          aoAlternarStatus(transacao);
+        }}
         whileTap={{ scale: 0.85 }}
         aria-label={quitado ? "Marcar como pendente" : ROTULO_ACAO[transacao.tipo]}
         aria-pressed={quitado}

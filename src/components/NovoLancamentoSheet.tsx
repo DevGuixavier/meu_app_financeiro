@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-const SEM_VINCULO = "nenhuma";
+export const SEM_VINCULO = "nenhuma";
 
 export function NovoLancamentoSheet({
   tipo,
@@ -288,7 +288,7 @@ export function NovoLancamentoSheet({
   );
 }
 
-function CampoVinculo({
+export function CampoVinculo({
   rotulo,
   valor,
   aoMudar,

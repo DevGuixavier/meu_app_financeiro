@@ -14,6 +14,7 @@ import { TabBar } from "@/components/TabBar";
 import { Sidebar } from "@/components/Sidebar";
 import { TransacaoItem } from "@/components/TransacaoItem";
 import { NovoLancamentoSheet } from "@/components/NovoLancamentoSheet";
+import { EditarLancamentoSheet, type EdicaoTransacaoInput } from "@/components/EditarLancamentoSheet";
 
 // Carregado só quando a aba Resumo abre: é o único lugar que usa recharts,
 // e a maioria das visitas fica nas abas de lançamento — sem isso, o peso
@@ -69,6 +70,7 @@ export function CadernoApp({ session }: { session: Session }) {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [formAberto, setFormAberto] = useState(false);
+  const [transacaoEmEdicao, setTransacaoEmEdicao] = useState<Transacao | null>(null);
 
   useEffect(() => {
     if (abaAtiva === "resumo") return;
@@ -162,6 +164,32 @@ export function CadernoApp({ session }: { session: Session }) {
     }
   }
 
+  async function editarLancamento(id: number, input: EdicaoTransacaoInput) {
+    const { error } = await supabase
+      .from("transacao")
+      .update({
+        tipo: input.tipo,
+        titulo: input.titulo,
+        descricao: input.descricao,
+        valor: input.valor,
+        data_vencimento: input.dataVencimento,
+        pessoa_id: input.pessoaId,
+        categoria_id: input.categoriaId,
+      })
+      .eq("id", id);
+    if (error) throw new Error(error.message);
+    // Refaz a busca (não um patch local): tipo pode ter mudado, e aí a
+    // linha precisa sumir da aba atual em vez de continuar aparecendo
+    // com o tipo errado.
+    if (abaAtiva !== "resumo") setTransacoes(await buscarTransacoes(supabase, abaAtiva, chaveMes));
+  }
+
+  async function excluirLancamento(id: number) {
+    const { error } = await supabase.from("transacao").delete().eq("id", id);
+    if (error) throw new Error(error.message);
+    setTransacoes((atual) => atual.filter((item) => item.id !== id));
+  }
+
   const total = transacoes.reduce((soma, transacao) => soma + transacao.valor, 0);
 
   const mensagemVazio: Record<TipoTransacao, string> = {
@@ -210,7 +238,12 @@ export function CadernoApp({ session }: { session: Session }) {
                 </li>
               )}
               {transacoes.map((transacao) => (
-                <TransacaoItem key={transacao.id} transacao={transacao} aoAlternarStatus={alternarStatus} />
+                <TransacaoItem
+                  key={transacao.id}
+                  transacao={transacao}
+                  aoAlternarStatus={alternarStatus}
+                  aoEditar={setTransacaoEmEdicao}
+                />
               ))}
             </ul>
 
@@ -236,6 +269,19 @@ export function CadernoApp({ session }: { session: Session }) {
                   categorias={categorias}
                   aoFechar={() => setFormAberto(false)}
                   aoSalvar={salvarLancamento}
+                  aoCriarPessoa={criarPessoa}
+                  aoCriarCategoria={criarCategoria}
+                />
+              )}
+              {transacaoEmEdicao && (
+                <EditarLancamentoSheet
+                  key="editar-lancamento"
+                  transacao={transacaoEmEdicao}
+                  pessoas={pessoas}
+                  categorias={categorias}
+                  aoFechar={() => setTransacaoEmEdicao(null)}
+                  aoSalvar={editarLancamento}
+                  aoExcluir={excluirLancamento}
                   aoCriarPessoa={criarPessoa}
                   aoCriarCategoria={criarCategoria}
                 />
