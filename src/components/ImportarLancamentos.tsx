@@ -18,6 +18,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const SEM_CATEGORIA = "nenhuma";
 
 const LIMITE_PREVIA = 8;
 
@@ -41,8 +44,13 @@ export function ImportarLancamentos({
   const [nomeArquivo, setNomeArquivo] = useState("");
   const [linhas, setLinhas] = useState<LinhaImportacao[]>([]);
   const [erros, setErros] = useState<ErroImportacao[]>([]);
+  const [formato, setFormato] = useState<"app" | "extrato">("app");
   const [aplicarStatus, setAplicarStatus] = useState(true);
   const [importando, setImportando] = useState(false);
+  // Sobrepõe nomeCategoria quando o formato é extrato: aquele campo vem
+  // sempre null (extrato bancário não tem coluna Categoria), então quem
+  // categoriza é a pessoa, linha a linha, via select na prévia.
+  const [categoriaPorLinha, setCategoriaPorLinha] = useState<Record<number, number | null>>({});
 
   const nomesPessoaNovos = [
     ...new Set(
@@ -76,6 +84,8 @@ export function ImportarLancamentos({
       setNomeArquivo(arquivo.name);
       setLinhas(resultado.linhas);
       setErros(resultado.erros);
+      setFormato(resultado.formato);
+      setCategoriaPorLinha({});
       setAberto(true);
     } catch (excecao) {
       toast.error(excecao instanceof Error ? excecao.message : "Não foi possível ler o arquivo.");
@@ -101,6 +111,15 @@ export function ImportarLancamentos({
 
       const registros = linhas.map((linha) => {
         const quitado = aplicarStatus && linha.quitado;
+        // undefined = a pessoa não mexeu no select da linha (segue nomeCategoria
+        // do arquivo, se tiver); null = escolheu "Nenhuma" explicitamente.
+        const overrideCategoria = categoriaPorLinha[linha.numeroLinha];
+        const categoriaId =
+          overrideCategoria !== undefined
+            ? overrideCategoria
+            : linha.nomeCategoria
+              ? (mapaCategorias.get(linha.nomeCategoria.toLowerCase()) ?? null)
+              : null;
         return {
           tipo: linha.tipo,
           titulo: linha.titulo,
@@ -110,9 +129,7 @@ export function ImportarLancamentos({
           status: quitado ? "quitado" : "pendente",
           data_quitacao: quitado ? linha.dataQuitacao : null,
           pessoa_id: linha.nomePessoa ? (mapaPessoas.get(linha.nomePessoa.toLowerCase()) ?? null) : null,
-          categoria_id: linha.nomeCategoria
-            ? (mapaCategorias.get(linha.nomeCategoria.toLowerCase()) ?? null)
-            : null,
+          categoria_id: categoriaId,
           parcela_atual: linha.parcelaAtual,
           parcela_total: linha.parcelaTotal,
           // A planilha exportada não traz o id do grupo de parcelamento —
@@ -128,6 +145,7 @@ export function ImportarLancamentos({
       setAberto(false);
       setLinhas([]);
       setErros([]);
+      setCategoriaPorLinha({});
       aoConcluir();
     } catch (excecao) {
       toast.error(excecao instanceof Error ? excecao.message : "Não foi possível importar.");
@@ -178,11 +196,32 @@ export function ImportarLancamentos({
             {linhas.length > 0 && (
               <ul className="divide-border mb-3 divide-y overflow-hidden rounded-lg border">
                 {linhas.slice(0, LIMITE_PREVIA).map((linha) => (
-                  <li key={linha.numeroLinha} className="flex items-center gap-3 px-3 py-2 text-sm">
+                  <li key={linha.numeroLinha} className="flex items-center gap-2 px-3 py-2 text-sm">
                     <span className="min-w-0 flex-1 truncate">{linha.titulo}</span>
                     <span className="numeros-tabulares text-muted-foreground shrink-0 font-mono text-xs">
                       {formatarMoeda(linha.valor)}
                     </span>
+                    <Select
+                      value={String(categoriaPorLinha[linha.numeroLinha] ?? SEM_CATEGORIA)}
+                      onValueChange={(valor) =>
+                        setCategoriaPorLinha((atual) => ({
+                          ...atual,
+                          [linha.numeroLinha]: valor === SEM_CATEGORIA ? null : Number(valor),
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="h-7 w-28 shrink-0 text-xs">
+                        <SelectValue placeholder="Categoria" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={SEM_CATEGORIA}>Sem categoria</SelectItem>
+                        {categorias.map((categoria) => (
+                          <SelectItem key={categoria.id} value={String(categoria.id)}>
+                            {categoria.nome}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </li>
                 ))}
                 {linhas.length > LIMITE_PREVIA && (
@@ -204,18 +243,25 @@ export function ImportarLancamentos({
               </ul>
             )}
 
-            <div className="flex items-start gap-2.5">
-              <Checkbox
-                id="aplicar-status"
-                checked={aplicarStatus}
-                onCheckedChange={(marcado) => setAplicarStatus(marcado === true)}
-                className="mt-0.5"
-              />
-              <Label htmlFor="aplicar-status" className="font-normal">
-                Respeitar a coluna Status da planilha — linhas marcadas &quot;Quitado&quot; entram
-                quitadas. Se desmarcar, tudo entra como pendente.
-              </Label>
-            </div>
+            {formato === "extrato" ? (
+              <p className="text-muted-foreground text-sm">
+                Extrato bancário detectado — tipo (gasto/recebimento) inferido pelo sinal do valor,
+                lançamentos entram como quitados. Escolha a categoria de cada linha acima, se quiser.
+              </p>
+            ) : (
+              <div className="flex items-start gap-2.5">
+                <Checkbox
+                  id="aplicar-status"
+                  checked={aplicarStatus}
+                  onCheckedChange={(marcado) => setAplicarStatus(marcado === true)}
+                  className="mt-0.5"
+                />
+                <Label htmlFor="aplicar-status" className="font-normal">
+                  Respeitar a coluna Status da planilha — linhas marcadas &quot;Quitado&quot; entram
+                  quitadas. Se desmarcar, tudo entra como pendente.
+                </Label>
+              </div>
+            )}
           </div>
 
           <DialogFooter>

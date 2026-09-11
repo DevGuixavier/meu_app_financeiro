@@ -36,6 +36,11 @@ export interface ErroImportacao {
 export interface ResultadoParse {
   linhas: LinhaImportacao[];
   erros: ErroImportacao[];
+  // "extrato": planilha de banco (Nubank etc.), sem coluna Tipo — tipo é
+  // inferido pelo sinal do Valor e a linha já entra quitada (extrato só
+  // lista o que já aconteceu na conta). "app": formato que exportacao.ts
+  // gera, com Tipo/Título/Status explícitos.
+  formato: "app" | "extrato";
 }
 
 function normalizarData(valor: string): string | null {
@@ -110,19 +115,63 @@ function linhaParaLancamento(
   };
 }
 
+// Extrato de banco (Nubank e semelhantes): Data, Valor, Descrição — sem
+// Tipo nem Título. Presença de "Tipo" decide o formato porque é a única
+// coluna que o extrato bancário nunca tem e o formato do app sempre tem.
+function ehExtratoBancario(cabecalhos: string[]): boolean {
+  return (
+    !cabecalhos.includes("Tipo") &&
+    ["Data", "Valor", "Descrição"].every((coluna) => cabecalhos.includes(coluna))
+  );
+}
+
+function linhaExtratoParaLancamento(
+  linha: Record<string, unknown>,
+  numeroLinha: number,
+): LinhaImportacao | ErroImportacao {
+  const valorComSinal = normalizarValor(linha["Valor"]);
+  if (valorComSinal === null || valorComSinal === 0) {
+    return { numeroLinha, motivo: `Valor inválido: "${linha["Valor"]}".` };
+  }
+
+  const dataVencimento = normalizarData(String(linha["Data"] ?? ""));
+  if (!dataVencimento) {
+    return { numeroLinha, motivo: `Data não reconhecida: "${linha["Data"]}" (use dd/mm/aaaa).` };
+  }
+
+  return {
+    numeroLinha,
+    tipo: valorComSinal < 0 ? "despesa" : "a_receber",
+    titulo: String(linha["Descrição"] ?? "").trim() || "Sem descrição",
+    descricao: null,
+    valor: Math.abs(valorComSinal),
+    dataVencimento,
+    quitado: true,
+    dataQuitacao: dataVencimento,
+    nomePessoa: null,
+    nomeCategoria: null,
+    parcelaAtual: null,
+    parcelaTotal: null,
+  };
+}
+
 function processarLinhas(registros: Record<string, unknown>[]): ResultadoParse {
+  const cabecalhos = Object.keys(registros[0] ?? {});
+  const extrato = ehExtratoBancario(cabecalhos);
+  const transformar = extrato ? linhaExtratoParaLancamento : linhaParaLancamento;
+
   const linhas: LinhaImportacao[] = [];
   const erros: ErroImportacao[] = [];
   registros.forEach((registro, indice) => {
     // +2: linha 1 é o cabeçalho, e planilhas contam a partir de 1.
-    const resultado = linhaParaLancamento(registro, indice + 2);
+    const resultado = transformar(registro, indice + 2);
     if ("motivo" in resultado) erros.push(resultado);
     else linhas.push(resultado);
   });
-  return { linhas, erros };
+  return { linhas, erros, formato: extrato ? "extrato" : "app" };
 }
 
-function dividirLinhaCsv(linha: string): string[] {
+function dividirLinhaCsv(linha: string, separador: string): string[] {
   const campos: string[] = [];
   let atual = "";
   let dentroDeAspas = false;
@@ -139,7 +188,7 @@ function dividirLinhaCsv(linha: string): string[] {
       }
     } else if (char === '"') {
       dentroDeAspas = true;
-    } else if (char === ";") {
+    } else if (char === separador) {
       campos.push(atual);
       atual = "";
     } else {
@@ -153,11 +202,14 @@ function dividirLinhaCsv(linha: string): string[] {
 function parseCsv(texto: string): ResultadoParse {
   const semBom = texto.replace(/^﻿/, "");
   const linhasTexto = semBom.split(/\r\n|\n/).filter((linha) => linha.trim().length > 0);
-  if (linhasTexto.length < 2) return { linhas: [], erros: [] };
+  if (linhasTexto.length < 2) return { linhas: [], erros: [], formato: "app" };
 
-  const cabecalhos = dividirLinhaCsv(linhasTexto[0]);
+  // exportacao.ts usa ";" (convenção do Excel pt-BR); extratos de banco
+  // (Nubank etc.) vêm com ",". A linha de cabeçalho decide qual foi usado.
+  const separador = linhasTexto[0].includes(";") ? ";" : ",";
+  const cabecalhos = dividirLinhaCsv(linhasTexto[0], separador);
   const registros = linhasTexto.slice(1).map((linhaTexto) => {
-    const campos = dividirLinhaCsv(linhaTexto);
+    const campos = dividirLinhaCsv(linhaTexto, separador);
     const registro: Record<string, string> = {};
     cabecalhos.forEach((cabecalho, indice) => {
       registro[cabecalho] = campos[indice] ?? "";
